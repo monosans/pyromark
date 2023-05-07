@@ -1,0 +1,29 @@
+[package]
+name = "pyromark"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+include = [
+    "/src",
+    "/Cargo.lock",
+    "/Cargo.toml",
+    "/LICENSE",
+    "/pyproject.toml",
+    "/pyromark.pyi",
+    "/README.md",
+]
+
+[lib]
+name = "pyromark"
+crate-type = ["cdylib"]
+
+[dependencies]
+pulldown-cmark = { version = "0.9.2", default-features = false, features = [
+    "simd",
+] }
+pyo3 = "0.18.3"
+
+[profile.release]
+strip = true
+lto = "fat"
+codegen-units = 1
