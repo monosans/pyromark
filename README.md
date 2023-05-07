@@ -11,7 +11,7 @@ Uses [pulldown-cmark](https://github.com/raphlinus/pulldown-cmark) Rust crate un
 ## Installation
 
 ```bash
-python -m pip install pyromark
+python -m pip install -U pyromark
 ```
 
 ## Usage
