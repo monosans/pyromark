@@ -1,7 +1,6 @@
 # PyroMark
 
-[![CI](https://github.com/monosans/pyromark/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/monosans/pyromark/actions/workflows/ci.yml?query=event%3Apush+branch%3Amain)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/monosans/pyromark/main.svg)](https://results.pre-commit.ci/latest/github/monosans/pyromark/main)
+[![CI](https://github.com/monosans/pyromark/actions/workflows/ci.yml/badge.svg)](https://github.com/monosans/pyromark/actions/workflows/ci.yml)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/pyromark?logo=pypi)](https://pypi.org/project/pyromark/)
 
 PyroMark (stands for Python Rust Optimized Markdown) is a blazingly fast Markdown parser for Python.
@@ -109,4 +108,4 @@ In [7]: %timeit pyromark.markdown(text)
 
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/monosans/pyromark/blob/main/LICENSE)

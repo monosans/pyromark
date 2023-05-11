@@ -7,7 +7,16 @@ on:
       - v*
   pull_request:
   workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 jobs:
+  run-pre-commit:
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pipx run pre-commit run --all-files
   linux:
     runs-on: ubuntu-latest
     strategy:
@@ -32,8 +41,8 @@ jobs:
           args: --release --out dist --find-interpreter
           sccache: "true"
           manylinux: auto
-      - name: Run tests
-        if: matrix.target == 'x86_64'
+      - name: Run pytest
+        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64' }}
         run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U -r requirements.txt && pytest
       - name: Upload wheels
         uses: actions/upload-artifact@v3
@@ -60,7 +69,8 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
           sccache: "true"
-      - name: Run tests
+      - name: Run pytest
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U -r requirements.txt && pytest
       - name: Upload wheels
         uses: actions/upload-artifact@v3
@@ -86,8 +96,8 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
           sccache: "true"
-      - name: Run tests
-        if: matrix.target == 'x86_64'
+      - name: Run pytest
+        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64' }}
         run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U -r requirements.txt && pytest
       - name: Upload wheels
         uses: actions/upload-artifact@v3
@@ -109,9 +119,8 @@ jobs:
           name: wheels
           path: dist
   release:
-    name: Release
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
+    if: ${{ startsWith(github.ref, 'refs/tags/') }}
     needs:
       - linux
       - windows
@@ -123,8 +132,6 @@ jobs:
           name: wheels
       - name: Publish to PyPI
         uses: PyO3/maturin-action@v1
-        env:
-          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
         with:
           command: upload
           args: --skip-existing *
