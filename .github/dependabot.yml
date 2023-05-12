@@ -4,19 +4,19 @@ updates:
     directory: /
     schedule:
       interval: daily
-      time: "05:00"
+      time: "04:30"
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: daily
-      time: "05:00"
+      time: "04:30"
   - package-ecosystem: pip
     directory: /
     schedule:
       interval: daily
-      time: "05:00"
+      time: "04:30"
   - package-ecosystem: pip
     directory: /tests
     schedule:
       interval: daily
-      time: "05:00"
+      time: "04:30"
