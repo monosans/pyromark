@@ -1,7 +1,7 @@
 # PyroMark
 
 [![CI](https://github.com/monosans/pyromark/actions/workflows/ci.yml/badge.svg)](https://github.com/monosans/pyromark/actions/workflows/ci.yml)
-[![Downloads](https://static.pepy.tech/badge/aiopygismeteo)](https://pepy.tech/project/aiopygismeteo)
+[![Downloads](https://static.pepy.tech/badge/pyromark)](https://pepy.tech/project/pyromark)
 
 PyroMark (stands for Python Rust Optimized Markdown) is a blazingly fast Markdown parser for Python.
 
