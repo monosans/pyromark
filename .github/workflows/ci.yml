@@ -41,14 +41,14 @@ jobs:
           args: --release --out dist --find-interpreter
           sccache: "true"
           manylinux: auto
-      - name: Run pytest
-        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64' }}
-        run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U -r requirements.txt && pytest
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
+      - name: pytest
+        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64' }}
+        run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U -r requirements.txt && pytest
   windows:
     runs-on: windows-latest
     strategy:
@@ -69,14 +69,14 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
           sccache: "true"
-      - name: Run pytest
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U -r requirements.txt && pytest
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
+      - name: pytest
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U -r requirements.txt && pytest
   macos:
     runs-on: macos-latest
     strategy:
@@ -96,14 +96,14 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
           sccache: "true"
-      - name: Run pytest
-        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64' }}
-        run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U -r requirements.txt && pytest
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
+      - name: pytest
+        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64' }}
+        run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U -r requirements.txt && pytest
   sdist:
     runs-on: ubuntu-latest
     steps:
