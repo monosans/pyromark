@@ -79,6 +79,8 @@ You can see examples of how each extension affects the result in the [tests](htt
 109x faster than [markdown-it-py](https://pypi.org/project/markdown-it-py/),
 86x faster than [mistune](https://pypi.org/project/mistune/).
 
+If you use threading, the difference with other libraries will be even more enormous, since pyromark releases the [GIL](https://docs.python.org/3/glossary.html#term-global-interpreter-lock).
+
 ```python
 Python 3.11.3 (main, Apr  5 2023, 15:52:25) [GCC 12.2.1 20230201]
 Type 'copyright', 'credits' or 'license' for more information

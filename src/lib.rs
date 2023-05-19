@@ -15,18 +15,22 @@ impl Markdown {
         Ok(Self { options })
     }
 
-    fn convert(&self, text: &str) -> String {
-        let parser = Parser::new_ext(text, self.options);
-        html_from_parser(parser)
+    fn convert(&self, py: Python, text: &str) -> String {
+        py.allow_threads(move || {
+            let parser = Parser::new_ext(text, self.options);
+            html_from_parser(parser)
+        })
     }
 }
 
 #[pyfunction]
 #[pyo3(signature = (text, *, extensions = None))]
-fn markdown(text: &str, extensions: Option<Vec<&str>>) -> PyResult<String> {
+fn markdown(py: Python, text: &str, extensions: Option<Vec<&str>>) -> PyResult<String> {
     let options = get_options(extensions)?;
-    let parser = Parser::new_ext(text, options);
-    Ok(html_from_parser(parser))
+    py.allow_threads(move || {
+        let parser = Parser::new_ext(text, options);
+        Ok(html_from_parser(parser))
+    })
 }
 
 fn get_options(extensions: Option<Vec<&str>>) -> PyResult<Options> {
