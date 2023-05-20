@@ -126,6 +126,8 @@ jobs:
       - windows
       - macos
       - sdist
+    permissions:
+      id-token: write
     steps:
       - uses: actions/download-artifact@v3
         with:
