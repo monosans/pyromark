@@ -21,7 +21,7 @@ crate-type = ["cdylib"]
 pulldown-cmark = { version = "0.9.3", default-features = false, features = [
     "simd",
 ] }
-pyo3 = "0.18.3"
+pyo3 = "0.19.0"
 
 [profile.release]
 strip = true
