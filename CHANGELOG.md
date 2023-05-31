@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.1.3] - 2023-05-31
+
+- Update dependencies (most importantly, PyO3 from 0.18.3 to 0.19.0).
+
 ## [0.1.2] - 2023-05-21
 
 - Update pulldown-cmark from 0.9.2 to 0.9.3.
