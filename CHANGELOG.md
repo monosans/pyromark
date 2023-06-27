@@ -2,6 +2,11 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.1.4] - 2023-06-27
+
+- Rebuild with PyPy 3.10 wheels for x86_64 and i686.
+- Update dependencies.
+
 ## [0.1.3] - 2023-05-31
 
 - Update dependencies (most importantly, PyO3 from 0.18.3 to 0.19.0).
