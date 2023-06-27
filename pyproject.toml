@@ -43,6 +43,7 @@ features = ["pyo3/extension-module"]
 
 [tool.black]
 target-version = ["py37"]
+line-length = 80
 skip-magic-trailing-comma = true
 preview = true
 
@@ -69,6 +70,7 @@ xfail_strict = true
 
 [tool.ruff]
 target-version = "py37"
+line-length = 80
 select = ["ALL"]
 ignore = [
     "ANN",

@@ -46,7 +46,10 @@ HEADING_ATTRIBUTES = "# text { #id .class1 .class2 }"
         (
             set(),
             TypeError,
-            "argument 'extensions': 'set' object cannot be converted to 'Sequence'",
+            (
+                "argument 'extensions': 'set' object cannot be converted to"
+                " 'Sequence'"
+            ),
         ),
         ("", TypeError, "argument 'extensions': Can't extract `str` to `Vec`"),
     ],
@@ -71,8 +74,8 @@ def test_wrong_extensions(
             FOOTNOTE,
             "footnotes",
             (
-                "<p>Here's a sentence with a footnote. [^1]</p>\n<p>[^1]: This is the"
-                " footnote.</p>\n"
+                "<p>Here's a sentence with a footnote. [^1]</p>\n<p>[^1]: This"
+                " is the footnote.</p>\n"
             ),
             (
                 "<p>Here's a sentence with a footnote. <sup"
@@ -96,24 +99,25 @@ def test_wrong_extensions(
                 " website</li>\n<li>[ ] Contact the media</li>\n</ul>\n"
             ),
             (
-                '<ul>\n<li><input disabled="" type="checkbox" checked=""/>\nWrite the'
-                ' press release</li>\n<li><input disabled="" type="checkbox"/>\nUpdate'
-                ' the website</li>\n<li><input disabled="" type="checkbox"/>\nContact'
-                " the media</li>\n</ul>\n"
+                '<ul>\n<li><input disabled="" type="checkbox"'
+                ' checked=""/>\nWrite the press release</li>\n<li><input'
+                ' disabled="" type="checkbox"/>\nUpdate the'
+                ' website</li>\n<li><input disabled=""'
+                ' type="checkbox"/>\nContact the media</li>\n</ul>\n'
             ),
         ),
         (
             SMART_PUNCTUATION,
             "smart_punctuation",
             (
-                "<p>'This here a real &quot;quote&quot;'</p>\n<p>And -- if you're"
-                " interested -- some em-dashes. Wait --- she actually said"
-                " that?</p>\n<p>Wow... Becky is so 'mean'!</p>\n"
+                "<p>'This here a real &quot;quote&quot;'</p>\n<p>And -- if"
+                " you're interested -- some em-dashes. Wait --- she actually"
+                " said that?</p>\n<p>Wow... Becky is so 'mean'!</p>\n"
             ),
             (
-                "<p>‘This here a real “quote”’</p>\n<p>And – if you’re interested –"
-                " some em-dashes. Wait — she actually said that?</p>\n<p>Wow… Becky is"
-                " so ‘mean’!</p>\n"
+                "<p>‘This here a real “quote”’</p>\n<p>And – if you’re"
+                " interested – some em-dashes. Wait — she actually said"
+                " that?</p>\n<p>Wow… Becky is so ‘mean’!</p>\n"
             ),
         ),
         (
@@ -128,7 +132,9 @@ def test_extensions(
     text: str, extension: _Extension, res_without_ext: str, res_with_ext: str
 ) -> None:
     assert (
-        pyromark.markdown(text) == pyromark.Markdown().convert(text) == res_without_ext
+        pyromark.markdown(text)
+        == pyromark.Markdown().convert(text)
+        == res_without_ext
     )
     assert (
         pyromark.markdown(text, extensions=(extension,))
