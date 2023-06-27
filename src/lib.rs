@@ -25,7 +25,11 @@ impl Markdown {
 
 #[pyfunction]
 #[pyo3(signature = (text, *, extensions = None))]
-fn markdown(py: Python, text: &str, extensions: Option<Vec<&str>>) -> PyResult<String> {
+fn markdown(
+    py: Python,
+    text: &str,
+    extensions: Option<Vec<&str>>,
+) -> PyResult<String> {
     let options = get_options(extensions)?;
     py.allow_threads(move || {
         let parser = Parser::new_ext(text, options);
@@ -44,7 +48,11 @@ fn get_options(extensions: Option<Vec<&str>>) -> PyResult<Options> {
                 "tasklists" => Options::ENABLE_TASKLISTS,
                 "smart_punctuation" => Options::ENABLE_SMART_PUNCTUATION,
                 "heading_attributes" => Options::ENABLE_HEADING_ATTRIBUTES,
-                _ => return Err(PyValueError::new_err(format!("unknown extension: '{ext}'"))),
+                _ => {
+                    return Err(PyValueError::new_err(format!(
+                        "unknown extension: '{ext}'"
+                    )));
+                }
             };
             options.insert(option);
         }
