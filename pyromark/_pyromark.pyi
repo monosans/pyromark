@@ -1,0 +1,9 @@
+from ._extensions import Extensions
+
+__version__: str
+
+class Markdown:
+    def __init__(self, *, extensions: Extensions | None = None) -> None: ...
+    def convert(self, text: str) -> str: ...
+
+def markdown(text: str, *, extensions: Extensions | None = None) -> str: ...

@@ -2,6 +2,12 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+- Use enum.IntFlag instead of a string sequence to define extensions.
+- Fix pyromark.Markdown's \_\_module\_\_ attribute.
+- New full-fledged documentation and docstrings instead of README.md.
+
 ## [0.1.4] - 2023-06-27
 
 - Rebuild with PyPy 3.10 wheels for x86_64 and i686.

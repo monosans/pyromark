@@ -4,17 +4,17 @@ version = "0.1.4"
 edition = "2021"
 license = "MIT"
 include = [
+    "/pyromark",
     "/src",
     "/Cargo.lock",
     "/Cargo.toml",
     "/LICENSE",
     "/pyproject.toml",
-    "/pyromark.pyi",
     "/README.md",
 ]
 
 [lib]
-name = "pyromark"
+name = "_pyromark"
 crate-type = ["cdylib"]
 
 [dependencies]

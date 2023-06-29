@@ -1,12 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Type
-
-import pyromark
 import pytest
 
-if TYPE_CHECKING:
-    from pyromark import _Extension
+import pyromark
 
 TABLE = """\
 | a   | b   |
@@ -38,106 +34,139 @@ Wow... Becky is so 'mean'!\
 
 HEADING_ATTRIBUTES = "# text { #id .class1 .class2 }"
 
+BAD_BITS = 2 << 1
+
+TESTDATA = [
+    (
+        TABLE,
+        pyromark.Extensions.ENABLE_TABLES | BAD_BITS,
+        "<p>| a   | b   |\n| --- | --- |\n| c   | d   |</p>\n",
+        "<table><thead><tr><th>a</th><th>b</th></tr></thead><tbody>\n<tr><td>c</td><td>d</td></tr>\n</tbody></table>\n",
+    ),
+    (
+        FOOTNOTE,
+        pyromark.Extensions.ENABLE_FOOTNOTES | BAD_BITS,
+        (
+            "<p>Here's a sentence with a footnote. [^1]</p>\n<p>[^1]: This"
+            " is the footnote.</p>\n"
+        ),
+        (
+            "<p>Here's a sentence with a footnote. <sup"
+            ' class="footnote-reference"><a href="#1">1</a></sup></p>\n<div'
+            ' class="footnote-definition" id="1"><sup'
+            ' class="footnote-definition-label">1</sup>\n<p>This is the'
+            " footnote.</p>\n</div>\n"
+        ),
+    ),
+    (
+        STRIKETHROUGH,
+        pyromark.Extensions.ENABLE_STRIKETHROUGH | BAD_BITS,
+        "<p>~~The world is flat.~~</p>\n",
+        "<p><del>The world is flat.</del></p>\n",
+    ),
+    (
+        TASKLIST,
+        pyromark.Extensions.ENABLE_TASKLISTS | BAD_BITS,
+        (
+            "<ul>\n<li>[x] Write the press release</li>\n<li>[ ] Update the"
+            " website</li>\n<li>[ ] Contact the media</li>\n</ul>\n"
+        ),
+        (
+            '<ul>\n<li><input disabled="" type="checkbox"'
+            ' checked=""/>\nWrite the press release</li>\n<li><input'
+            ' disabled="" type="checkbox"/>\nUpdate the'
+            ' website</li>\n<li><input disabled=""'
+            ' type="checkbox"/>\nContact the media</li>\n</ul>\n'
+        ),
+    ),
+    (
+        SMART_PUNCTUATION,
+        pyromark.Extensions.ENABLE_SMART_PUNCTUATION | BAD_BITS,
+        (
+            "<p>'This here a real &quot;quote&quot;'</p>\n<p>And -- if"
+            " you're interested -- some em-dashes. Wait --- she actually"
+            " said that?</p>\n<p>Wow... Becky is so 'mean'!</p>\n"
+        ),
+        (
+            "<p>‘This here a real “quote”’</p>\n<p>And – if you’re"
+            " interested – some em-dashes. Wait — she actually said"
+            " that?</p>\n<p>Wow… Becky is so ‘mean’!</p>\n"
+        ),
+    ),
+    (
+        HEADING_ATTRIBUTES,
+        pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES | BAD_BITS,
+        "<h1>text { #id .class1 .class2 }</h1>\n",
+        '<h1 id="id" class="class1 class2">text</h1>\n',
+    ),
+    (
+        "\n\n".join(  # noqa: FLY002
+            (
+                TABLE,
+                FOOTNOTE,
+                STRIKETHROUGH,
+                TASKLIST,
+                SMART_PUNCTUATION,
+                HEADING_ATTRIBUTES,
+            )
+        ),
+        (
+            pyromark.Extensions.ENABLE_TABLES
+            | pyromark.Extensions.ENABLE_FOOTNOTES
+            | pyromark.Extensions.ENABLE_STRIKETHROUGH
+            | pyromark.Extensions.ENABLE_TASKLISTS
+            | pyromark.Extensions.ENABLE_SMART_PUNCTUATION
+            | pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES
+            | BAD_BITS
+        ),
+        (
+            "<p>| a   | b   |\n| --- | --- |\n| c   | d   |</p>\n<p>Here's"
+            " a sentence with a footnote. [^1]</p>\n<p>[^1]: This is the"
+            " footnote.</p>\n<p>~~The world is flat.~~</p>\n<ul>\n<li>[x]"
+            " Write the press release</li>\n<li>[ ] Update the"
+            " website</li>\n<li>[ ] Contact the media</li>\n</ul>\n<p>'This"
+            " here a real &quot;quote&quot;'</p>\n<p>And -- if you're"
+            " interested -- some em-dashes. Wait --- she actually said"
+            " that?</p>\n<p>Wow... Becky is so 'mean'!</p>\n<h1>text { #id"
+            " .class1 .class2 }</h1>\n"
+        ),
+        (
+            "<table><thead><tr><th>a</th><th>b</th></tr></thead><tbody>\n<tr><td>c</td><td>d</td></tr>\n</tbody></table>\n<p>Here’s"
+            ' a sentence with a footnote. <sup class="footnote-reference"><a'
+            ' href="#1">1</a></sup></p>\n<div class="footnote-definition"'
+            ' id="1"><sup class="footnote-definition-label">1</sup>\n<p>This is'
+            " the footnote.</p>\n</div>\n<p><del>The world is"
+            ' flat.</del></p>\n<ul>\n<li><input disabled="" type="checkbox"'
+            ' checked=""/>\nWrite the press release</li>\n<li><input'
+            ' disabled="" type="checkbox"/>\nUpdate the'
+            ' website</li>\n<li><input disabled="" type="checkbox"/>\nContact'
+            " the media</li>\n</ul>\n<p>‘This here a real “quote”’</p>\n<p>And"
+            " – if you’re interested – some em-dashes. Wait — she actually said"
+            ' that?</p>\n<p>Wow… Becky is so ‘mean’!</p>\n<h1 id="id"'
+            ' class="class1 class2">text</h1>\n'
+        ),
+    ),
+]
+
 
 @pytest.mark.parametrize(
-    ("extensions", "exc", "exc_str"),
-    [
-        (("asdf",), ValueError, "unknown extension: 'asdf'"),
-        (
-            set(),
-            TypeError,
-            (
-                "argument 'extensions': 'set' object cannot be converted to"
-                " 'Sequence'"
-            ),
-        ),
-        ("", TypeError, "argument 'extensions': Can't extract `str` to `Vec`"),
-    ],
-)
-def test_wrong_extensions(
-    extensions: Any, exc: Type[BaseException], exc_str: str
-) -> None:
-    with pytest.raises(exc, match=exc_str):
-        pyromark.Markdown(extensions=extensions)
-
-
-@pytest.mark.parametrize(
-    ("text", "extension", "res_without_ext", "res_with_ext"),
-    [
-        (
-            TABLE,
-            "tables",
-            "<p>| a   | b   |\n| --- | --- |\n| c   | d   |</p>\n",
-            "<table><thead><tr><th>a</th><th>b</th></tr></thead><tbody>\n<tr><td>c</td><td>d</td></tr>\n</tbody></table>\n",
-        ),
-        (
-            FOOTNOTE,
-            "footnotes",
-            (
-                "<p>Here's a sentence with a footnote. [^1]</p>\n<p>[^1]: This"
-                " is the footnote.</p>\n"
-            ),
-            (
-                "<p>Here's a sentence with a footnote. <sup"
-                ' class="footnote-reference"><a href="#1">1</a></sup></p>\n<div'
-                ' class="footnote-definition" id="1"><sup'
-                ' class="footnote-definition-label">1</sup>\n<p>This is the'
-                " footnote.</p>\n</div>\n"
-            ),
-        ),
-        (
-            STRIKETHROUGH,
-            "strikethrough",
-            "<p>~~The world is flat.~~</p>\n",
-            "<p><del>The world is flat.</del></p>\n",
-        ),
-        (
-            TASKLIST,
-            "tasklists",
-            (
-                "<ul>\n<li>[x] Write the press release</li>\n<li>[ ] Update the"
-                " website</li>\n<li>[ ] Contact the media</li>\n</ul>\n"
-            ),
-            (
-                '<ul>\n<li><input disabled="" type="checkbox"'
-                ' checked=""/>\nWrite the press release</li>\n<li><input'
-                ' disabled="" type="checkbox"/>\nUpdate the'
-                ' website</li>\n<li><input disabled=""'
-                ' type="checkbox"/>\nContact the media</li>\n</ul>\n'
-            ),
-        ),
-        (
-            SMART_PUNCTUATION,
-            "smart_punctuation",
-            (
-                "<p>'This here a real &quot;quote&quot;'</p>\n<p>And -- if"
-                " you're interested -- some em-dashes. Wait --- she actually"
-                " said that?</p>\n<p>Wow... Becky is so 'mean'!</p>\n"
-            ),
-            (
-                "<p>‘This here a real “quote”’</p>\n<p>And – if you’re"
-                " interested – some em-dashes. Wait — she actually said"
-                " that?</p>\n<p>Wow… Becky is so ‘mean’!</p>\n"
-            ),
-        ),
-        (
-            HEADING_ATTRIBUTES,
-            "heading_attributes",
-            "<h1>text { #id .class1 .class2 }</h1>\n",
-            '<h1 id="id" class="class1 class2">text</h1>\n',
-        ),
-    ],
+    ("text", "extensions", "res_without_ext", "res_with_ext"), TESTDATA
 )
 def test_extensions(
-    text: str, extension: _Extension, res_without_ext: str, res_with_ext: str
+    text: str,
+    extensions: pyromark.Extensions,
+    res_without_ext: str,
+    res_with_ext: str,
 ) -> None:
     assert (
         pyromark.markdown(text)
+        == pyromark.markdown(text, extensions=pyromark.Extensions(0))
         == pyromark.Markdown().convert(text)
+        == pyromark.Markdown(extensions=pyromark.Extensions(0)).convert(text)
         == res_without_ext
     )
     assert (
-        pyromark.markdown(text, extensions=(extension,))
-        == pyromark.Markdown(extensions=(extension,)).convert(text)
+        pyromark.markdown(text, extensions=extensions)
+        == pyromark.Markdown(extensions=extensions).convert(text)
         == res_with_ext
     )

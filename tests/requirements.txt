@@ -1,1 +1,1 @@
-pytest<8
+pytest==7.4.0

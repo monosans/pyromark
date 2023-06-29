@@ -39,6 +39,7 @@ Homepage = "https://github.com/monosans/pyromark"
 Source = "https://github.com/monosans/pyromark"
 
 [tool.maturin]
+module-name = "pyromark._pyromark"
 features = ["pyo3/extension-module"]
 
 [tool.black]
@@ -129,3 +130,6 @@ ignore-variadic-names = true
 [tool.ruff.isort]
 combine-as-imports = true
 required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.pydocstyle]
+convention = "google"
