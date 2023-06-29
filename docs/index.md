@@ -1,6 +1,6 @@
 # PyroMark
 
-Welcome to the documentation of `PyroMark`!
+Welcome to the documentation of PyroMark!
 
 PyroMark (stands for Python Rust Optimized Markdown) is a blazingly fast CommonMark-compliant Markdown parser for Python.
 
