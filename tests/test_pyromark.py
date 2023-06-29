@@ -38,13 +38,13 @@ BAD_BITS = 2 << 1
 TESTDATA = [
     (
         TABLE,
-        pyromark.Extensions.ENABLE_TABLES | BAD_BITS,
+        pyromark.Extensions.ENABLE_TABLES,
         "<p>| a   | b   |\n| --- | --- |\n| c   | d   |</p>\n",
         "<table><thead><tr><th>a</th><th>b</th></tr></thead><tbody>\n<tr><td>c</td><td>d</td></tr>\n</tbody></table>\n",
     ),
     (
         FOOTNOTE,
-        pyromark.Extensions.ENABLE_FOOTNOTES | BAD_BITS,
+        pyromark.Extensions.ENABLE_FOOTNOTES,
         (
             "<p>Here's a sentence with a footnote. [^1]</p>\n<p>[^1]: This"
             " is the footnote.</p>\n"
@@ -59,13 +59,13 @@ TESTDATA = [
     ),
     (
         STRIKETHROUGH,
-        pyromark.Extensions.ENABLE_STRIKETHROUGH | BAD_BITS,
+        pyromark.Extensions.ENABLE_STRIKETHROUGH,
         "<p>~~The world is flat.~~</p>\n",
         "<p><del>The world is flat.</del></p>\n",
     ),
     (
         TASKLIST,
-        pyromark.Extensions.ENABLE_TASKLISTS | BAD_BITS,
+        pyromark.Extensions.ENABLE_TASKLISTS,
         (
             "<ul>\n<li>[x] Write the press release</li>\n<li>[ ] Update the"
             " website</li>\n<li>[ ] Contact the media</li>\n</ul>\n"
@@ -80,7 +80,7 @@ TESTDATA = [
     ),
     (
         SMART_PUNCTUATION,
-        pyromark.Extensions.ENABLE_SMART_PUNCTUATION | BAD_BITS,
+        pyromark.Extensions.ENABLE_SMART_PUNCTUATION,
         (
             "<p>'This here a real &quot;quote&quot;'</p>\n<p>And -- if"
             " you're interested -- some em-dashes. Wait --- she actually"
@@ -94,7 +94,7 @@ TESTDATA = [
     ),
     (
         HEADING_ATTRIBUTES,
-        pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES | BAD_BITS,
+        pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES,
         "<h1>text { #id .class1 .class2 }</h1>\n",
         '<h1 id="id" class="class1 class2">text</h1>\n',
     ),
@@ -116,7 +116,6 @@ TESTDATA = [
             | pyromark.Extensions.ENABLE_TASKLISTS
             | pyromark.Extensions.ENABLE_SMART_PUNCTUATION
             | pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES
-            | BAD_BITS
         ),
         (
             "<p>| a   | b   |\n| --- | --- |\n| c   | d   |</p>\n<p>Here's"
@@ -164,6 +163,7 @@ def test_extensions(
         == pyromark.Markdown(extensions=pyromark.Extensions(0)).convert(text)
         == res_without_ext
     )
+    extensions |= BAD_BITS
     assert (
         pyromark.markdown(text, extensions=extensions)
         == pyromark.Markdown(extensions=extensions).convert(text)
