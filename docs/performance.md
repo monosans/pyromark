@@ -14,7 +14,12 @@ IPython 8.14.0 -- An enhanced Interactive Python. Type '?' for help.
 
 In [1]: import requests, markdown, markdown_it, mistune, markdown_it_pyrs, pyromark
 
-In [2]: markdown.__version__, markdown_it.__version__, mistune.__version__, markdown_it_pyrs.__version__
+In [2]: (
+   ...:     markdown.__version__,
+   ...:     markdown_it.__version__,
+   ...:     mistune.__version__,
+   ...:     markdown_it_pyrs.__version__,
+   ...: )
 Out[2]: ('3.4.3', '3.0.0', '3.0.1', '0.2.2')
 
 In [3]: text = requests.get(
