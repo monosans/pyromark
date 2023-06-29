@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import pytest
-
 import pyromark
+import pytest
 
 TABLE = """\
 | a   | b   |
