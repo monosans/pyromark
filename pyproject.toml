@@ -39,6 +39,7 @@ Homepage = "https://github.com/monosans/pyromark"
 Source = "https://github.com/monosans/pyromark"
 
 [tool.maturin]
+python-source = "python"
 module-name = "pyromark._pyromark"
 features = ["pyo3/extension-module"]
 
