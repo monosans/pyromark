@@ -36,7 +36,8 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/monosans/pyromark"
-Source = "https://github.com/monosans/pyromark"
+Documentation = "https://pyromark.readthedocs.io/"
+Repository = "https://github.com/monosans/pyromark"
 
 [tool.maturin]
 python-source = "python"
