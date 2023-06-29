@@ -2,7 +2,7 @@
 
 [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [0.2.0] - 2023-06-29
 
 - Use enum.IntFlag instead of a string sequence to define extensions.
 - Fix pyromark.Markdown's \_\_module\_\_ attribute.
