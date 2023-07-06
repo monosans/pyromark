@@ -10,18 +10,16 @@ class Extensions(IntFlag):
         All extensions:
 
         ```python
-        >>> extensions=(
-        ...     pyromark.Extensions.ENABLE_TABLES
-        ...     | pyromark.Extensions.ENABLE_FOOTNOTES
-        ...     | pyromark.Extensions.ENABLE_STRIKETHROUGH
-        ...     | pyromark.Extensions.ENABLE_TASKLISTS
-        ...     | pyromark.Extensions.ENABLE_SMART_PUNCTUATION
-        ...     | pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES
-        ... )
-        >>> extensions
-        <Extensions.ENABLE_TABLES|ENABLE_FOOTNOTES|ENABLE_STRIKETHROUGH|ENABLE_TASKLISTS|ENABLE_SMART_PUNCTUATION|ENABLE_HEADING_ATTRIBUTES: 126>
+        extensions=(
+            pyromark.Extensions.ENABLE_TABLES
+            | pyromark.Extensions.ENABLE_FOOTNOTES
+            | pyromark.Extensions.ENABLE_STRIKETHROUGH
+            | pyromark.Extensions.ENABLE_TASKLISTS
+            | pyromark.Extensions.ENABLE_SMART_PUNCTUATION
+            | pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES
+        )
         ```
-    """  # noqa: E501
+    """
 
     ENABLE_TABLES = 1 << 1
     """<https://github.github.com/gfm/#tables-extension->"""

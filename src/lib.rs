@@ -2,17 +2,17 @@ use pyo3::prelude::*;
 
 /// Examples:
 ///     ```python
-///     >>> md = pyromark.Markdown(
-///     ...     # Optional, include the ones you want
-///     ...     extensions=(
-///     ...         pyromark.Extensions.ENABLE_TABLES
-///     ...         | pyromark.Extensions.ENABLE_FOOTNOTES
-///     ...         | pyromark.Extensions.ENABLE_STRIKETHROUGH
-///     ...         | pyromark.Extensions.ENABLE_TASKLISTS
-///     ...         | pyromark.Extensions.ENABLE_SMART_PUNCTUATION
-///     ...         | pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES
-///     ...     )
-///     ... )
+///     md = pyromark.Markdown(
+///         # Optional, include the ones you want
+///         extensions=(
+///             pyromark.Extensions.ENABLE_TABLES
+///             | pyromark.Extensions.ENABLE_FOOTNOTES
+///             | pyromark.Extensions.ENABLE_STRIKETHROUGH
+///             | pyromark.Extensions.ENABLE_TASKLISTS
+///             | pyromark.Extensions.ENABLE_SMART_PUNCTUATION
+///             | pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES
+///         )
+///     )
 ///     ```
 #[pyclass(frozen, module = "pyromark._pyromark")]
 struct Markdown {
@@ -29,9 +29,8 @@ impl Markdown {
 
     /// Examples:
     ///     ```python
-    ///     >>> html = md.convert("# Hello world")
-    ///     >>> html
-    ///     '<h1>Hello world</h1>\n'
+    ///     html = md.convert("# Hello world")
+    ///     print(html)  # <h1>Hello world</h1>\n
     ///     ```
     fn convert(&self, py: Python, text: &str) -> String {
         py.allow_threads(move || {
@@ -43,20 +42,19 @@ impl Markdown {
 
 /// Examples:
 ///     ```python
-///     >>> html = pyromark.markdown(
-///     ...     "# Hello world",
-///     ...     # Optional, include the ones you want
-///     ...     extensions=(
-///     ...         pyromark.Extensions.ENABLE_TABLES
-///     ...         | pyromark.Extensions.ENABLE_FOOTNOTES
-///     ...         | pyromark.Extensions.ENABLE_STRIKETHROUGH
-///     ...         | pyromark.Extensions.ENABLE_TASKLISTS
-///     ...         | pyromark.Extensions.ENABLE_SMART_PUNCTUATION
-///     ...         | pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES
-///     ...     )
-///     ... )
-///     >>> html
-///     '<h1>Hello world</h1>\n'
+///     html = pyromark.markdown(
+///         "# Hello world",
+///         # Optional, include the ones you want
+///         extensions=(
+///             pyromark.Extensions.ENABLE_TABLES
+///             | pyromark.Extensions.ENABLE_FOOTNOTES
+///             | pyromark.Extensions.ENABLE_STRIKETHROUGH
+///             | pyromark.Extensions.ENABLE_TASKLISTS
+///             | pyromark.Extensions.ENABLE_SMART_PUNCTUATION
+///             | pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES
+///         )
+///     )
+///     print(html)  # <h1>Hello world</h1>\n
 ///     ```
 #[pyfunction]
 #[pyo3(signature = (text, *, extensions = None))]
