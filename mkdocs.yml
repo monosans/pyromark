@@ -1,7 +1,12 @@
 site_name: pyromark
-repo_name: monosans/pyromark
 repo_url: https://github.com/monosans/pyromark
+repo_name: monosans/pyromark
 edit_uri: edit/main/docs/
+nav:
+  - index.md
+  - installation.md
+  - api.md
+  - performance.md
 theme:
   name: material
   language: en
@@ -37,6 +42,10 @@ markdown_extensions:
   - pymdownx.superfences
 plugins:
   - search:
+  - minify:
+      minify_html: true
+      htmlmin_opts:
+        remove_comments: true
   - mkdocstrings:
       default_handler: python
       handlers:
@@ -51,8 +60,3 @@ plugins:
             show_signature_annotations: true
             show_source: false
             show_submodules: true
-nav:
-  - index.md
-  - installation.md
-  - api.md
-  - performance.md
