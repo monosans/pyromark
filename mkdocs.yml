@@ -41,11 +41,8 @@ extra:
 markdown_extensions:
   - pymdownx.superfences
 plugins:
-  - search:
-  - minify:
-      minify_html: true
-      htmlmin_opts:
-        remove_comments: true
+  - search
+  - minify_html
   - mkdocstrings:
       default_handler: python
       handlers:
