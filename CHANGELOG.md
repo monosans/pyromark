@@ -5,6 +5,7 @@
 ## [0.2.1] - 2023-07-09
 
 - Add CLI.
+- Add @typing.final to pyromark.Markdown.
 - Update dependencies.
 
 ## [0.2.0] - 2023-06-29
