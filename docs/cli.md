@@ -1,6 +1,6 @@
 # Command-line interface
 
-See [Extensions](../api/#pyromark.Extensions-attributes) for a description of the `--enable-*` options.
+See [Extensions](api.md#pyromark.Extensions-attributes) for a description of the `--enable-*` options.
 
 ```bash
 $ pyromark --help # or 'python -m pyromark --help'
