@@ -10,6 +10,7 @@ keywords = ["converter", "html"]
 authors = [{ name = "monosans", email = "hsyqixco@protonmail.com" }]
 requires-python = ">=3.7"
 classifiers = [
+    "Environment :: Console",
     "Intended Audience :: Developers",
     "Intended Audience :: Information Technology",
     "License :: OSI Approved :: MIT License",
@@ -34,6 +35,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
+
+[project.scripts]
+pyromark = "pyromark.__main__:main"
 
 [project.urls]
 Homepage = "https://github.com/monosans/pyromark"
@@ -141,3 +145,6 @@ convention = "google"
 
 [tool.ruff.pyupgrade]
 keep-runtime-typing = true
+
+[tool.ruff.flake8-self]
+ignore-names = ["_name_", "_value_"]

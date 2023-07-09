@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+from pathlib import Path
+from typing import Sequence
+
 import pyromark
 import pytest
+from pyromark.__main__ import main as pyromark_cli
 
 TABLE = """\
 | a   | b   |
@@ -39,12 +43,14 @@ TESTDATA = [
     (
         TABLE,
         pyromark.Extensions.ENABLE_TABLES,
+        ("--enable-tables",),
         "<p>| a   | b   |\n| --- | --- |\n| c   | d   |</p>\n",
         "<table><thead><tr><th>a</th><th>b</th></tr></thead><tbody>\n<tr><td>c</td><td>d</td></tr>\n</tbody></table>\n",
     ),
     (
         FOOTNOTE,
         pyromark.Extensions.ENABLE_FOOTNOTES,
+        ("--enable-footnotes",),
         (
             "<p>Here's a sentence with a footnote. [^1]</p>\n<p>[^1]: This"
             " is the footnote.</p>\n"
@@ -60,12 +66,14 @@ TESTDATA = [
     (
         STRIKETHROUGH,
         pyromark.Extensions.ENABLE_STRIKETHROUGH,
+        ("--enable-strikethrough",),
         "<p>~~The world is flat.~~</p>\n",
         "<p><del>The world is flat.</del></p>\n",
     ),
     (
         TASKLIST,
         pyromark.Extensions.ENABLE_TASKLISTS,
+        ("--enable-tasklists",),
         (
             "<ul>\n<li>[x] Write the press release</li>\n<li>[ ] Update the"
             " website</li>\n<li>[ ] Contact the media</li>\n</ul>\n"
@@ -81,6 +89,7 @@ TESTDATA = [
     (
         SMART_PUNCTUATION,
         pyromark.Extensions.ENABLE_SMART_PUNCTUATION,
+        ("--enable-smart-punctuation",),
         (
             "<p>'This here a real &quot;quote&quot;'</p>\n<p>And -- if"
             " you're interested -- some em-dashes. Wait --- she actually"
@@ -95,6 +104,7 @@ TESTDATA = [
     (
         HEADING_ATTRIBUTES,
         pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES,
+        ("--enable-heading-attributes",),
         "<h1>text { #id .class1 .class2 }</h1>\n",
         '<h1 id="id" class="class1 class2">text</h1>\n',
     ),
@@ -116,6 +126,14 @@ TESTDATA = [
             | pyromark.Extensions.ENABLE_TASKLISTS
             | pyromark.Extensions.ENABLE_SMART_PUNCTUATION
             | pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES
+        ),
+        (
+            "--enable-tables",
+            "--enable-footnotes",
+            "--enable-strikethrough",
+            "--enable-tasklists",
+            "--enable-smart-punctuation",
+            "--enable-heading-attributes",
         ),
         (
             "<p>| a   | b   |\n| --- | --- |\n| c   | d   |</p>\n<p>Here's"
@@ -148,24 +166,48 @@ TESTDATA = [
 
 
 @pytest.mark.parametrize(
-    ("text", "extensions", "res_without_ext", "res_with_ext"), TESTDATA
+    ("text", "extensions", "cli_extensions", "res_without_ext", "res_with_ext"),
+    TESTDATA,
 )
-def test_extensions(
+def test_pyromark(
     text: str,
     extensions: pyromark.Extensions,
+    cli_extensions: Sequence[str],
     res_without_ext: str,
     res_with_ext: str,
+    capsys: pytest.CaptureFixture,
+    tmp_path: Path,
 ) -> None:
+    file = tmp_path / "tmp.md"
+    file.write_text(text)
+
+    pyromark_cli((str(file),))
+    capture = capsys.readouterr()
+    assert not capture.err
     assert (
         pyromark.markdown(text)
         == pyromark.markdown(text, extensions=pyromark.Extensions(0))
         == pyromark.Markdown().convert(text)
         == pyromark.Markdown(extensions=pyromark.Extensions(0)).convert(text)
+        == capture.out
         == res_without_ext
     )
+
     extensions |= BAD_BITS
+    pyromark_cli((*cli_extensions, str(file)))
+    capture = capsys.readouterr()
+    assert not capture.err
     assert (
         pyromark.markdown(text, extensions=extensions)
         == pyromark.Markdown(extensions=extensions).convert(text)
+        == capture.out
         == res_with_ext
     )
+
+
+def test_cli_version(capsys: pytest.CaptureFixture) -> None:
+    with pytest.raises(SystemExit, match=""):
+        pyromark_cli(("--version",))
+    capture = capsys.readouterr()
+    assert not capture.err
+    assert capture.out == f"{pyromark.__version__}\n"
