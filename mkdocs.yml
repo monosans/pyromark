@@ -48,6 +48,8 @@ plugins:
       default_handler: python
       handlers:
         python:
+          import:
+            - https://docs.python.org/3/objects.inv
           options:
             filters:
               - "!^_"
