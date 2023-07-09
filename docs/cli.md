@@ -1,9 +1,16 @@
 # Command-line interface
 
-See [Extensions](api.md#pyromark.Extensions-attributes) for a description of the `--enable-*` options.
+```bash
+pyromark --help
+```
 
 ```bash
-$ pyromark --help # or 'python -m pyromark --help'
+python -m pyromark --help
+```
+
+See [Extensions](api.md#pyromark.Extensions-attributes) for a description of the `--enable-*` options.
+
+```
 usage: pyromark [-h] [-v] [--enable-tables] [--enable-footnotes] [--enable-strikethrough] [--enable-tasklists] [--enable-smart-punctuation] [--enable-heading-attributes] file
 
 Blazingly fast Markdown parser.
