@@ -2,6 +2,11 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.2.1] - 2023-07-09
+
+- Add CLI.
+- Update dependencies.
+
 ## [0.2.0] - 2023-06-29
 
 - Use enum.IntFlag instead of a string sequence to define extensions.
