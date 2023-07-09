@@ -175,7 +175,7 @@ def test_pyromark(
     cli_extensions: Sequence[str],
     res_without_ext: str,
     res_with_ext: str,
-    capsys: pytest.CaptureFixture,
+    capsys: pytest.CaptureFixture[str],
     tmp_path: Path,
 ) -> None:
     file = tmp_path / "tmp.md"
@@ -205,7 +205,7 @@ def test_pyromark(
     )
 
 
-def test_cli_version(capsys: pytest.CaptureFixture) -> None:
+def test_cli_version(capsys: pytest.CaptureFixture[str]) -> None:
     with pytest.raises(SystemExit, match=""):
         pyromark_cli(("--version",))
     capture = capsys.readouterr()
