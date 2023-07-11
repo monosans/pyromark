@@ -15,7 +15,6 @@ updates:
     schedule:
       interval: daily
       time: "04:30"
-
   - package-ecosystem: pip
     directory: /tests
     schedule:
