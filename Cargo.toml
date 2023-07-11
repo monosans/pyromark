@@ -4,13 +4,13 @@ version = "0.2.1"
 edition = "2021"
 license = "MIT"
 include = [
-    "/python",
-    "/src",
-    "/Cargo.lock",
-    "/Cargo.toml",
-    "/LICENSE",
-    "/pyproject.toml",
-    "/README.md",
+  "/python",
+  "/src",
+  "/Cargo.lock",
+  "/Cargo.toml",
+  "/LICENSE",
+  "/pyproject.toml",
+  "/README.md",
 ]
 
 [lib]
@@ -19,7 +19,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pulldown-cmark = { version = "0.9.3", default-features = false, features = [
-    "simd",
+  "simd",
 ] }
 pyo3 = "0.19.1"
 
