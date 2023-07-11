@@ -15,7 +15,7 @@ python -m pip install -U pyromark
 
 ## Documentation
 
-<https://pyromark.readthedocs.io/>
+<https://pyromark.readthedocs.io>
 
 ## Performance
 
