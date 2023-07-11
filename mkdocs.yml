@@ -4,7 +4,7 @@ repo_name: monosans/pyromark
 edit_uri: edit/main/docs/
 nav:
   - index.md
-  - installation.md
+  - install.md
   - api.md
   - cli.md
   - performance.md
@@ -12,13 +12,9 @@ theme:
   name: material
   features:
     - content.action.edit
-    - content.action.view
     - content.code.copy
-    - content.tabs.link
     - navigation.footer
-    - navigation.indexes
     - navigation.top
-    - navigation.tracking
     - toc.follow
   font: false
   icon:

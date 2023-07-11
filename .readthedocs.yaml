@@ -6,7 +6,7 @@ build:
     rust: "1.64"
 python:
   install:
-    - requirements: docs/requirements.txt
+    - requirements: requirements-docs.txt
     - method: pip
       path: .
 mkdocs:
