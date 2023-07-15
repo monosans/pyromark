@@ -58,11 +58,13 @@ plugins:
         python:
           import:
             - https://docs.python.org/3/objects.inv
-          load_external_modules: true
           options:
             filters:
               - "!^_(?:[^_].*[^_]|_(?:all|doc|main|module|new|slots)__)$"
+            inherited_members: true
+            load_external_modules: true
             members_order: source
+            merge_init_into_class: true
             show_category_heading: true
             show_if_no_docstring: true
             show_signature_annotations: true
