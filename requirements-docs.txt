@@ -1,4 +1,4 @@
-griffe!=0.32.0,!=0.32.1
+griffe==0.31.0
 mkdocs==1.4.3
 mkdocs-material==9.1.18
 mkdocs-minify-html-plugin==0.1.0
