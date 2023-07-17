@@ -15,8 +15,6 @@ updates:
     schedule:
       interval: daily
       time: "04:30"
-    ignore:
-      - dependency-name: griffe
   - package-ecosystem: pip
     directory: /tests
     schedule:
