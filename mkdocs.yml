@@ -16,7 +16,6 @@ theme:
     - navigation.footer
     - navigation.top
     - toc.follow
-  font: false
   icon:
     logo: fontawesome/brands/markdown
     repo: fontawesome/brands/github
