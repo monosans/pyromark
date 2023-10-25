@@ -36,7 +36,8 @@ def main(args: Optional[Sequence[str]] = None) -> None:
     extensions = pyromark.Extensions(0)
     for extension in pyromark.Extensions:
         extension_enabled = getattr(
-            parsed_args, extension._name_.lower()  # type: ignore[union-attr]
+            parsed_args,
+            extension._name_.lower(),  # type: ignore[union-attr]
         )
         if extension_enabled:
             extensions |= extension

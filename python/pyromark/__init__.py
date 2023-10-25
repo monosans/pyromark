@@ -1,5 +1,4 @@
 """Blazingly fast Markdown parser."""
-
 from __future__ import annotations
 
 from ._extensions import Extensions
