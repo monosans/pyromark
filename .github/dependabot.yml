@@ -6,7 +6,7 @@ updates:
       interval: daily
       time: "02:30"
     groups:
-      minor:
+      cargo-semver-minor:
         patterns:
           - "*"
         update-types:
@@ -17,20 +17,13 @@ updates:
     schedule:
       interval: daily
       time: "02:30"
-    groups:
-      minor:
-        patterns:
-          - "*"
-        update-types:
-          - minor
-          - patch
   - package-ecosystem: pip
     directory: /
     schedule:
       interval: daily
       time: "02:30"
     groups:
-      minor:
+      pip-semver-minor:
         patterns:
           - "*"
         update-types:
@@ -42,7 +35,7 @@ updates:
       interval: daily
       time: "02:30"
     groups:
-      minor:
+      pip-semver-minor:
         patterns:
           - "*"
         update-types:
