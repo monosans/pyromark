@@ -7,7 +7,7 @@
 
 If you use threading, the difference with other libraries will be even more enormous, since pyromark releases the [GIL](https://docs.python.org/3/glossary.html#term-global-interpreter-lock).
 
-```ipython
+```python
 Python 3.11.3 (main, Jun  5 2023, 09:32:32) [GCC 13.1.1 20230429]
 Type 'copyright', 'credits' or 'license' for more information
 IPython 8.14.0 -- An enhanced Interactive Python. Type '?' for help.
