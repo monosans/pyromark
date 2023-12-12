@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.2.4] - 2023-12-12
+
+- Rebuild with updated Rust compiler and updated dependencies.
+
 ## [0.2.3] - 2023-10-16
 
 - Rebuild with updated Rust compiler and updated dependencies.
