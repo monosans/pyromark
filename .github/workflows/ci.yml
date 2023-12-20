@@ -35,99 +35,86 @@ jobs:
     strategy:
       matrix:
         target:
-          - x86_64
-          - x86
-          - aarch64
-          - armv7
-          - s390x
-          - ppc64le
+          - x86_64-unknown-linux-gnu
+          - i686-unknown-linux-gnu
+          - aarch64-unknown-linux-gnu
+          - armv7-unknown-linux-gnueabihf
+          - powerpc64le-unknown-linux-gnu
+          - powerpc64-unknown-linux-gnu
+          - s390x-unknown-linux-gnu
+          - x86_64-unknown-linux-musl
+          - i686-unknown-linux-musl
+          - aarch64-unknown-linux-musl
+          - armv7-unknown-linux-musleabihf
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
+      - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
           sccache: "true"
           manylinux: auto
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
       - name: pytest
-        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64' }}
+        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-unknown-linux-gnu' }}
         run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U --disable-pip-version-check -r requirements.txt && pytest
   windows:
     runs-on: windows-latest
     strategy:
       matrix:
         target:
-          - x64
-          - x86
+          - x86_64-pc-windows-msvc
+          - i686-pc-windows-msvc
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-          architecture: ${{ matrix.target }}
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
+      - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
           sccache: "true"
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
       - name: pytest
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-pc-windows-msvc' }}
         run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U --disable-pip-version-check -r requirements.txt && pytest
   macos:
     runs-on: macos-latest
     strategy:
       matrix:
         target:
-          - x86_64
-          - aarch64
+          - x86_64-apple-darwin
+          - aarch64-apple-darwin
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
+      - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
           sccache: "true"
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
       - name: pytest
-        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64' }}
+        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-apple-darwin' }}
         run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U --disable-pip-version-check -r requirements.txt && pytest
   sdist:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build sdist
-        uses: PyO3/maturin-action@v1
+      - uses: PyO3/maturin-action@v1
         with:
           command: sdist
           args: --out dist
-      - name: Upload sdist
-        uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
@@ -145,8 +132,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: wheels
-      - name: Publish to PyPI
-        uses: PyO3/maturin-action@v1
+      - uses: PyO3/maturin-action@v1
         with:
           command: upload
           args: --non-interactive --skip-existing *
