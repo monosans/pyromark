@@ -49,9 +49,6 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
@@ -71,17 +68,14 @@ jobs:
       matrix:
         include:
           - target: x86_64-pc-windows-msvc
-            interpreter: 3.7 3.8 3.9 3.10 3.11 3.12 pypy3.7 pypy3.8 pypy3.9 pypy3.10
+            interpreter: 3.8 3.9 3.10 3.11 3.12 pypy3.7 pypy3.8 pypy3.9 pypy3.10
           - target: i686-pc-windows-msvc
             interpreter: 3.7 3.8 3.9 3.10 3.11 3.12
           - target: aarch64-pc-windows-msvc
-            interpreter: 3.7 3.8 3.9 3.10 3.11 3.12
+            interpreter: 3.8 3.9 3.10 3.11 3.12
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
@@ -104,9 +98,6 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
