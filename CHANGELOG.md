@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.2.5] - 2023-12-21
+
+- Build wheels for more platforms and Python versions.
+
 ## [0.2.4] - 2023-12-12
 
 - Rebuild with updated Rust compiler and updated dependencies.
