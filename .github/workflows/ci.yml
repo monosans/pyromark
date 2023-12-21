@@ -75,7 +75,7 @@ jobs:
           - target: i686-pc-windows-msvc
             interpreter: 3.7 3.8 3.9 3.10 3.11 3.12
           - target: aarch64-pc-windows-msvc
-            interpreter: 3.11 3.12
+            interpreter: "3.12"
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
