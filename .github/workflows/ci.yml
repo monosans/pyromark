@@ -52,7 +52,7 @@ jobs:
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --find-interpreter
+          args: --release --out dist --interpreter 3.7 3.8 3.9 3.10 3.11 3.12 pypy3.7 pypy3.8 pypy3.9 pypy3.10
           sccache: "true"
           manylinux: auto
       - uses: actions/upload-artifact@v3
@@ -75,7 +75,7 @@ jobs:
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --find-interpreter
+          args: --release --out dist --interpreter 3.7 3.8 3.9 3.10 3.11 3.12
           sccache: "true"
       - uses: actions/upload-artifact@v3
         with:
@@ -97,7 +97,7 @@ jobs:
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --find-interpreter
+          args: --release --out dist --interpreter 3.7 3.8 3.9 3.10 3.11 3.12 pypy3.7 pypy3.8 pypy3.9 pypy3.10
           sccache: "true"
       - uses: actions/upload-artifact@v3
         with:
