@@ -12,6 +12,7 @@ include = [
   "/pyproject.toml",
   "/README.md",
 ]
+publish = false
 
 [lib]
 name = "_pyromark"
