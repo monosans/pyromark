@@ -22,7 +22,7 @@ crate-type = ["cdylib"]
 pulldown-cmark = { version = "=0.9.3", default-features = false, features = [
   "simd",
 ] }
-pyo3 = "=0.20.1"
+pyo3 = "=0.20.2"
 
 [profile.release]
 strip = true
