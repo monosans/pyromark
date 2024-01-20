@@ -5,7 +5,7 @@ from typing import Sequence
 
 import pyromark
 import pytest
-from pyromark.__main__ import main as pyromark_cli
+from pyromark.__main__ import main as pyromark_cli  # noqa: PLC2701
 
 TABLE = """\
 | a   | b   |
