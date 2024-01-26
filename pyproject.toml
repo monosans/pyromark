@@ -51,7 +51,6 @@ features = ["pyo3/extension-module"]
 
 [tool.mypy]
 python_version = "3.7"
-platform = "linux"
 disallow_subclassing_any = false
 disallow_untyped_calls = false
 disallow_untyped_decorators = false
