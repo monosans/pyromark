@@ -19,7 +19,7 @@ name = "_pyromark"
 crate-type = ["cdylib"]
 
 [dependencies]
-pulldown-cmark = { version = "=0.9.3", default-features = false, features = [
+pulldown-cmark = { version = "=0.9.4", default-features = false, features = [
   "simd",
 ] }
 pyo3 = "=0.20.2"
