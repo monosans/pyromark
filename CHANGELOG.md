@@ -2,6 +2,11 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.2.6] - 2024-01-28
+
+- Bump pulldown-cmark from 0.9.3 to 0.9.5.
+- Bump pyo3 from 0.20.0 to 0.20.2.
+
 ## [0.2.5] - 2023-12-21
 
 - Build wheels for more platforms and Python versions.
