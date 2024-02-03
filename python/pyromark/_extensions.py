@@ -10,7 +10,7 @@ class Extensions(IntFlag):
         All extensions:
 
         ```python
-        extensions=(
+        extensions = (
             pyromark.Extensions.ENABLE_TABLES
             | pyromark.Extensions.ENABLE_FOOTNOTES
             | pyromark.Extensions.ENABLE_STRIKETHROUGH
@@ -42,3 +42,6 @@ class Extensions(IntFlag):
     """
     ENABLE_HEADING_ATTRIBUTES = 1 << 6
     """<https://docs.rs/pulldown-cmark/latest/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_HEADING_ATTRIBUTES>"""
+    ENABLE_YAML_STYLE_METADATA_BLOCKS = 1 << 7
+    ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS = 1 << 8
+    ENABLE_OLD_FOOTNOTES = (1 << 9) | (1 << 2)
