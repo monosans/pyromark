@@ -73,6 +73,16 @@ addopts = ["--strict-config", "--strict-markers"]
 xfail_strict = true
 
 [tool.ruff]
+line-length = 80
+preview = true
+target-version = "py37"
+
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
+skip-magic-trailing-comma = true
+
+[tool.ruff.lint]
 ignore = [
   "ANN101",
   "ANN102",
@@ -123,31 +133,21 @@ ignore = [
   "TRY400",
 ]
 ignore-init-module-imports = true
-line-length = 80
-preview = true
 select = ["ALL"]
-target-version = "py37"
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/*" = ["FBT001", "S101"]
 
-[tool.ruff.flake8-self]
+[tool.ruff.lint.flake8-self]
 ignore-names = ["_name_", "_value_"]
 
-[tool.ruff.flake8-unused-arguments]
-ignore-variadic-names = true
-
-[tool.ruff.format]
-line-ending = "lf"
-skip-magic-trailing-comma = true
-
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 combine-as-imports = true
 required-imports = ["from __future__ import annotations"]
 split-on-trailing-comma = false
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.ruff.pyupgrade]
+[tool.ruff.lint.pyupgrade]
 keep-runtime-typing = true
