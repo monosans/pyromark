@@ -2,6 +2,11 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.2.7] - 2024-02-05
+
+- Bump pulldown-cmark from 0.9.5 to 0.10.0. See <https://github.com/raphlinus/pulldown-cmark/releases/tag/v0.10.0>.
+- Add new extensions: `ENABLE_YAML_STYLE_METADATA_BLOCKS`, `ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS`, `ENABLE_OLD_FOONOTES`.
+
 ## [0.2.6] - 2024-01-28
 
 - Bump pulldown-cmark from 0.9.3 to 0.9.5.
