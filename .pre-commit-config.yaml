@@ -34,4 +34,4 @@ repos:
         args:
           - --scripts-are-modules
         additional_dependencies:
-          - pytest<8
+          - pytest<9
