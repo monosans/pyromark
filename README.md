@@ -13,6 +13,19 @@ Uses [pulldown-cmark](https://github.com/raphlinus/pulldown-cmark) Rust crate un
 python -m pip install -U pyromark
 ```
 
+## Example
+
+```python
+import pyromark
+
+# Create example Markdown text.
+markdown_input = "hello world"
+
+# Convert the Markdown text to HTML.
+html_output = pyromark.markdown(markdown_input)
+assert html_output == "<p>hello world</p>\n"
+```
+
 ## Documentation
 
 <https://pyromark.readthedocs.io>
