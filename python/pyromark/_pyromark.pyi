@@ -1,3 +1,4 @@
+# ruff: noqa: E301, E302
 from typing_extensions import final
 
 from ._extensions import Extensions
