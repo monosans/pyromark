@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - cmd: cargo update
+          - cmd: cargo +stable update
             commit-msg: Update Cargo.lock
             branch: update/cargo-lock
           - cmd: pipx run pre-commit autoupdate

@@ -16,7 +16,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: cargo clippy --all-targets --all-features -- -Dwarnings -Wclippy::pedantic
+      - id: run-clippy-check
+        run: cargo +stable clippy --all-targets --all-features -- -Dwarnings -Wclippy::pedantic
+      - id: run-clippy-fix
+        if: ${{ !cancelled() && steps.run-clippy-check.conclusion == 'failure' }}
+        run: cargo +stable clippy --all-targets --all-features --fix -- -Dwarnings -Wclippy::pedantic
+      - id: generate-token
+        if: ${{ !cancelled() && steps.run-clippy-fix.conclusion != 'skipped' }}
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+      - if: ${{ !cancelled() && steps.generate-token.conclusion == 'success' }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          commit-message: Run Clippy
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          branch: clippy/${{ github.ref_name }}
+          delete-branch: true
+          title: Run Clippy
+          body:
   run-pre-commit:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-latest
@@ -25,12 +46,12 @@ jobs:
       - id: run-pre-commit
         run: pipx run pre-commit run --all-files
       - id: generate-token
-        if: ${{ failure() && steps.run-pre-commit.conclusion == 'failure' }}
+        if: ${{ !cancelled() && steps.run-pre-commit.conclusion == 'failure' }}
         uses: tibdex/github-app-token@v2
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
-      - if: ${{ failure() && steps.generate-token.conclusion == 'success' }}
+      - if: ${{ !cancelled() && steps.generate-token.conclusion == 'success' }}
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ steps.generate-token.outputs.token }}
@@ -47,7 +68,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: rustup toolchain install nightly --profile minimal --component rustfmt --no-self-update --allow-downgrade
-      - run: cargo +nightly fmt --check
+      - id: run-rustfmt-check
+        run: cargo +nightly fmt --check
+      - id: run-rustfmt-fix
+        if: ${{ !cancelled() && steps.run-rustfmt-check.conclusion == 'failure' }}
+        run: cargo +nightly fmt
+      - id: generate-token
+        if: ${{ !cancelled() && steps.run-rustfmt-fix.conclusion != 'skipped' }}
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+      - if: ${{ !cancelled() && steps.generate-token.conclusion == 'success' }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          commit-message: Run Rustfmt
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          branch: rustfmt/${{ github.ref_name }}
+          delete-branch: true
+          title: Run Rustfmt
+          body:
   linux:
     runs-on: ubuntu-latest
     strategy:
@@ -79,7 +121,8 @@ jobs:
           path: dist
       - name: pytest
         if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-unknown-linux-gnu' }}
-        run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U --disable-pip-version-check -r requirements.txt && pytest
+        run: pip install --force-reinstall --no-index --find-links ../dist pyromark && pip install -U --disable-pip-version-check -r requirements.txt && pytest
+        working-directory: ./tests
   windows:
     runs-on: windows-latest
     strategy:
@@ -101,7 +144,8 @@ jobs:
           path: dist
       - name: pytest
         if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-pc-windows-msvc' }}
-        run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U --disable-pip-version-check -r requirements.txt && pytest
+        run: pip install --force-reinstall --no-index --find-links ../dist pyromark && pip install -U --disable-pip-version-check -r requirements.txt && pytest
+        working-directory: ./tests
   macos:
     runs-on: macos-latest
     strategy:
@@ -123,7 +167,8 @@ jobs:
           path: dist
       - name: pytest
         if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-apple-darwin' }}
-        run: pip install --force-reinstall --no-index --find-links dist pyromark && cd tests && pip install -U --disable-pip-version-check -r requirements.txt && pytest
+        run: pip install --force-reinstall --no-index --find-links ../dist pyromark && pip install -U --disable-pip-version-check -r requirements.txt && pytest
+        working-directory: ./tests
   sdist:
     runs-on: ubuntu-latest
     steps:
