@@ -115,9 +115,9 @@ jobs:
           args: --release --out dist --interpreter 3.7 3.8 3.9 3.10 3.11 3.12 pypy3.7 pypy3.8 pypy3.9 pypy3.10
           sccache: "true"
           manylinux: auto
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: wheels-linux-${{ matrix.target }}
           path: dist
       - name: pytest
         if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-unknown-linux-gnu' }}
@@ -138,9 +138,9 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist --interpreter 3.7 3.8 3.9 3.10 3.11 3.12
           sccache: "true"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: wheels-windows-${{ matrix.target }}
           path: dist
       - name: pytest
         if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-pc-windows-msvc' }}
@@ -161,9 +161,9 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist --interpreter 3.7 3.8 3.9 3.10 3.11 3.12 pypy3.7 pypy3.8 pypy3.9 pypy3.10
           sccache: "true"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: wheels-macos-${{ matrix.target }}
           path: dist
       - name: pytest
         if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-apple-darwin' }}
@@ -177,9 +177,9 @@ jobs:
         with:
           command: sdist
           args: --out dist
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: wheels-sdist
           path: dist
   release:
     runs-on: ubuntu-latest
@@ -192,10 +192,8 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: wheels
+      - uses: actions/download-artifact@v4
       - uses: PyO3/maturin-action@v1
         with:
           command: upload
-          args: --non-interactive --skip-existing *
+          args: --non-interactive --skip-existing wheels-*/*
