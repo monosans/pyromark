@@ -86,7 +86,7 @@ fn html_from_parser(parser: pulldown_cmark::Parser) -> String {
 }
 
 #[pymodule]
-fn _pyromark(_py: Python, m: &PyModule) -> PyResult<()> {
+fn _pyromark(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add_class::<Markdown>()?;
     m.add_function(wrap_pyfunction!(markdown, m)?)?;
