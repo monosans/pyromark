@@ -35,7 +35,7 @@ impl Markdown {
     ///     html = md.convert("# Hello world")
     ///     print(html)  # <h1>Hello world</h1>\n
     ///     ```
-    fn convert(&self, py: Python, text: &str) -> String {
+    fn convert(&self, py: Python<'_>, text: &str) -> String {
         py.allow_threads(move || {
             let parser = pulldown_cmark::Parser::new_ext(text, self.options);
             html_from_parser(parser)
@@ -64,7 +64,7 @@ impl Markdown {
 ///     ```
 #[pyfunction]
 #[pyo3(signature = (text, *, extensions = None))]
-fn markdown(py: Python, text: &str, extensions: Option<u32>) -> String {
+fn markdown(py: Python<'_>, text: &str, extensions: Option<u32>) -> String {
     py.allow_threads(move || {
         let options = get_options(extensions);
         let parser = pulldown_cmark::Parser::new_ext(text, options);
@@ -86,7 +86,7 @@ fn html_from_parser(parser: pulldown_cmark::Parser) -> String {
 }
 
 #[pymodule]
-fn _pyromark(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn _pyromark(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add_class::<Markdown>()?;
     m.add_function(wrap_pyfunction!(markdown, m)?)?;
