@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.3.1] - 2024-04-02
+
+- Bump pulldown-cmark from 0.10.0 to 0.10.2. See <https://github.com/pulldown-cmark/pulldown-cmark/releases/tag/v0.10.2>.
+
 ## [0.3.0] - 2024-02-05
 
 - Bump pulldown-cmark from 0.9.5 to 0.10.0. See <https://github.com/raphlinus/pulldown-cmark/releases/tag/v0.10.0>.
