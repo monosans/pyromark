@@ -2,4 +2,4 @@ mkdocs==1.5.3
 mkdocs-material==9.5.18
 mkdocs-minify-html-plugin==0.2.1
 mkdocstrings==0.24.3
-mkdocstrings-python==1.9.2
+mkdocstrings-python==1.10.0
