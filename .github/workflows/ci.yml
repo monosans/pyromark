@@ -147,18 +147,20 @@ jobs:
         run: pip install --force-reinstall --no-index --find-links ../dist pyromark && pip install -U --disable-pip-version-check -r requirements.txt && pytest
         working-directory: ./tests
   macos:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
-        target:
-          - x86_64-apple-darwin
-          - aarch64-apple-darwin
+        platform:
+          - runner: macos-12
+            target: x86_64-apple-darwin
+          - runner: macos-14
+            target: aarch64-apple-darwin
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
       - uses: PyO3/maturin-action@v1
         with:
-          target: ${{ matrix.target }}
+          target: ${{ matrix.platform.target }}
           args: --release --out dist --interpreter 3.7 3.8 3.9 3.10 3.11 3.12 pypy3.7 pypy3.8 pypy3.9 pypy3.10
           sccache: "true"
       - uses: actions/upload-artifact@v4
