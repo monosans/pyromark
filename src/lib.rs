@@ -33,7 +33,7 @@ impl Markdown {
     /// Examples:
     ///     ```python
     ///     html = md.convert("# Hello world")
-    ///     print(html)  # <h1>Hello world</h1>\n
+    ///     assert html == "<h1>Hello world</h1>\n"
     ///     ```
     fn convert(&self, py: Python<'_>, text: &str) -> String {
         py.allow_threads(move || {
@@ -60,7 +60,7 @@ impl Markdown {
 ///             | pyromark.Extensions.ENABLE_OLD_FOOTNOTES
 ///         )
 ///     )
-///     print(html)  # <h1>Hello world</h1>\n
+///     assert html == "<h1>Hello world</h1>\n"
 ///     ```
 #[pyfunction]
 #[pyo3(signature = (text, *, extensions = None))]

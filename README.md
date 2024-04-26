@@ -18,12 +18,8 @@ python -m pip install -U pyromark
 ```python
 import pyromark
 
-# Create example Markdown text.
-markdown_input = "hello world"
-
-# Convert the Markdown text to HTML.
-html_output = pyromark.markdown(markdown_input)
-assert html_output == "<p>hello world</p>\n"
+html = pyromark.markdown("# Hello world")
+assert html == "<h1>Hello world</h1>\n"
 ```
 
 ## Documentation
