@@ -87,10 +87,10 @@ jobs:
         run: pip install --force-reinstall --no-index --find-links ../dist pyromark && pip install -U --disable-pip-version-check -r requirements.txt && pytest
         working-directory: ./tests
   macos:
-    runs-on: ${{ matrix.platform.runner }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        platform:
+        include:
           - runner: macos-13
             target: x86_64-apple-darwin
           - runner: macos-14
@@ -100,15 +100,15 @@ jobs:
       - uses: actions/checkout@v4
       - uses: PyO3/maturin-action@v1
         with:
-          target: ${{ matrix.platform.target }}
+          target: ${{ matrix.target }}
           args: --release --out dist --interpreter 3.7 3.8 3.9 3.10 3.11 3.12 pypy3.7 pypy3.8 pypy3.9 pypy3.10
           sccache: "true"
       - uses: actions/upload-artifact@v4
         with:
-          name: wheels-macos-${{ matrix.platform.target }}
+          name: wheels-macos-${{ matrix.target }}
           path: dist
       - name: pytest
-        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.platform.target == 'x86_64-apple-darwin' }}
+        if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-apple-darwin' }}
         run: pip install --force-reinstall --no-index --find-links ../dist pyromark && pip install -U --disable-pip-version-check -r requirements.txt && pytest
         working-directory: ./tests
   sdist:
