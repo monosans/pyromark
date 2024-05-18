@@ -20,6 +20,8 @@ class Extensions(IntFlag):
             | pyromark.Extensions.ENABLE_YAML_STYLE_METADATA_BLOCKS
             | pyromark.Extensions.ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS
             | pyromark.Extensions.ENABLE_OLD_FOOTNOTES
+            | pyromark.Extensions.ENABLE_MATH
+            | pyromark.Extensions.ENABLE_GFM
         )
         ```
     """
@@ -27,7 +29,7 @@ class Extensions(IntFlag):
     ENABLE_TABLES = 1 << 1
     """<https://github.github.com/gfm/#tables-extension->"""
     ENABLE_FOOTNOTES = 1 << 2
-    """<https://docs.rs/pulldown-cmark/0.10.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_FOOTNOTES>"""
+    """<https://docs.rs/pulldown-cmark/0.11.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_FOOTNOTES>"""
     ENABLE_STRIKETHROUGH = 1 << 3
     """<https://github.github.com/gfm/#strikethrough-extension->"""
     ENABLE_TASKLISTS = 1 << 4
@@ -44,10 +46,14 @@ class Extensions(IntFlag):
     | ---       | —            |
     """
     ENABLE_HEADING_ATTRIBUTES = 1 << 6
-    """<https://docs.rs/pulldown-cmark/0.10.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_HEADING_ATTRIBUTES>"""
+    """<https://docs.rs/pulldown-cmark/0.11.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_HEADING_ATTRIBUTES>"""
     ENABLE_YAML_STYLE_METADATA_BLOCKS = 1 << 7
-    """<https://docs.rs/pulldown-cmark/0.10.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_YAML_STYLE_METADATA_BLOCKS>"""
+    """<https://docs.rs/pulldown-cmark/0.11.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_YAML_STYLE_METADATA_BLOCKS>"""
     ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS = 1 << 8
-    """<https://docs.rs/pulldown-cmark/0.10.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS>"""
+    """<https://docs.rs/pulldown-cmark/0.11.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS>"""
     ENABLE_OLD_FOOTNOTES = (1 << 9) | (1 << 2)
-    """<https://docs.rs/pulldown-cmark/0.10.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_OLD_FOOTNOTES>"""
+    """<https://docs.rs/pulldown-cmark/0.11.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_OLD_FOOTNOTES>"""
+    ENABLE_MATH = 1 << 10
+    """<https://docs.rs/pulldown-cmark/0.11.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_MATH>"""
+    ENABLE_GFM = 1 << 11
+    """<https://docs.rs/pulldown-cmark/0.11.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_GFM>"""

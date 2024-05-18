@@ -14,6 +14,8 @@ use pyo3::prelude::*;
 ///             | pyromark.Extensions.ENABLE_YAML_STYLE_METADATA_BLOCKS
 ///             | pyromark.Extensions.ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS
 ///             | pyromark.Extensions.ENABLE_OLD_FOOTNOTES
+///             | pyromark.Extensions.ENABLE_MATH
+///             | pyromark.Extensions.ENABLE_GFM
 ///         )
 ///     )
 ///     ```
@@ -58,6 +60,8 @@ impl Markdown {
 ///             | pyromark.Extensions.ENABLE_YAML_STYLE_METADATA_BLOCKS
 ///             | pyromark.Extensions.ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS
 ///             | pyromark.Extensions.ENABLE_OLD_FOOTNOTES
+///             | pyromark.Extensions.ENABLE_MATH
+///             | pyromark.Extensions.ENABLE_GFM
 ///         )
 ///     )
 ///     assert html == "<h1>Hello world</h1>\n"
