@@ -49,7 +49,6 @@ ignore = [
   "TID252",
   "TRY400",
 ]
-ignore-init-module-imports = true
 select = ["ALL"]
 
 [lint.per-file-ignores]
