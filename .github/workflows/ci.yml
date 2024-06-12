@@ -61,7 +61,6 @@ jobs:
           path: dist
       - name: pytest
         if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-unknown-linux-gnu' }}
-        shell: bash
         run: |
           set -e
           python3 -m venv .venv
