@@ -23,7 +23,7 @@ pulldown-cmark = { version = "=0.11.0", default-features = false, features = [
   "html",
   "simd",
 ] }
-pyo3 = "=0.22.0"
+pyo3 = "=0.22.1"
 
 [profile.release]
 strip = true
