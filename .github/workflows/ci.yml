@@ -152,7 +152,7 @@ jobs:
             3.11
             3.12
             3.13
-            pypy3.7
+            ${{ matrix.target == 'x86_64-apple-darwin' && 'pypy3.7' || '' }}
             pypy3.8
             pypy3.9
             pypy3.10
