@@ -109,7 +109,6 @@ jobs:
             3.13
           check-latest: true
           allow-prereleases: true
-          architecture: ${{ matrix.architecture }}
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
