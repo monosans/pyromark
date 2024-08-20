@@ -49,10 +49,26 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: |
+            3.7
+            3.8
+            3.9
+            3.10
+            3.11
+            3.12
+            3.13
+            pypy3.7
+            pypy3.8
+            pypy3.9
+            pypy3.10
+          check-latest: true
+          allow-prereleases: true
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --interpreter 3.7 3.8 3.9 3.10 3.11 3.12 pypy3.7 pypy3.8 pypy3.9 pypy3.10
+          args: --release --out dist --interpreter '3.7 3.8 3.9 3.10 3.11 3.12 3.13 pypy3.7 pypy3.8 pypy3.9 pypy3.10'
           sccache: "true"
           manylinux: auto
       - uses: actions/upload-artifact@v4
@@ -73,16 +89,31 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        target:
-          - x86_64-pc-windows-msvc
-          - i686-pc-windows-msvc
+        include:
+          - target: x86_64-pc-windows-msvc
+            architecture: x64
+          - target: i686-pc-windows-msvc
+            architecture: x86
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: |
+            3.7
+            3.8
+            3.9
+            3.10
+            3.11
+            3.12
+            3.13
+          architecture: ${{ matrix.architecture }}
+          check-latest: true
+          allow-prereleases: true
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --interpreter 3.7 3.8 3.9 3.10 3.11 3.12
+          args: --release --out dist --interpreter '3.7 3.8 3.9 3.10 3.11 3.12 3.13'
           sccache: "true"
       - uses: actions/upload-artifact@v4
         with:
@@ -111,10 +142,26 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: |
+            ${{ matrix.target == 'x86_64-apple-darwin' && '3.7' || '' }}
+            3.8
+            3.9
+            3.10
+            3.11
+            3.12
+            3.13
+            ${{ matrix.target == 'x86_64-apple-darwin' && 'pypy3.7' || '' }}
+            pypy3.8
+            pypy3.9
+            pypy3.10
+          check-latest: true
+          allow-prereleases: true
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --interpreter 3.7 3.8 3.9 3.10 3.11 3.12 pypy3.7 pypy3.8 pypy3.9 pypy3.10
+          args: --release --out dist --interpreter '3.7 3.8 3.9 3.10 3.11 3.12 3.13 pypy3.7 pypy3.8 pypy3.9 pypy3.10'
           sccache: "true"
       - uses: actions/upload-artifact@v4
         with:
