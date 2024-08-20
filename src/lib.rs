@@ -16,6 +16,7 @@ use pyo3::prelude::*;
 ///             | pyromark.Extensions.ENABLE_OLD_FOOTNOTES
 ///             | pyromark.Extensions.ENABLE_MATH
 ///             | pyromark.Extensions.ENABLE_GFM
+///             | pyromark.Extensions.ENABLE_DEFINITION_LIST
 ///         )
 ///     )
 ///     ```
@@ -62,6 +63,7 @@ impl Markdown {
 ///             | pyromark.Extensions.ENABLE_OLD_FOOTNOTES
 ///             | pyromark.Extensions.ENABLE_MATH
 ///             | pyromark.Extensions.ENABLE_GFM
+///             | pyromark.Extensions.ENABLE_DEFINITION_LIST
 ///         )
 ///     )
 ///     assert html == "<h1>Hello world</h1>\n"
