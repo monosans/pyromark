@@ -2,6 +2,12 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.4.0] - 2024-08-20
+
+- Bump pulldown-cmark from 0.11.0 to 0.12.0. See <https://github.com/pulldown-cmark/pulldown-cmark/releases/tag/v0.12.0>.
+- Add new extension: `ENABLE_DEFINITION_LIST`.
+- Add Python 3.13 support.
+
 ## [0.4.0] - 2024-05-18
 
 - Bump pulldown-cmark from 0.10.3 to 0.11.0. See <https://github.com/pulldown-cmark/pulldown-cmark/releases/tag/v0.11.0>.
