@@ -294,7 +294,7 @@ bar</li>
 
 
 @pytest.mark.skipif(
-    sys.version_info == (3, 13, 0, "rc", 0)
+    sys.version_info == (3, 13, 0, "rc", 1)
     and platform.system() == "Windows"
     and platform.architecture()[0] == "64bit",
     reason="",
