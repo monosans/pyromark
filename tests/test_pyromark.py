@@ -3,8 +3,6 @@ from __future__ import annotations
 
 import functools
 import operator
-import platform
-import sys
 from pathlib import Path
 from typing import Sequence
 
