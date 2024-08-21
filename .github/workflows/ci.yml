@@ -57,12 +57,12 @@ jobs:
             3.9
             3.10
             3.11
-            3.12
             3.13
             pypy3.7
             pypy3.8
             pypy3.9
             pypy3.10
+            3.12
           check-latest: true
           allow-prereleases: true
       - uses: PyO3/maturin-action@v1
@@ -105,8 +105,8 @@ jobs:
             3.9
             3.10
             3.11
-            3.12
             3.13
+            3.12
           architecture: ${{ matrix.architecture }}
           check-latest: true
           allow-prereleases: true
@@ -150,12 +150,12 @@ jobs:
             3.9
             3.10
             3.11
-            3.12
             3.13
             ${{ matrix.target == 'x86_64-apple-darwin' && 'pypy3.7' || '' }}
             pypy3.8
             pypy3.9
             pypy3.10
+            3.12
           check-latest: true
           allow-prereleases: true
       - uses: PyO3/maturin-action@v1

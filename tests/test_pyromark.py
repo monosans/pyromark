@@ -293,12 +293,6 @@ bar</li>
 ]
 
 
-@pytest.mark.skipif(
-    sys.version_info == (3, 13, 0, "candidate", 1)
-    and platform.system() == "Windows"
-    and platform.architecture()[0] == "64bit",
-    reason="",
-)
 @pytest.mark.parametrize(
     ("text", "extensions", "cli_extensions", "res_without_ext", "res_with_ext"),
     TESTDATA,
