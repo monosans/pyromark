@@ -16,7 +16,7 @@ jobs:
           - cmd: cargo +stable update
             commit-msg: Update Cargo.lock
             branch: update/cargo-lock
-          - cmd: pipx run pre-commit autoupdate
+          - cmd: curl -LsSf https://astral.sh/uv/install.sh | sh && uv tool run pre-commit autoupdate
             commit-msg: Update .pre-commit-config.yaml
             branch: update/pre-commit-config
       fail-fast: false
