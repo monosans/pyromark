@@ -59,6 +59,13 @@ title: Metadata
 +++\
 """
 
+DEFINITION_LIST = """\
+title 1
+  : definition 1
+title 2
+  : definition 2\
+"""
+
 BAD_BITS = 2 << 1
 
 TESTDATA = [
@@ -200,8 +207,10 @@ literal text [^4]. In old syntax, it creates a dangling link.</p>
 """,
         """\
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>In new syntax, this is two footnote definitions.
-<sup class="footnote-reference"><a href="#2">2</a></sup>: In old syntax, this is a single footnote definition with two lines.</p>
+<p>In new syntax, this is two footnote definitions.</p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p>In old syntax, this is a single footnote definition with two lines.</p>
 </div>
 <div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup></div>
 <pre><code>In new syntax, this is a footnote with two paragraphs.
@@ -210,6 +219,25 @@ In old syntax, this is a footnote followed by a code block.
 </code></pre>
 <p>In new syntax, this undefined footnote definition renders as
 literal text <sup class="footnote-reference"><a href="#4">4</a></sup>. In old syntax, it creates a dangling link.</p>
+""",
+    ),
+    (
+        DEFINITION_LIST,
+        pyromark.Extensions.ENABLE_DEFINITION_LIST,
+        ("--enable-definition-list",),
+        """\
+<p>title 1
+: definition 1
+title 2
+: definition 2</p>
+""",
+        """\
+<dl>
+<dt>title 1</dt>
+<dd>definition 1
+title 2</dd>
+<dd>definition 2</dd>
+</dl>
 """,
     ),
     (
@@ -223,6 +251,7 @@ literal text <sup class="footnote-reference"><a href="#4">4</a></sup>. In old sy
                 HEADING_ATTRIBUTES,
                 YAML_STYLE_METADATA_BLOCKS,
                 PLUSES_DELIMITED_METADATA_BLOCKS,
+                DEFINITION_LIST,
             )
         ),
         functools.reduce(
@@ -259,14 +288,20 @@ literal text [^4]. In old syntax, it creates a dangling link.</p>
 <p>+++
 title: Metadata
 +++</p>
+<p>title 1
+: definition 1
+title 2
+: definition 2</p>
 """,
         """\
 <table><thead><tr><th>foo</th><th>bar</th></tr></thead><tbody>
 <tr><td>baz</td><td>bim</td></tr>
 </tbody></table>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p>In new syntax, this is two footnote definitions.
-<sup class="footnote-reference"><a href="#2">2</a></sup>: In old syntax, this is a single footnote definition with two lines.</p>
+<p>In new syntax, this is two footnote definitions.</p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p>In old syntax, this is a single footnote definition with two lines.</p>
 </div>
 <div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup></div>
 <pre><code>In new syntax, this is a footnote with two paragraphs.
@@ -286,6 +321,12 @@ bar</li>
 <p>And – if you’re interested – some em-dashes. Wait — she actually said that?</p>
 <p>Wow… Becky is so ‘mean’!</p>
 <h1 id="id" class="class1 class2" myattr,="" other_attr="myvalue">text</h1>
+<dl>
+<dt>title 1</dt>
+<dd>definition 1
+title 2</dd>
+<dd>definition 2</dd>
+</dl>
 """,
     ),
 ]
