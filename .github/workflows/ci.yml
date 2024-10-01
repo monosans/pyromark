@@ -199,8 +199,12 @@ jobs:
       - sdist
     permissions:
       id-token: write
+      attestations: write
     steps:
       - uses: actions/download-artifact@v4
+      - uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: wheels-*/*
       - uses: PyO3/maturin-action@v1
         with:
           command: upload
