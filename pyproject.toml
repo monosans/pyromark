@@ -19,7 +19,6 @@ classifiers = [
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX :: Linux",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
@@ -36,16 +35,10 @@ classifiers = [
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Typing :: Typed",
 ]
-
-[project.urls]
-Homepage = "https://github.com/monosans/pyromark"
-Documentation = "https://pyromark.readthedocs.io"
-Repository = "https://github.com/monosans/pyromark"
-
-[project.scripts]
-pyromark = "pyromark.__main__:main"
+urls.documentation = "https://pyromark.readthedocs.io"
+urls.repository = "https://github.com/monosans/pyromark"
+scripts.pyromark = "pyromark.__main__:main"
 
 [tool.maturin]
 python-source = "python"
 module-name = "pyromark._pyromark"
-features = ["pyo3/extension-module"]
