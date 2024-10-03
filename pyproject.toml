@@ -1,6 +1,6 @@
 [build-system]
-requires = ["maturin>=1,<2"]
 build-backend = "maturin"
+requires = ["maturin>=1,<2"]
 
 [project]
 name = "pyromark"
@@ -10,9 +10,6 @@ keywords = ["converter", "html"]
 authors = [{ name = "monosans", email = "hsyqixco@protonmail.com" }]
 requires-python = ">=3.7"
 classifiers = [
-  "Environment :: Console",
-  "Intended Audience :: Developers",
-  "Intended Audience :: Information Technology",
   "License :: OSI Approved :: MIT License",
   "Natural Language :: English",
   "Operating System :: MacOS",
@@ -30,9 +27,6 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
   "Programming Language :: Rust",
-  "Topic :: Software Development",
-  "Topic :: Software Development :: Libraries",
-  "Topic :: Software Development :: Libraries :: Python Modules",
   "Typing :: Typed",
 ]
 urls.documentation = "https://pyromark.readthedocs.io"
