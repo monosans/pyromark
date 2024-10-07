@@ -16,6 +16,10 @@
       "automerge": true
     },
     {
+      "matchManagers": ["pre-commit"],
+      "automerge": true
+    },
+    {
       "matchUpdateTypes": ["minor"],
       "matchCurrentVersion": "!/^0/",
       "automerge": true
