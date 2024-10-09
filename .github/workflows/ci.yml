@@ -83,7 +83,7 @@ jobs:
           python3 -m venv .venv
           source .venv/bin/activate
           pip install --force-reinstall --find-links ../dist --disable-pip-version-check pyromark
-          pip install -U --disable-pip-version-check -r requirements.txt
+          pip install -U --disable-pip-version-check -r ../requirements-tests.txt
           pytest
         working-directory: ./tests
   windows:
@@ -128,7 +128,7 @@ jobs:
           python3 -m venv .venv
           source .venv/Scripts/activate
           pip install --force-reinstall --find-links ../dist --disable-pip-version-check pyromark
-          pip install -U --disable-pip-version-check -r requirements.txt
+          pip install -U --disable-pip-version-check -r ../requirements-tests.txt
           pytest
         working-directory: ./tests
   macos:
@@ -175,7 +175,7 @@ jobs:
           python3 -m venv .venv
           source .venv/bin/activate
           pip install --force-reinstall --find-links ../dist --disable-pip-version-check pyromark
-          pip install -U --disable-pip-version-check -r requirements.txt
+          pip install -U --disable-pip-version-check -r ../requirements-tests.txt
           pytest
         working-directory: ./tests
   sdist:
