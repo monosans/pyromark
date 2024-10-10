@@ -83,7 +83,7 @@ jobs:
           set -e
           uv sync --no-install-project --frozen
           uv pip install --find-links ../dist --no-index pyromark
-          uv run pytest
+          uv run --no-sync pytest
         working-directory: ./tests
   windows:
     runs-on: windows-latest
@@ -128,7 +128,7 @@ jobs:
           set -e
           uv sync --no-install-project --frozen
           uv pip install --find-links ../dist --no-index pyromark
-          uv run pytest
+          uv run --no-sync pytest
         working-directory: ./tests
   macos:
     runs-on: ${{ matrix.runner }}
@@ -174,7 +174,7 @@ jobs:
           set -e
           uv sync --no-install-project --frozen
           uv pip install --find-links ../dist --no-index pyromark
-          uv run pytest
+          uv run --no-sync pytest
         working-directory: ./tests
   sdist:
     runs-on: ubuntu-latest
