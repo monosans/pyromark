@@ -58,7 +58,6 @@ jobs:
             3.10
             3.11
             3.13
-            pypy3.7
             pypy3.8
             pypy3.9
             pypy3.10
@@ -68,22 +67,23 @@ jobs:
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --interpreter '3.7 3.8 3.9 3.10 3.11 3.12 3.13 pypy3.7 pypy3.8 pypy3.9 pypy3.10'
+          args: --release --out dist --interpreter '3.8 3.9 3.10 3.11 3.12 3.13 pypy3.8 pypy3.9 pypy3.10'
           sccache: "true"
           manylinux: auto
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-linux-${{ matrix.target }}
           path: dist
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
       - name: pytest
         if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-unknown-linux-gnu' }}
         run: |
           set -e
-          python3 -m venv .venv
-          source .venv/bin/activate
-          pip install --force-reinstall --find-links ../dist --disable-pip-version-check pyromark
-          pip install -U --disable-pip-version-check -r ../requirements-tests.txt
-          pytest
+          uv sync --no-install-project --frozen
+          uv pip install --find-links ../dist --no-index pyromark
+          uv run pytest
         working-directory: ./tests
   windows:
     runs-on: windows-latest
@@ -100,7 +100,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: |
-            3.7
             3.8
             3.9
             3.10
@@ -113,22 +112,23 @@ jobs:
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --interpreter '3.7 3.8 3.9 3.10 3.11 3.12 3.13'
+          args: --release --out dist --interpreter '3.8 3.9 3.10 3.11 3.12 3.13'
           sccache: "true"
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-windows-${{ matrix.target }}
           path: dist
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
       - name: pytest
         if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-pc-windows-msvc' }}
         shell: bash
         run: |
           set -e
-          python3 -m venv .venv
-          source .venv/Scripts/activate
-          pip install --force-reinstall --find-links ../dist --disable-pip-version-check pyromark
-          pip install -U --disable-pip-version-check -r ../requirements-tests.txt
-          pytest
+          uv sync --no-install-project --frozen
+          uv pip install --find-links ../dist --no-index pyromark
+          uv run pytest
         working-directory: ./tests
   macos:
     runs-on: ${{ matrix.runner }}
@@ -145,13 +145,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: |
-            ${{ matrix.target == 'x86_64-apple-darwin' && '3.7' || '' }}
             3.8
             3.9
             3.10
             3.11
             3.13
-            ${{ matrix.target == 'x86_64-apple-darwin' && 'pypy3.7' || '' }}
             pypy3.8
             pypy3.9
             pypy3.10
@@ -161,21 +159,22 @@ jobs:
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --interpreter '3.7 3.8 3.9 3.10 3.11 3.12 3.13 pypy3.7 pypy3.8 pypy3.9 pypy3.10'
+          args: --release --out dist --interpreter '3.8 3.9 3.10 3.11 3.12 3.13 pypy3.8 pypy3.9 pypy3.10'
           sccache: "true"
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-macos-${{ matrix.target }}
           path: dist
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
       - name: pytest
         if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-apple-darwin' }}
         run: |
           set -e
-          python3 -m venv .venv
-          source .venv/bin/activate
-          pip install --force-reinstall --find-links ../dist --disable-pip-version-check pyromark
-          pip install -U --disable-pip-version-check -r ../requirements-tests.txt
-          pytest
+          uv sync --no-install-project --frozen
+          uv pip install --find-links ../dist --no-index pyromark
+          uv run pytest
         working-directory: ./tests
   sdist:
     runs-on: ubuntu-latest
