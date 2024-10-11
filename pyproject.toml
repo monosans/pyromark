@@ -38,7 +38,7 @@ module-name = "pyromark._pyromark"
 
 [tool.uv]
 dev-dependencies = [
-  "mkdocs-material==9.5.39",
+  "mkdocs-material==9.5.40",
   "mkdocs-minify-html-plugin==0.2.3",
   "mkdocstrings==0.26.1",
   "mkdocstrings-python==1.11.1",
