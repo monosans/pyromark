@@ -40,6 +40,6 @@ dev-dependencies = [
   "mkdocs-material==9.5.41",
   "mkdocs-minify-html-plugin==0.2.3",
   "mkdocstrings==0.26.2",
-  "mkdocstrings-python==1.12.1",
+  "mkdocstrings-python==1.12.2",
   "pytest==8.3.3",
 ]
