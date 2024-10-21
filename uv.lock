@@ -344,7 +344,7 @@ wheels = [
 
 [[package]]
 name = "mkdocs-material"
-version = "9.5.40"
+version = "9.5.42"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "babel" },
@@ -359,9 +359,9 @@ dependencies = [
     { name = "regex" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b8/2b/6f9e0b9573a4acfa15834a30eca48ad578fe6ab46afa072df5ff05103a86/mkdocs_material-9.5.40.tar.gz", hash = "sha256:b69d70e667ec51fc41f65e006a3184dd00d95b2439d982cb1586e4c018943156", size = 3963129 }
+sdist = { url = "https://files.pythonhosted.org/packages/f9/33/b3343ed975fbbd6798b8d8a7c4f1bf8489cc321fc8fd426eba3d87b0242e/mkdocs_material-9.5.42.tar.gz", hash = "sha256:92779b5e9b5934540c574c11647131d217dc540dce72b05feeda088c8eb1b8f2", size = 3963891 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2c/ad/f8039114a23cfb02213f133a1dc8865522128a0b2cb251a7e717de8aa979/mkdocs_material-9.5.40-py3-none-any.whl", hash = "sha256:8e7a16ada34e79a7b6459ff2602584222f522c738b6a023d1bea853d5049da6f", size = 8670419 },
+    { url = "https://files.pythonhosted.org/packages/55/55/ad3e6a60ac1e8e76025543c49c1f24ecd80fb38e8a57000403bf2f0a4293/mkdocs_material-9.5.42-py3-none-any.whl", hash = "sha256:452a7c5d21284b373f36b981a2cbebfff59263feebeede1bc28652e9c5bbe316", size = 8672619 },
 ]
 
 [[package]]
@@ -509,16 +509,16 @@ wheels = [
 
 [[package]]
 name = "mkdocstrings-python"
-version = "1.12.1"
+version = "1.12.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "griffe" },
     { name = "mkdocs-autorefs" },
     { name = "mkdocstrings" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/61/19/7b186a49a957611270d6c4fc156face8748cf98680a40c00b5b0b7008fe1/mkdocstrings_python-1.12.1.tar.gz", hash = "sha256:60d6a5ca912c9af4ad431db6d0111ce9f79c6c48d33377dde6a05a8f5f48d792", size = 168014 }
+sdist = { url = "https://files.pythonhosted.org/packages/23/ec/cb6debe2db77f1ef42b25b21d93b5021474de3037cd82385e586aee72545/mkdocstrings_python-1.12.2.tar.gz", hash = "sha256:7a1760941c0b52a2cd87b960a9e21112ffe52e7df9d0b9583d04d47ed2e186f3", size = 168207 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/65/e8/3cf3467fb8e31f68bfc8a2bfd5f4891c1eaa584b0c62b76c783d24d1901d/mkdocstrings_python-1.12.1-py3-none-any.whl", hash = "sha256:205244488199c9aa2a39787ad6a0c862d39b74078ea9aa2be817bc972399563f", size = 111657 },
+    { url = "https://files.pythonhosted.org/packages/5b/c1/ac524e1026d9580cbc654b5d19f5843c8b364a66d30f956372cd09fd2f92/mkdocstrings_python-1.12.2-py3-none-any.whl", hash = "sha256:7f7d40d6db3cb1f5d19dbcd80e3efe4d0ba32b073272c0c0de9de2e604eda62a", size = 111759 },
 ]
 
 [[package]]
@@ -600,17 +600,19 @@ dev = [
     { name = "mkdocstrings" },
     { name = "mkdocstrings-python" },
     { name = "pytest" },
+    { name = "typing-extensions" },
 ]
 
 [package.metadata]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "mkdocs-material", specifier = "==9.5.40" },
+    { name = "mkdocs-material", specifier = "==9.5.42" },
     { name = "mkdocs-minify-html-plugin", specifier = "==0.2.3" },
     { name = "mkdocstrings", specifier = "==0.26.2" },
-    { name = "mkdocstrings-python", specifier = "==1.12.1" },
+    { name = "mkdocstrings-python", specifier = "==1.12.2" },
     { name = "pytest", specifier = "==8.3.3" },
+    { name = "typing-extensions", specifier = "==4.12.2" },
 ]
 
 [[package]]

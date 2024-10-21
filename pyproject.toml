@@ -42,4 +42,5 @@ dev-dependencies = [
   "mkdocstrings==0.26.2",
   "mkdocstrings-python==1.12.2",
   "pytest==8.3.3",
+  "typing-extensions==4.12.2",
 ]
