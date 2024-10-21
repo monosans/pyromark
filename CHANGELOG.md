@@ -2,6 +2,11 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.5.1] - 2024-10-21
+
+- Drop Python 3.7 and 3.8 support.
+- Bump pulldown-cmark from 0.12.0 to 0.12.2. See <https://github.com/pulldown-cmark/pulldown-cmark/releases/tag/v0.12.1> and <https://github.com/pulldown-cmark/pulldown-cmark/releases/tag/v0.12.2>.
+
 ## [0.5.0] - 2024-08-20
 
 - Bump pulldown-cmark from 0.11.0 to 0.12.0. See <https://github.com/pulldown-cmark/pulldown-cmark/releases/tag/v0.12.0>.
