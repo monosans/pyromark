@@ -35,4 +35,5 @@ repos:
         args:
           - --scripts-are-modules
         additional_dependencies:
+          - orjson
           - pytest<9
