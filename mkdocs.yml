@@ -57,6 +57,7 @@ plugins:
         python:
           import:
             - https://docs.python.org/3/objects.inv
+            - https://typing-extensions.readthedocs.io/en/stable/objects.inv
           options:
             filters:
               - "!^_(?:[^_].*[^_]|_(?:all|doc|main|module|new|slots)__)$"
