@@ -21,9 +21,11 @@ crate-type = ["cdylib"]
 [dependencies]
 pulldown-cmark = { version = "=0.12.2", default-features = false, features = [
   "html",
+  "serde",
   "simd",
 ] }
 pyo3 = { version = "=0.22.5", features = ["extension-module"] }
+serde_json = "1.0.132"
 
 [profile.release]
 strip = true

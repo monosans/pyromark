@@ -7,22 +7,11 @@ class Extensions(IntFlag):
     """IntFlag containing flags for enabling Markdown extensions.
 
     Examples:
-        All extensions:
-
         ```python
         extensions = (
             pyromark.Extensions.ENABLE_TABLES
-            | pyromark.Extensions.ENABLE_FOOTNOTES
-            | pyromark.Extensions.ENABLE_STRIKETHROUGH
-            | pyromark.Extensions.ENABLE_TASKLISTS
-            | pyromark.Extensions.ENABLE_SMART_PUNCTUATION
-            | pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES
-            | pyromark.Extensions.ENABLE_YAML_STYLE_METADATA_BLOCKS
-            | pyromark.Extensions.ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS
-            | pyromark.Extensions.ENABLE_OLD_FOOTNOTES
             | pyromark.Extensions.ENABLE_MATH
             | pyromark.Extensions.ENABLE_GFM
-            | pyromark.Extensions.ENABLE_DEFINITION_LIST
         )
         ```
     """

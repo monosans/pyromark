@@ -13,13 +13,37 @@ Uses [pulldown-cmark](https://github.com/raphlinus/pulldown-cmark) Rust crate un
 python -m pip install -U pyromark
 ```
 
-## Example
+## Basic examples
+
+See documentation for more comprehensive examples.
+
+### Convert Markdown to HTML
 
 ```python
 import pyromark
 
 html = pyromark.markdown("# Hello world")
 assert html == "<h1>Hello world</h1>\n"
+```
+
+### Iterating over Markdown elements
+
+```python
+import pyromark
+
+for event in pyromark.events("# Hello world"):
+    # All event types are fully type annotated
+    # so you will get static type checking
+    # and Tab completions in your IDE!
+    match event:
+        case ("Start", ("Heading", {"level": heading_level})):
+            print(f"Heading with {heading_level} level started")
+        case ("Text", text):
+            print(f"Got {text!r} text")
+        case ("End", ("Heading", heading_level)):
+            print(f"Heading with {heading_level} level ended")
+        case other_event:
+            print(f"Got {other_event!r}")
 ```
 
 ## Documentation
