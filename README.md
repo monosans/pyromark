@@ -13,11 +13,15 @@ Uses [pulldown-cmark](https://github.com/raphlinus/pulldown-cmark) Rust crate un
 python -m pip install -U pyromark
 ```
 
-## Basic examples
+## Documentation
+
+<https://pyromark.readthedocs.io>
+
+### Basic examples
 
 See documentation for more comprehensive examples.
 
-### Convert Markdown to HTML
+#### Convert Markdown to HTML
 
 ```python
 import pyromark
@@ -26,7 +30,7 @@ html = pyromark.markdown("# Hello world")
 assert html == "<h1>Hello world</h1>\n"
 ```
 
-### Iterating over Markdown elements
+#### Iterating over Markdown elements
 
 ```python
 import pyromark
@@ -47,8 +51,6 @@ for event in pyromark.events("# Hello world"):
 ```
 
 ## Documentation
-
-<https://pyromark.readthedocs.io>
 
 ## Performance
 
