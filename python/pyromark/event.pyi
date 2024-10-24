@@ -1,3 +1,14 @@
+# ruff: noqa: PYI021
+"""This module doesn't exist in runtime, so use it like this:
+
+```python
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import pyromark.event
+```
+"""
+
 from typing_extensions import Literal, TypeAlias, TypedDict
 
 HeadingLevel: TypeAlias = Literal["H1", "H2", "H3", "H4", "H5", "H6"]
