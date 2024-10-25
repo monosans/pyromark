@@ -701,7 +701,7 @@ name = "pyromark"
 version = "0.5.1"
 source = { editable = "." }
 
-[package.dev-dependencies]
+[package.dependency-groups]
 dev = [
     { name = "mkdocs-material" },
     { name = "mkdocs-minify-html-plugin" },
@@ -715,7 +715,7 @@ dev = [
 
 [package.metadata]
 
-[package.metadata.requires-dev]
+[package.metadata.dependency-groups]
 dev = [
     { name = "mkdocs-material", specifier = "==9.5.42" },
     { name = "mkdocs-minify-html-plugin", specifier = "==0.2.3" },
