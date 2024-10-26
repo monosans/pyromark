@@ -36,14 +36,16 @@ scripts.pyromark = "pyromark.__main__:main"
 python-source = "python"
 module-name = "pyromark._pyromark"
 
-[tool.uv]
-dev-dependencies = [
-  "mkdocs-material==9.5.42",
-  "mkdocs-minify-html-plugin==0.2.3",
-  "mkdocstrings==0.26.2",
-  "mkdocstrings-python==1.12.2",
+[dependency-groups]
+dev = [
   "mypy[faster-cache]==1.13",
   "pytest==8.3.3",
   "ruff==0.7.1",
   "typing-extensions==4.12.2",
+]
+docs = [
+  "mkdocs-material==9.5.42",
+  "mkdocs-minify-html-plugin==0.2.3",
+  "mkdocstrings==0.26.2",
+  "mkdocstrings-python==1.12.2",
 ]

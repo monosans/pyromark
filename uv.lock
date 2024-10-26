@@ -703,28 +703,32 @@ source = { editable = "." }
 
 [package.dependency-groups]
 dev = [
-    { name = "mkdocs-material" },
-    { name = "mkdocs-minify-html-plugin" },
-    { name = "mkdocstrings" },
-    { name = "mkdocstrings-python" },
     { name = "mypy", extra = ["faster-cache"] },
     { name = "pytest" },
     { name = "ruff" },
     { name = "typing-extensions" },
+]
+docs = [
+    { name = "mkdocs-material" },
+    { name = "mkdocs-minify-html-plugin" },
+    { name = "mkdocstrings" },
+    { name = "mkdocstrings-python" },
 ]
 
 [package.metadata]
 
 [package.metadata.dependency-groups]
 dev = [
-    { name = "mkdocs-material", specifier = "==9.5.42" },
-    { name = "mkdocs-minify-html-plugin", specifier = "==0.2.3" },
-    { name = "mkdocstrings", specifier = "==0.26.2" },
-    { name = "mkdocstrings-python", specifier = "==1.12.2" },
     { name = "mypy", extras = ["faster-cache"], specifier = "==1.13" },
     { name = "pytest", specifier = "==8.3.3" },
     { name = "ruff", specifier = "==0.7.1" },
     { name = "typing-extensions", specifier = "==4.12.2" },
+]
+docs = [
+    { name = "mkdocs-material", specifier = "==9.5.42" },
+    { name = "mkdocs-minify-html-plugin", specifier = "==0.2.3" },
+    { name = "mkdocstrings", specifier = "==0.26.2" },
+    { name = "mkdocstrings-python", specifier = "==1.12.2" },
 ]
 
 [[package]]
