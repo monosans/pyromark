@@ -32,10 +32,6 @@ urls.documentation = "https://pyromark.readthedocs.io"
 urls.repository = "https://github.com/monosans/pyromark"
 scripts.pyromark = "pyromark.__main__:main"
 
-[tool.maturin]
-python-source = "python"
-module-name = "pyromark._pyromark"
-
 [dependency-groups]
 dev = [
   "mypy[faster-cache]==1.13",
@@ -49,3 +45,7 @@ docs = [
   "mkdocstrings==0.26.2",
   "mkdocstrings-python==1.12.2",
 ]
+
+[tool.maturin]
+python-source = "python"
+module-name = "pyromark._pyromark"
