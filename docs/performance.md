@@ -1,8 +1,8 @@
 # Performance
 
-128x faster than [Markdown](https://pypi.org/project/Markdown/),
-105x faster than [markdown-it-py](https://pypi.org/project/markdown-it-py/),
-79x faster than [mistune](https://pypi.org/project/mistune/),
+130x faster than [Markdown](https://pypi.org/project/Markdown/),
+101x faster than [markdown-it-py](https://pypi.org/project/markdown-it-py/),
+71x faster than [mistune](https://pypi.org/project/mistune/),
 8x faster than [markdown-it-pyrs](https://pypi.org/project/markdown-it-pyrs/).
 
 If you use threading, the difference with other libraries will be even more enormous, since pyromark releases the [GIL](https://docs.python.org/3/glossary.html#term-global-interpreter-lock).
