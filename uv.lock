@@ -701,7 +701,7 @@ name = "pyromark"
 version = "0.5.1"
 source = { virtual = "." }
 
-[package.dependency-groups]
+[package.dev-dependencies]
 dev = [
     { name = "mypy", extra = ["faster-cache"] },
     { name = "pytest" },
@@ -717,7 +717,7 @@ docs = [
 
 [package.metadata]
 
-[package.metadata.dependency-groups]
+[package.metadata.requires-dev]
 dev = [
     { name = "mypy", extras = ["faster-cache"], specifier = "==1.13" },
     { name = "pytest", specifier = "==8.3.3" },
