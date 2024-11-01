@@ -8,7 +8,7 @@ from typing import Optional
 import pyromark
 
 
-def parse_args(args: Optional[Sequence[str]]) -> argparse.Namespace:
+def _parse_args(args: Optional[Sequence[str]]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         pyromark.__name__, description=pyromark.__doc__
     )
@@ -27,8 +27,8 @@ def parse_args(args: Optional[Sequence[str]]) -> argparse.Namespace:
     return parser.parse_args(args=args)
 
 
-def main(args: Optional[Sequence[str]] = None) -> None:
-    parsed_args = parse_args(args=args)
+def _main(args: Optional[Sequence[str]] = None) -> None:
+    parsed_args = _parse_args(args=args)
 
     with parsed_args.file as f:
         content = f.read()
@@ -44,4 +44,4 @@ def main(args: Optional[Sequence[str]] = None) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    _main()
