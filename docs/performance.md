@@ -8,9 +8,9 @@
 If you use threading, the difference with other libraries will be even more enormous, since pyromark releases the [GIL](https://docs.python.org/3/glossary.html#term-global-interpreter-lock).
 
 ```python
-Python 3.11.3 (main, Jun  5 2023, 09:32:32) [GCC 13.1.1 20230429]
+Python 3.12.7 (main, Oct  1 2024, 11:15:50) [GCC 14.2.1 20240910]
 Type 'copyright', 'credits' or 'license' for more information
-IPython 8.14.0 -- An enhanced Interactive Python. Type '?' for help.
+IPython 8.18.1 -- An enhanced Interactive Python. Type '?' for help.
 
 In [1]: import requests, markdown, markdown_it, mistune, markdown_it_pyrs, pyromark
 
@@ -20,24 +20,24 @@ In [2]: (
    ...:     mistune.__version__,
    ...:     markdown_it_pyrs.__version__,
    ...: )
-Out[2]: ('3.4.4', '3.0.0', '3.0.1', '0.3.0')
+Out[2]: ('3.7', '3.0.0', '3.0.2', '0.4.0')
 
 In [3]: text = requests.get(
-   ...:     "https://raw.githubusercontent.com/rust-lang/rust/1.71.1/README.md"
+   ...:     "https://raw.githubusercontent.com/rust-lang/rust/refs/tags/1.82.0/INSTALL.md"
    ...: ).text
 
 In [4]: %timeit markdown.markdown(text)
-7.66 ms ± 31.9 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+3.12 ms ± 10.3 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 In [5]: %timeit markdown_it.MarkdownIt().render(text)
-6.25 ms ± 28.5 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+2.42 ms ± 13.5 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 In [6]: %timeit mistune.html(text)
-4.73 ms ± 10.5 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+1.7 ms ± 3.41 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 
 In [7]: %timeit markdown_it_pyrs.MarkdownIt().render(text)
-460 µs ± 1.33 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+180 µs ± 135 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 
 In [8]: %timeit pyromark.html(text)
-59.7 µs ± 171 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+24.1 µs ± 41 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 ```
