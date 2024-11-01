@@ -36,7 +36,7 @@ scripts.pyromark = "pyromark.__main__:main"
 dev = [
   "mypy[faster-cache]==1.13",
   "pytest==8.3.3",
-  "ruff==0.7.1",
+  "ruff==0.7.2",
   "typing-extensions==4.12.2",
 ]
 docs = [
