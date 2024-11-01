@@ -4,10 +4,10 @@ use pyo3::prelude::*;
 ///     ```python
 ///     for event in pyromark.events(
 ///         "# Hello world",
-///         extensions=(
-///             pyromark.Extensions.ENABLE_TABLES
-///             | pyromark.Extensions.ENABLE_MATH
-///             | pyromark.Extensions.ENABLE_GFM
+///         options=(
+///             pyromark.Options.ENABLE_TABLES
+///             | pyromark.Options.ENABLE_MATH
+///             | pyromark.Options.ENABLE_GFM
 ///         )
 ///     ):
 ///         # All event types are fully type annotated
@@ -24,17 +24,17 @@ use pyo3::prelude::*;
 ///                 print(f"Got {other_event!r}")
 ///     ```
 #[pyfunction]
-#[pyo3(signature = (text, /, *, extensions = None, merge_text = true))]
+#[pyo3(signature = (markdown, /, *, options = None, merge_text = true))]
 pub(crate) fn events(
     py: Python<'_>,
-    text: &str,
-    extensions: Option<u32>,
+    markdown: &str,
+    options: Option<u32>,
     merge_text: bool,
 ) -> PyResult<PyObject> {
     let serde_value = py.allow_threads(move || {
         crate::common::parse_events(
-            text,
-            crate::common::get_options(extensions),
+            markdown,
+            crate::common::build_options(options),
             merge_text,
         )
     })?;
@@ -43,28 +43,25 @@ pub(crate) fn events(
 
 /// Examples:
 ///     ```python
-///     html = pyromark.markdown(
+///     html = pyromark.html(
 ///         "# Hello world",
-///         # See pyromark.Extensions for all available extensions
-///         extensions=(
-///             pyromark.Extensions.ENABLE_TABLES
-///             | pyromark.Extensions.ENABLE_MATH
-///             | pyromark.Extensions.ENABLE_GFM
+///         # See pyromark.Options for all available options
+///         options=(
+///             pyromark.Options.ENABLE_TABLES
+///             | pyromark.Options.ENABLE_MATH
+///             | pyromark.Options.ENABLE_GFM
 ///         )
 ///     )
 ///     assert html == "<h1>Hello world</h1>\n"
 ///     ```
 #[pyfunction]
-#[pyo3(signature = (text, *, extensions = None))]
-pub(crate) fn markdown(
+#[pyo3(signature = (markdown, /, *, options = None))]
+pub(crate) fn html(
     py: Python<'_>,
-    text: &str,
-    extensions: Option<u32>,
+    markdown: &str,
+    options: Option<u32>,
 ) -> String {
     py.allow_threads(move || {
-        crate::common::convert_to_html(
-            text,
-            crate::common::get_options(extensions),
-        )
+        crate::common::html(markdown, crate::common::build_options(options))
     })
 }

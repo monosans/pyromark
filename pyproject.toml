@@ -49,3 +49,6 @@ docs = [
 [tool.maturin]
 python-source = "python"
 module-name = "pyromark._pyromark"
+
+[tool.uv]
+package = false

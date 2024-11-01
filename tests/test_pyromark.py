@@ -71,7 +71,7 @@ BAD_BITS = 2 << 1
 TESTDATA = [
     (
         TABLE,
-        pyromark.Extensions.ENABLE_TABLES,
+        pyromark.Options.ENABLE_TABLES,
         ("--enable-tables",),
         """\
 <p>| foo | bar |
@@ -86,7 +86,7 @@ TESTDATA = [
     ),
     (
         FOOTNOTE,
-        pyromark.Extensions.ENABLE_FOOTNOTES,
+        pyromark.Options.ENABLE_FOOTNOTES,
         ("--enable-footnotes",),
         """\
 <p>[^1]: In new syntax, this is two footnote definitions.
@@ -116,7 +116,7 @@ literal text [^4]. In old syntax, it creates a dangling link.</p>
     ),
     (
         STRIKETHROUGH,
-        pyromark.Extensions.ENABLE_STRIKETHROUGH,
+        pyromark.Options.ENABLE_STRIKETHROUGH,
         ("--enable-strikethrough",),
         """\
 <p>~~Hi~~ Hello, ~there~ world!</p>
@@ -127,7 +127,7 @@ literal text [^4]. In old syntax, it creates a dangling link.</p>
     ),
     (
         TASKLIST,
-        pyromark.Extensions.ENABLE_TASKLISTS,
+        pyromark.Options.ENABLE_TASKLISTS,
         ("--enable-tasklists",),
         """\
 <ul>
@@ -146,7 +146,7 @@ bar</li>
     ),
     (
         SMART_PUNCTUATION,
-        pyromark.Extensions.ENABLE_SMART_PUNCTUATION,
+        pyromark.Options.ENABLE_SMART_PUNCTUATION,
         ("--enable-smart-punctuation",),
         """\
 <p>'This here a real "quote"'</p>
@@ -161,7 +161,7 @@ bar</li>
     ),
     (
         HEADING_ATTRIBUTES,
-        pyromark.Extensions.ENABLE_HEADING_ATTRIBUTES,
+        pyromark.Options.ENABLE_HEADING_ATTRIBUTES,
         ("--enable-heading-attributes",),
         """\
 <h1>text { #id .class1 .class2 myattr, other_attr=myvalue }</h1>
@@ -171,7 +171,7 @@ bar</li>
     ),
     (
         YAML_STYLE_METADATA_BLOCKS,
-        pyromark.Extensions.ENABLE_YAML_STYLE_METADATA_BLOCKS,
+        pyromark.Options.ENABLE_YAML_STYLE_METADATA_BLOCKS,
         ("--enable-yaml-style-metadata-blocks",),
         """\
 <hr />
@@ -181,7 +181,7 @@ bar</li>
     ),
     (
         PLUSES_DELIMITED_METADATA_BLOCKS,
-        pyromark.Extensions.ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS,
+        pyromark.Options.ENABLE_PLUSES_DELIMITED_METADATA_BLOCKS,
         ("--enable-pluses-delimited-metadata-blocks",),
         """\
 <p>+++
@@ -192,7 +192,7 @@ title: Metadata
     ),
     (
         FOOTNOTE,
-        pyromark.Extensions.ENABLE_OLD_FOOTNOTES,
+        pyromark.Options.ENABLE_OLD_FOOTNOTES,
         ("--enable-old-footnotes",),
         """\
 <p>[^1]: In new syntax, this is two footnote definitions.
@@ -223,7 +223,7 @@ literal text <sup class="footnote-reference"><a href="#4">4</a></sup>. In old sy
     ),
     (
         DEFINITION_LIST,
-        pyromark.Extensions.ENABLE_DEFINITION_LIST,
+        pyromark.Options.ENABLE_DEFINITION_LIST,
         ("--enable-definition-list",),
         """\
 <p>title 1
@@ -254,12 +254,10 @@ title 2</dd>
                 DEFINITION_LIST,
             )
         ),
-        functools.reduce(
-            operator.or_, pyromark.Extensions.__members__.values()
-        ),
+        functools.reduce(operator.or_, pyromark.Options.__members__.values()),
         tuple(
-            "--" + ext_name.lower().replace("_", "-")
-            for ext_name in pyromark.Extensions.__members__
+            "--" + option_name.lower().replace("_", "-")
+            for option_name in pyromark.Options.__members__
         ),
         """\
 <p>| foo | bar |
@@ -333,42 +331,48 @@ title 2</dd>
 
 
 @pytest.mark.parametrize(
-    ("text", "extensions", "cli_extensions", "res_without_ext", "res_with_ext"),
+    (
+        "markdown",
+        "options",
+        "cli_options",
+        "result_without_options",
+        "result_with_options",
+    ),
     TESTDATA,
 )
 def test_pyromark(
-    text: str,
-    extensions: pyromark.Extensions,
-    cli_extensions: Sequence[str],
-    res_without_ext: str,
-    res_with_ext: str,
+    markdown: str,
+    options: pyromark.Options,
+    cli_options: Sequence[str],
+    result_without_options: str,
+    result_with_options: str,
     capsys: pytest.CaptureFixture[str],
     tmp_path: Path,
 ) -> None:
     file = tmp_path / "tmp.md"
-    file.write_text(text)
+    file.write_text(markdown)
 
     pyromark_cli((str(file),))
     capture = capsys.readouterr()
     assert not capture.err
     assert (
-        pyromark.markdown(text)
-        == pyromark.markdown(text, extensions=pyromark.Extensions(0))
-        == pyromark.Markdown().convert(text)
-        == pyromark.Markdown(extensions=pyromark.Extensions(0)).convert(text)
+        pyromark.html(markdown)
+        == pyromark.html(markdown, options=pyromark.Options(0))
+        == pyromark.Markdown().html(markdown)
+        == pyromark.Markdown(options=pyromark.Options(0)).html(markdown)
         == capture.out
-        == res_without_ext
+        == result_without_options
     )
 
-    extensions |= BAD_BITS
-    pyromark_cli((*cli_extensions, str(file)))
+    options |= BAD_BITS
+    pyromark_cli((*cli_options, str(file)))
     capture = capsys.readouterr()
     assert not capture.err
     assert (
-        pyromark.markdown(text, extensions=extensions)
-        == pyromark.Markdown(extensions=extensions).convert(text)
+        pyromark.html(markdown, options=options)
+        == pyromark.Markdown(options=options).html(markdown)
         == capture.out
-        == res_with_ext
+        == result_with_options
     )
 
 

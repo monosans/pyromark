@@ -1,28 +1,25 @@
 use pyo3::prelude::*;
 
-pub(crate) fn convert_to_html(
-    text: &str,
-    options: pulldown_cmark::Options,
-) -> String {
-    let parser = pulldown_cmark::Parser::new_ext(text, options);
-    let mut html_output = String::new();
-    pulldown_cmark::html::push_html(&mut html_output, parser);
-    html_output
-}
-
-pub(crate) fn get_options(extensions: Option<u32>) -> pulldown_cmark::Options {
-    match extensions {
+pub(crate) fn build_options(options: Option<u32>) -> pulldown_cmark::Options {
+    match options {
         None => pulldown_cmark::Options::empty(),
         Some(value) => pulldown_cmark::Options::from_bits_truncate(value),
     }
 }
 
+pub(crate) fn html(markdown: &str, options: pulldown_cmark::Options) -> String {
+    let parser = pulldown_cmark::Parser::new_ext(markdown, options);
+    let mut html_output = String::new();
+    pulldown_cmark::html::push_html(&mut html_output, parser);
+    html_output
+}
+
 pub(crate) fn parse_events(
-    text: &str,
+    markdown: &str,
     options: pulldown_cmark::Options,
     merge_text: bool,
 ) -> PyResult<serde_json::Value> {
-    let parser = pulldown_cmark::Parser::new_ext(text, options);
+    let parser = pulldown_cmark::Parser::new_ext(markdown, options);
     let iterator: Box<dyn Iterator<Item = pulldown_cmark::Event>> =
         if merge_text {
             Box::new(pulldown_cmark::TextMergeStream::new(parser))

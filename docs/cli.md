@@ -8,7 +8,7 @@ pyromark --help
 python -m pyromark --help
 ```
 
-See [Extensions](api.md#pyromark.Extensions-attributes) for a description of the `--enable-*` options.
+See [Options](api.md#pyromark.Options-attributes) for a description of the `--enable-*` options.
 
 ```
 usage: pyromark [-h] [-v] [--enable-tables] [--enable-footnotes] [--enable-strikethrough] [--enable-tasklists] [--enable-smart-punctuation] [--enable-heading-attributes] [--enable-yaml-style-metadata-blocks] [--enable-pluses-delimited-metadata-blocks] [--enable-old-footnotes] [--enable-math] [--enable-gfm] file

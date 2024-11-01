@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from ._extensions import Extensions
+from ._options import Options
 from ._pyromark import (
     Markdown,
     __version__ as __version__,  # noqa: PLC0414
     events,
-    markdown,
+    html,
 )
 
-__all__ = ("Extensions", "Markdown", "events", "markdown")
+__all__ = ("Markdown", "Options", "events", "html")

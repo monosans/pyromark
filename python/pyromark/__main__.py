@@ -15,9 +15,9 @@ def _parse_args(args: Optional[Sequence[str]]) -> argparse.Namespace:
     parser.add_argument(
         "-v", "--version", action="version", version=pyromark.__version__
     )
-    for ext_name in pyromark.Extensions.__members__:
+    for opt_name in pyromark.Options.__members__:
         parser.add_argument(
-            "--" + ext_name.lower().replace("_", "-"), action="store_true"
+            "--" + opt_name.lower().replace("_", "-"), action="store_true"
         )
     parser.add_argument(
         "file",
@@ -33,13 +33,13 @@ def _main(args: Optional[Sequence[str]] = None) -> None:
     with parsed_args.file as f:
         content = f.read()
 
-    exts = pyromark.Extensions(0)
-    for ext_name, ext in pyromark.Extensions.__members__.items():
-        ext_enabled = getattr(parsed_args, ext_name.lower())
-        if ext_enabled:
-            exts |= ext
+    opts = pyromark.Options(0)
+    for opt_name, opt in pyromark.Options.__members__.items():
+        opt_enabled = getattr(parsed_args, opt_name.lower())
+        if opt_enabled:
+            opts |= opt
 
-    html = pyromark.markdown(content, extensions=exts)
+    html = pyromark.html(content, options=opts)
     print(html, end="")
 
 

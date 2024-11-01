@@ -26,7 +26,7 @@ See documentation for more comprehensive examples.
 ```python
 import pyromark
 
-html = pyromark.markdown("# Hello world")
+html = pyromark.html("# Hello world")
 assert html == "<h1>Hello world</h1>\n"
 ```
 
@@ -49,8 +49,6 @@ for event in pyromark.events("# Hello world"):
         case other_event:
             print(f"Got {other_event!r}")
 ```
-
-## Documentation
 
 ## Performance
 

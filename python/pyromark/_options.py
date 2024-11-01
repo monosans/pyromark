@@ -3,15 +3,15 @@ from __future__ import annotations
 from enum import IntFlag
 
 
-class Extensions(IntFlag):
-    """IntFlag containing flags for enabling Markdown extensions.
+class Options(IntFlag):
+    """IntFlag containing flags for enabling pulldown_cmark options.
 
     Examples:
         ```python
-        extensions = (
-            pyromark.Extensions.ENABLE_TABLES
-            | pyromark.Extensions.ENABLE_MATH
-            | pyromark.Extensions.ENABLE_GFM
+        options = (
+            pyromark.Options.ENABLE_TABLES
+            | pyromark.Options.ENABLE_MATH
+            | pyromark.Options.ENABLE_GFM
         )
         ```
     """

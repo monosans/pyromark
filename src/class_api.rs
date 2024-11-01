@@ -6,28 +6,19 @@ pub(crate) struct Markdown(pulldown_cmark::Options);
 #[pymethods]
 impl Markdown {
     #[new]
-    #[pyo3(signature = (*, extensions = None))]
-    fn new(extensions: Option<u32>) -> Self {
-        Self(crate::common::get_options(extensions))
-    }
-
-    /// Examples:
-    ///     ```python
-    ///     html = md.convert("# Hello world")
-    ///     assert html == "<h1>Hello world</h1>\n"
-    ///     ```
-    fn convert(&self, py: Python<'_>, text: &str) -> String {
-        py.allow_threads(move || crate::common::convert_to_html(text, self.0))
+    #[pyo3(signature = (*, options = None))]
+    fn new(options: Option<u32>) -> Self {
+        Self(crate::common::build_options(options))
     }
 
     /// Examples:
     ///     ```python
     ///     for event in md.events(
     ///         "# Hello world",
-    ///         extensions=(
-    ///             pyromark.Extensions.ENABLE_TABLES
-    ///             | pyromark.Extensions.ENABLE_MATH
-    ///             | pyromark.Extensions.ENABLE_GFM
+    ///         options=(
+    ///             pyromark.Options.ENABLE_TABLES
+    ///             | pyromark.Options.ENABLE_MATH
+    ///             | pyromark.Options.ENABLE_GFM
     ///         )
     ///     ):
     ///         # All event types are fully type annotated
@@ -43,16 +34,26 @@ impl Markdown {
     ///             case other_event:
     ///                 print(f"Got {other_event!r}")
     ///     ```
-    #[pyo3(signature = (text, /, *, merge_text = true))]
+    #[pyo3(signature = (markdown, /, *, merge_text = true))]
     fn events(
         &self,
         py: Python<'_>,
-        text: &str,
+        markdown: &str,
         merge_text: bool,
     ) -> PyResult<PyObject> {
         let serde_value = py.allow_threads(move || {
-            crate::common::parse_events(text, self.0, merge_text)
+            crate::common::parse_events(markdown, self.0, merge_text)
         })?;
         crate::common::serde_json_value_to_pyobject(py, &serde_value)
+    }
+
+    /// Examples:
+    ///     ```python
+    ///     html = md.html("# Hello world")
+    ///     assert html == "<h1>Hello world</h1>\n"
+    ///     ```
+    #[pyo3(signature = (markdown, /))]
+    fn html(&self, py: Python<'_>, markdown: &str) -> String {
+        py.allow_threads(move || crate::common::html(markdown, self.0))
     }
 }

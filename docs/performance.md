@@ -38,6 +38,6 @@ In [6]: %timeit mistune.html(text)
 In [7]: %timeit markdown_it_pyrs.MarkdownIt().render(text)
 460 µs ± 1.33 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 
-In [8]: %timeit pyromark.markdown(text)
+In [8]: %timeit pyromark.html(text)
 59.7 µs ± 171 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 ```
