@@ -9,5 +9,5 @@ build:
     - asdf global uv latest
     - uv tool install --from maturin@latest maturin
     - uv sync --group docs --no-group dev --frozen --no-cache --python 3.12
-    - uv run --no-sync maturin develop --uv --frozen
+    - uv run --no-sync $HOME/.local/bin/maturin develop --uv --frozen
     - uv run --no-sync mkdocs build -d $READTHEDOCS_OUTPUT/html
