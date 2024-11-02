@@ -37,3 +37,4 @@ repos:
         additional_dependencies:
           - orjson
           - pytest<9
+          - typing-extensions
