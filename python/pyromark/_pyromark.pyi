@@ -1,10 +1,12 @@
 # ruff: noqa: E301, E302
+from typing import Final
+
 from typing_extensions import final
 
 from ._options import Options
 from .event import Event
 
-__version__: str
+__version__: Final[str]
 
 def events(
     markdown: str, /, *, options: Options | None = None, merge_text: bool = True
