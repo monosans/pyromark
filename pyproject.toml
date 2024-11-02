@@ -28,9 +28,10 @@ classifiers = [
   "Programming Language :: Rust",
   "Typing :: Typed",
 ]
+dependencies = ["typing-extensions>=3.7.4.2"]
 urls.documentation = "https://pyromark.readthedocs.io"
 urls.repository = "https://github.com/monosans/pyromark"
-scripts.pyromark = "pyromark.__main__:main"
+scripts.pyromark = "pyromark.__main__:_main"
 
 [dependency-groups]
 dev = [
