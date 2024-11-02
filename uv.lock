@@ -709,7 +709,6 @@ dev = [
     { name = "mypy", extra = ["faster-cache"] },
     { name = "pytest" },
     { name = "ruff" },
-    { name = "typing-extensions" },
 ]
 docs = [
     { name = "mkdocs-material" },
@@ -726,7 +725,6 @@ dev = [
     { name = "mypy", extras = ["faster-cache"], specifier = "==1.13" },
     { name = "pytest", specifier = "==8.3.3" },
     { name = "ruff", specifier = "==0.7.2" },
-    { name = "typing-extensions", specifier = "==4.12.2" },
 ]
 docs = [
     { name = "mkdocs-material", specifier = "==9.5.43" },
