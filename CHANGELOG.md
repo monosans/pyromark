@@ -2,6 +2,18 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.6.0] - 2024-11-02
+
+### Breaking
+
+- Rename `extensions` to `options`.
+- Rename `pyromark.markdown` to `pyromark.html`.
+- Rename `pyromark.Markdown.convert` to `pyromark.Markdown.html`.
+
+### Feature
+
+- Add `pyromark.events` and `pyromark.Markdown.events` to iterate over Markdown elements. See docs for example.
+
 ## [0.5.1] - 2024-10-21
 
 - Drop Python 3.7 and 3.8 support.
