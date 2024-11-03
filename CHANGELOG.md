@@ -2,7 +2,7 @@
 
 [Semantic Versioning](https://semver.org/)
 
-## [0.6.0] - 2024-11-02
+## [0.6.0] - 2024-11-03
 
 ### Breaking
 
