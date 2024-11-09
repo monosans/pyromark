@@ -38,7 +38,7 @@ dev = ["mypy[faster-cache]==1.13", "pytest==8.3.3", "ruff==0.7.3"]
 docs = [
   "mkdocs-material==9.5.44",
   "mkdocs-minify-html-plugin==0.2.3",
-  "mkdocstrings==0.26.2",
+  "mkdocstrings==0.27.0",
   "mkdocstrings-python==1.12.2",
 ]
 
