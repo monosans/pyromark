@@ -16,12 +16,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - run: cargo +stable clippy --all-targets --all-features -- -Dwarnings -Wclippy::pedantic
   run-pre-commit:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@v3
       - run: uv tool run --from pre-commit@latest --with pre-commit-uv --no-cache --python 3.12 pre-commit run --all-files
   run-rustfmt:
@@ -29,6 +33,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - run: rustup toolchain install nightly --profile minimal --component rustfmt --no-self-update --allow-downgrade
       - run: cargo +nightly fmt --check
   linux:
@@ -50,6 +56,8 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: |
@@ -94,6 +102,8 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: |
@@ -137,6 +147,8 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: |
@@ -172,6 +184,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: PyO3/maturin-action@v1
         with:
           command: sdist
