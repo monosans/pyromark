@@ -729,7 +729,7 @@ dev = [
 docs = [
     { name = "mkdocs-material", specifier = "==9.5.44" },
     { name = "mkdocs-minify-html-plugin", specifier = "==0.2.3" },
-    { name = "mkdocstrings", specifier = "==0.27.0" },
+    { name = "mkdocstrings", specifier = "==0.27" },
     { name = "mkdocstrings-python", specifier = "==1.12.2" },
 ]
 
