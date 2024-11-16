@@ -28,9 +28,7 @@ pub(crate) fn parse_events(
         };
     Ok(crate::serde_to_py::SerdeValueWrapper(
         serde_json::to_value(iterator.collect::<Vec<_>>()).map_err(
-            move |err| {
-                pyo3::exceptions::PyRuntimeError::new_err(err.to_string())
-            },
+            move |err| pyo3::exceptions::PyValueError::new_err(err.to_string()),
         )?,
     ))
 }
