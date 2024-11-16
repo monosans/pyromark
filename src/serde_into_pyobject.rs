@@ -1,8 +1,8 @@
 use pyo3::{prelude::*, BoundObject};
 
-pub(crate) struct SerdeValueWrapper(pub(crate) serde_json::Value);
+pub(crate) struct SerdeIntoPyObject(pub(crate) serde_json::Value);
 
-impl<'py> IntoPyObject<'py> for SerdeValueWrapper {
+impl<'py> IntoPyObject<'py> for SerdeIntoPyObject {
     type Error = std::convert::Infallible;
     type Output = Bound<'py, Self::Target>;
     type Target = PyAny;
@@ -31,7 +31,7 @@ impl<'py> IntoPyObject<'py> for SerdeValueWrapper {
             serde_json::Value::Array(arr) => Ok(pyo3::types::PyTuple::new(
                 py,
                 arr.into_iter()
-                    .map(move |v| SerdeValueWrapper(v).into_pyobject(py))
+                    .map(move |v| SerdeIntoPyObject(v).into_pyobject(py))
                     .collect::<Result<Vec<_>, _>>()?,
             )
             .unwrap()
@@ -44,7 +44,7 @@ impl<'py> IntoPyObject<'py> for SerdeValueWrapper {
                         py,
                         &[
                             k.into_pyobject(py)?.into_any(),
-                            SerdeValueWrapper(v).into_pyobject(py)?,
+                            SerdeIntoPyObject(v).into_pyobject(py)?,
                         ],
                     )
                     .unwrap()
@@ -55,7 +55,7 @@ impl<'py> IntoPyObject<'py> for SerdeValueWrapper {
                         py_dict
                             .set_item(
                                 k,
-                                SerdeValueWrapper(v).into_pyobject(py)?,
+                                SerdeIntoPyObject(v).into_pyobject(py)?,
                             )
                             .unwrap();
                     }

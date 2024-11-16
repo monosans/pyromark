@@ -18,7 +18,7 @@ pub(crate) fn parse_events(
     markdown: &str,
     options: pulldown_cmark::Options,
     merge_text: bool,
-) -> PyResult<crate::serde_to_py::SerdeValueWrapper> {
+) -> PyResult<crate::serde_into_pyobject::SerdeIntoPyObject> {
     let parser = pulldown_cmark::Parser::new_ext(markdown, options);
     let iterator: Box<dyn Iterator<Item = pulldown_cmark::Event>> =
         if merge_text {
@@ -26,7 +26,7 @@ pub(crate) fn parse_events(
         } else {
             Box::new(parser)
         };
-    Ok(crate::serde_to_py::SerdeValueWrapper(
+    Ok(crate::serde_into_pyobject::SerdeIntoPyObject(
         serde_json::to_value(iterator.collect::<Vec<_>>()).map_err(
             move |err| pyo3::exceptions::PyValueError::new_err(err.to_string()),
         )?,
