@@ -1,6 +1,7 @@
 mod class_api;
 mod common;
 mod function_api;
+mod serde_to_py;
 use pyo3::prelude::*;
 
 #[pymodule]

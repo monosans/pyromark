@@ -35,16 +35,16 @@ impl Markdown {
     ///                 print(f"Got {other_event!r}")
     ///     ```
     #[pyo3(signature = (markdown, /, *, merge_text = true))]
-    fn events(
+    fn events<'py>(
         &self,
-        py: Python<'_>,
+        py: Python<'py>,
         markdown: &str,
         merge_text: bool,
-    ) -> PyResult<PyObject> {
+    ) -> PyResult<Bound<'py, PyAny>> {
         let serde_value = py.allow_threads(move || {
             crate::common::parse_events(markdown, self.0, merge_text)
-        })?;
-        crate::common::serde_json_value_to_pyobject(py, &serde_value)
+        });
+        Ok(serde_value?.into_pyobject(py)?)
     }
 
     /// Examples:
