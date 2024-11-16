@@ -2,6 +2,11 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.6.1] - 2024-11-16
+
+- Bump `pyo3` to `v0.23.0`.
+- Refactor the `serde_json::Value` to Python conversion code.
+
 ## [0.6.0] - 2024-11-03
 
 ### Breaking
