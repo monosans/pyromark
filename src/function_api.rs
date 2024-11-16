@@ -38,7 +38,7 @@ pub(crate) fn events<'py>(
             merge_text,
         )
     });
-    Ok(serde_value?.into_pyobject(py))
+    Ok(serde_value?.into_pyobject(py)?)
 }
 
 /// Examples:

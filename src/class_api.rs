@@ -44,7 +44,7 @@ impl Markdown {
         let serde_value = py.allow_threads(move || {
             crate::common::parse_events(markdown, self.0, merge_text)
         });
-        Ok(serde_value?.into_pyobject(py))
+        Ok(serde_value?.into_pyobject(py)?)
     }
 
     /// Examples:
