@@ -3,7 +3,7 @@ use pyo3::{prelude::*, BoundObject};
 pub(crate) struct SerdeIntoPyObject(pub(crate) serde_json::Value);
 
 impl<'py> IntoPyObject<'py> for SerdeIntoPyObject {
-    type Error = std::convert::Infallible;
+    type Error = PyErr;
     type Output = Bound<'py, Self::Target>;
     type Target = PyAny;
 
@@ -24,7 +24,9 @@ impl<'py> IntoPyObject<'py> for SerdeIntoPyObject {
                 } else if let Some(f) = n.as_f64() {
                     Ok(f.into_pyobject(py)?.into_any())
                 } else {
-                    unreachable!()
+                    Err(pyo3::exceptions::PyValueError::new_err(
+                        "Invalid number",
+                    ))
                 }
             }
             serde_json::Value::String(s) => Ok(s.into_pyobject(py)?.into_any()),
@@ -33,8 +35,7 @@ impl<'py> IntoPyObject<'py> for SerdeIntoPyObject {
                 arr.into_iter()
                     .map(move |v| SerdeIntoPyObject(v).into_pyobject(py))
                     .collect::<Result<Vec<_>, _>>()?,
-            )
-            .unwrap()
+            )?
             .into_any()),
             serde_json::Value::Object(obj) => Ok(
                 // Return tuple instead of a dict if dict contains one key
@@ -46,18 +47,15 @@ impl<'py> IntoPyObject<'py> for SerdeIntoPyObject {
                             k.into_pyobject(py)?.into_any(),
                             SerdeIntoPyObject(v).into_pyobject(py)?,
                         ],
-                    )
-                    .unwrap()
+                    )?
                     .into_any()
                 } else {
                     let py_dict = pyo3::types::PyDict::new(py);
                     for (k, v) in obj {
-                        py_dict
-                            .set_item(
-                                k,
-                                SerdeIntoPyObject(v).into_pyobject(py)?,
-                            )
-                            .unwrap();
+                        py_dict.set_item(
+                            k,
+                            SerdeIntoPyObject(v).into_pyobject(py)?,
+                        )?;
                     }
                     py_dict.into_any()
                 },
