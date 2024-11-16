@@ -25,20 +25,20 @@ use pyo3::prelude::*;
 ///     ```
 #[pyfunction]
 #[pyo3(signature = (markdown, /, *, options = None, merge_text = true))]
-pub(crate) fn events(
-    py: Python<'_>,
+pub(crate) fn events<'py>(
+    py: Python<'py>,
     markdown: &str,
     options: Option<u32>,
     merge_text: bool,
-) -> PyResult<PyObject> {
+) -> PyResult<Bound<'py, PyAny>> {
     let serde_value = py.allow_threads(move || {
         crate::common::parse_events(
             markdown,
             crate::common::build_options(options),
             merge_text,
         )
-    })?;
-    crate::common::serde_json_value_to_pyobject(py, &serde_value)
+    });
+    Ok(serde_value?.into_pyobject(py)?)
 }
 
 /// Examples:
