@@ -26,9 +26,9 @@ pub(crate) fn parse_events(
         } else {
             Box::new(parser)
         };
-    Ok(serde_json::to_value(iterator.collect::<Vec<_>>()).map_err(
-        move |err| pyo3::exceptions::PyValueError::new_err(err.to_string()),
-    )?)
+    serde_json::to_value(iterator.collect::<Vec<_>>()).map_err(move |err| {
+        pyo3::exceptions::PyValueError::new_err(err.to_string())
+    })
 }
 
 pub(crate) fn serde_into_py<'py>(
