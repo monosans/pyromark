@@ -4,8 +4,7 @@
 
 ## [0.6.1] - 2024-11-16
 
-- Bump `pyo3` to `v0.23.0`.
-- Refactor the `serde_json::Value` to Python conversion code.
+- Bump `pyo3` from `v0.22.6` to `v0.23.1`.
 
 ## [0.6.0] - 2024-11-03
 

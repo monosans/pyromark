@@ -41,10 +41,10 @@ impl Markdown {
         markdown: &str,
         merge_text: bool,
     ) -> PyResult<Bound<'py, PyAny>> {
-        py.allow_threads(move || {
+        let v = py.allow_threads(move || {
             crate::common::parse_events(markdown, self.0, merge_text)
-        })?
-        .into_pyobject(py)
+        })?;
+        crate::common::serde_into_py(py, &v)
     }
 
     /// Examples:
