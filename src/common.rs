@@ -33,7 +33,7 @@ pub(crate) fn parse_events(
 
 pub(crate) fn serde_into_py<'py>(
     py: Python<'py>,
-    v: serde_json::Value,
+    v: &serde_json::Value,
 ) -> PyResult<Bound<'py, PyAny>> {
     match v {
         serde_json::Value::Null => Ok(py.None().into_bound(py).into_any()),
@@ -54,7 +54,7 @@ pub(crate) fn serde_into_py<'py>(
         serde_json::Value::String(s) => Ok(s.into_pyobject(py)?.into_any()),
         serde_json::Value::Array(arr) => Ok(pyo3::types::PyTuple::new(
             py,
-            arr.into_iter()
+            arr.iter()
                 .map(move |v| serde_into_py(py, v))
                 .collect::<Result<Vec<_>, _>>()?,
         )?
@@ -62,7 +62,7 @@ pub(crate) fn serde_into_py<'py>(
         serde_json::Value::Object(obj) => Ok(
             // Return tuple instead of a dict if dict contains one key
             if obj.len() == 1 {
-                let (k, v) = obj.into_iter().next().unwrap();
+                let (k, v) = obj.iter().next().unwrap();
                 pyo3::types::PyTuple::new(
                     py,
                     &[k.into_pyobject(py)?.into_any(), serde_into_py(py, v)?],
