@@ -2,9 +2,9 @@
 
 [Semantic Versioning](https://semver.org/)
 
-## [0.6.1] - 2024-11-16
+## [0.6.1] - 2024-11-17
 
-- Bump `pyo3` from `v0.22.6` to `v0.23.1`.
+- Bump `pyo3` from `v0.22.5` to `v0.23.1`.
 
 ## [0.6.0] - 2024-11-03
 
