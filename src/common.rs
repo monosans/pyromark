@@ -26,8 +26,10 @@ pub(crate) fn parse_events(
         } else {
             Box::new(parser)
         };
-    serde_json::to_value(iterator.collect::<Vec<_>>()).map_err(move |err| {
-        pyo3::exceptions::PyValueError::new_err(err.to_string())
+    serde_json::to_value(iterator.collect::<Vec<_>>()).map_err(move |e| {
+        pyo3::exceptions::PyValueError::new_err(format!(
+            "failed to serialize markdown events to json: {e}"
+        ))
     })
 }
 
@@ -48,7 +50,9 @@ pub(crate) fn serde_into_py<'py>(
             } else if let Some(f) = n.as_f64() {
                 Ok(f.into_pyobject(py)?.into_any())
             } else {
-                Err(pyo3::exceptions::PyValueError::new_err("Invalid number"))
+                Err(pyo3::exceptions::PyValueError::new_err(format!(
+                    "invalid number: '{n}'"
+                )))
             }
         }
         serde_json::Value::String(s) => Ok(s.into_pyobject(py)?.into_any()),
