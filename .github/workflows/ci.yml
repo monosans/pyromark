@@ -27,7 +27,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@v3
-      - run: uv tool run --from pre-commit@latest --with pre-commit-uv --no-cache --python 3.12 pre-commit run --all-files
+      - run: uv tool run --from pre-commit@latest --with pre-commit-uv --no-cache --python 3.13 pre-commit run --all-files
   run-rustfmt:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-latest
@@ -52,7 +52,9 @@ jobs:
           - x86_64-unknown-linux-musl
           - i686-unknown-linux-musl
           - aarch64-unknown-linux-musl
+          - arm-unknown-linux-musleabihf
           - armv7-unknown-linux-musleabihf
+          - powerpc64le-unknown-linux-musl
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -64,10 +66,10 @@ jobs:
             3.9
             3.10
             3.11
-            3.13
+            3.12
             pypy3.9
             pypy3.10
-            3.12
+            3.13
           check-latest: true
       - uses: PyO3/maturin-action@v1
         with:
@@ -99,6 +101,8 @@ jobs:
             architecture: x64
           - target: i686-pc-windows-msvc
             architecture: x86
+          - target: aarch64-pc-windows-msvc
+            architecture: arm64
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -110,14 +114,16 @@ jobs:
             3.9
             3.10
             3.11
-            3.13
             3.12
+            pypy3.9
+            pypy3.10
+            3.13
           architecture: ${{ matrix.architecture }}
           check-latest: true
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --interpreter '3.9 3.10 3.11 3.12 3.13'
+          args: --release --out dist --interpreter '3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10'
           sccache: "true"
       - uses: actions/upload-artifact@v4
         with:
@@ -155,10 +161,10 @@ jobs:
             3.9
             3.10
             3.11
-            3.13
+            3.12
             pypy3.9
             pypy3.10
-            3.12
+            3.13
           check-latest: true
       - uses: PyO3/maturin-action@v1
         with:
