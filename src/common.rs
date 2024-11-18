@@ -41,10 +41,10 @@ pub(crate) fn serde_into_py<'py>(
             Ok(b.into_pyobject(py)?.into_bound().into_any())
         }
         serde_json::Value::Number(n) => {
-            if let Some(i) = n.as_i64() {
-                Ok(i.into_pyobject(py)?.into_any())
-            } else if let Some(u) = n.as_u64() {
+            if let Some(u) = n.as_u64() {
                 Ok(u.into_pyobject(py)?.into_any())
+            } else if let Some(i) = n.as_i64() {
+                Ok(i.into_pyobject(py)?.into_any())
             } else if let Some(f) = n.as_f64() {
                 Ok(f.into_pyobject(py)?.into_any())
             } else {
