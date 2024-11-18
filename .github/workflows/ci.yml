@@ -99,8 +99,6 @@ jobs:
             architecture: x64
           - target: i686-pc-windows-msvc
             architecture: x86
-          - target: aarch64-pc-windows-msvc
-            architecture: arm64
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
