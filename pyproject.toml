@@ -34,7 +34,7 @@ urls.repository = "https://github.com/monosans/pyromark"
 scripts.pyromark = "pyromark.__main__:_main"
 
 [dependency-groups]
-dev = ["mypy[faster-cache]==1.13", "pytest==8.3.3", "ruff==0.7.4"]
+dev = ["mypy[faster-cache]==1.13", "pytest==8.3.3", "ruff==0.8.0"]
 docs = [
   "mkdocs-material==9.5.45",
   "mkdocs-minify-html-plugin==0.2.3",
