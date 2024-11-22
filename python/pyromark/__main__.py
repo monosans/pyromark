@@ -8,12 +8,18 @@ from typing import Optional
 import pyromark
 
 
-def _parse_args(args: Optional[Sequence[str]]) -> argparse.Namespace:
+def _parse_args(args: Optional[Sequence[str]], /) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         pyromark.__name__, description=pyromark.__doc__
     )
     parser.add_argument(
         "-v", "--version", action="version", version=pyromark.__version__
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=argparse.FileType("w"),
+        help="output file path, defaults to stdout",
     )
     for opt_name in pyromark.Options.__members__:
         parser.add_argument(
@@ -24,11 +30,11 @@ def _parse_args(args: Optional[Sequence[str]]) -> argparse.Namespace:
         type=argparse.FileType(),
         help="input file path or '-' for stdin",
     )
-    return parser.parse_args(args=args)
+    return parser.parse_args(args)
 
 
-def _main(args: Optional[Sequence[str]] = None) -> None:
-    parsed_args = _parse_args(args=args)
+def _main(args: Optional[Sequence[str]] = None, /) -> None:
+    parsed_args = _parse_args(args)
 
     with parsed_args.file as f:
         content = f.read()
@@ -40,7 +46,11 @@ def _main(args: Optional[Sequence[str]] = None) -> None:
             opts |= opt
 
     html = pyromark.html(content, options=opts)
-    print(html, end="")
+    if parsed_args.output is None:
+        print(html, end="")
+    else:
+        with parsed_args.output:
+            print(html, end="", file=parsed_args.output)
 
 
 if __name__ == "__main__":
