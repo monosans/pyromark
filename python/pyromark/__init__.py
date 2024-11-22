@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from ._options import Options
-from ._pyromark import (
+from pyromark._options import Options
+from pyromark._pyromark import (
     Markdown,
     __version__ as __version__,  # noqa: PLC0414
     events,

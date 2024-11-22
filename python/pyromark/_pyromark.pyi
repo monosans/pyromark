@@ -3,8 +3,8 @@ from typing import Final
 
 from typing_extensions import final
 
-from ._options import Options
-from .event import Event
+from pyromark._options import Options
+from pyromark.event import Event
 
 __version__: Final[str]
 
