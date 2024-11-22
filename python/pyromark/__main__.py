@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from collections.abc import Iterator, Sequence
 from contextlib import contextmanager
 from typing import Optional
@@ -62,4 +63,7 @@ def _main(args: Optional[Sequence[str]] = None, /) -> None:
 
 
 if __name__ == "__main__":
-    _main()
+    try:
+        _main()
+    except KeyboardInterrupt:
+        sys.exit(130)
