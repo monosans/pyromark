@@ -1,8 +1,5 @@
-pub(crate) fn build_options(options: Option<u32>) -> pulldown_cmark::Options {
-    match options {
-        None => pulldown_cmark::Options::empty(),
-        Some(value) => pulldown_cmark::Options::from_bits_truncate(value),
-    }
+pub(crate) fn build_options(options: u32) -> pulldown_cmark::Options {
+    pulldown_cmark::Options::from_bits_truncate(options)
 }
 
 pub(crate) fn html(markdown: &str, options: pulldown_cmark::Options) -> String {

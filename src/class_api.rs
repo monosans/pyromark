@@ -6,8 +6,8 @@ pub(crate) struct Markdown(pulldown_cmark::Options);
 #[pymethods]
 impl Markdown {
     #[new]
-    #[pyo3(signature = (*, options = None))]
-    fn new(options: Option<u32>) -> Self {
+    #[pyo3(signature = (*, options = 0))]
+    fn new(options: u32) -> Self {
         Self(crate::common::build_options(options))
     }
 

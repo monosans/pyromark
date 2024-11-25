@@ -9,12 +9,16 @@ from pyromark.event import Event
 __version__: Final[str]
 
 def events(
-    markdown: str, /, *, options: Options | None = None, merge_text: bool = True
+    markdown: str,
+    /,
+    *,
+    options: Options = Options(0),  # noqa: B008, PYI011
+    merge_text: bool = True,
 ) -> list[Event]: ...
-def html(markdown: str, /, *, options: Options | None = None) -> str: ...
+def html(markdown: str, /, *, options: Options = Options(0)) -> str: ...  # noqa: B008, PYI011
 @final
 class Markdown:
-    def __init__(self, *, options: Options | None = None) -> None: ...
+    def __init__(self, *, options: Options = Options(0)) -> None: ...  # noqa: B008, PYI011
     def events(
         self, markdown: str, /, *, merge_text: bool = True
     ) -> list[Event]: ...

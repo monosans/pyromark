@@ -24,11 +24,11 @@ use pyo3::prelude::*;
 ///                 print(f"Got {other_event!r}")
 ///     ```
 #[pyfunction]
-#[pyo3(signature = (markdown, /, *, options = None, merge_text = true))]
+#[pyo3(signature = (markdown, /, *, options = 0, merge_text = true))]
 pub(crate) fn events<'py>(
     py: Python<'py>,
     markdown: &str,
-    options: Option<u32>,
+    options: u32,
     merge_text: bool,
 ) -> pythonize::Result<Bound<'py, PyAny>> {
     let v = py.allow_threads(move || {
@@ -55,12 +55,8 @@ pub(crate) fn events<'py>(
 ///     assert html == "<h1>Hello world</h1>\n"
 ///     ```
 #[pyfunction]
-#[pyo3(signature = (markdown, /, *, options = None))]
-pub(crate) fn html(
-    py: Python<'_>,
-    markdown: &str,
-    options: Option<u32>,
-) -> String {
+#[pyo3(signature = (markdown, /, *, options = 0))]
+pub(crate) fn html(py: Python<'_>, markdown: &str, options: u32) -> String {
     py.allow_threads(move || {
         crate::common::html(markdown, crate::common::build_options(options))
     })
