@@ -1,30 +1,60 @@
+# ruff: noqa: PYI030
 from __future__ import annotations
 
 from typing import Optional, Union
 
 from typing_extensions import Literal, TypeAlias, TypedDict
 
-HeadingLevel: TypeAlias = Literal["H1", "H2", "H3", "H4", "H5", "H6"]
+_HeadingLevel: TypeAlias = Literal["H1", "H2", "H3", "H4", "H5", "H6"]
 
 
-class Heading(TypedDict):
-    level: HeadingLevel
+class _HeadingData(TypedDict):
+    level: _HeadingLevel
     id: Optional[str]
-    classes: tuple[str, ...]
-    attrs: tuple[tuple[str, Optional[str]], ...]
+    classes: list[str]
+    attrs: list[tuple[str, Optional[str]]]
 
 
-BlockQuoteKind: TypeAlias = Literal[
+class _HeadingStart(TypedDict):
+    Heading: _HeadingData
+
+
+_BlockQuoteKind: TypeAlias = Literal[
     "Note", "Tip", "Important", "Warning", "Caution"
 ]
 
-CodeBlockKind: TypeAlias = Union[
-    Literal["Indented"], tuple[Literal["Fenced"], str]
-]
 
-Alignment: TypeAlias = Literal["None", "Left", "Center", "Right"]
+class _BlockQuote(TypedDict):
+    BlockQuote: Optional[_BlockQuoteKind]
 
-LinkType: TypeAlias = Literal[
+
+class _Fenced(TypedDict):
+    Fenced: str
+
+
+_CodeBlockKind: TypeAlias = Union[Literal["Indented"], _Fenced]
+
+
+class _CodeBlock(TypedDict):
+    CodeBlock: _CodeBlockKind
+
+
+class _ListStart(TypedDict):
+    List: Optional[int]
+
+
+class _FootnoteDefinition(TypedDict):
+    FootnoteDefinition: str
+
+
+_Alignment: TypeAlias = Literal["None", "Left", "Center", "Right"]
+
+
+class _Table(TypedDict):
+    Table: list[_Alignment]
+
+
+_LinkType: TypeAlias = Literal[
     "Inline",
     "Reference",
     "ReferenceUnknown",
@@ -37,87 +67,147 @@ LinkType: TypeAlias = Literal[
 ]
 
 
-class Link(TypedDict):
-    link_type: LinkType
+class _LinkData(TypedDict):
+    link_type: _LinkType
     dest_url: str
     title: str
     id: str
 
 
-class Image(TypedDict):
-    link_type: LinkType
+class _Link(TypedDict):
+    Link: _LinkData
+
+
+class _ImageData(TypedDict):
+    link_type: _LinkType
     dest_url: str
     title: str
     id: str
 
 
-MetadataBlockKind: TypeAlias = Literal["YamlStyle", "PlusesStyle"]
+class _Image(TypedDict):
+    Image: _ImageData
 
-Tag: TypeAlias = Union[
-    Literal[
-        "Paragraph",
-        "HtmlBlock",
-        "DefinitionList",
-        "DefinitionListTitle",
-        "DefinitionListDefinition",
-        "TableHead",
-        "TableRow",
-        "TableCell",
-        "Emphasis",
-        "Strong",
-        "Strikethrough",
-    ],
-    tuple[Literal["Heading"], Heading],
-    tuple[Literal["BlockQuote"], Optional[BlockQuoteKind]],
-    tuple[Literal["CodeBlock"], CodeBlockKind],
-    tuple[Literal["List"], Optional[int]],
-    tuple[Literal["FootnoteDefinition"], str],
-    tuple[Literal["Table"], tuple[Alignment, ...]],
-    tuple[Literal["Link"], Link],
-    tuple[Literal["Image"], Image],
-    tuple[Literal["MetadataBlock"], MetadataBlockKind],
+
+_MetadataBlockKind: TypeAlias = Literal["YamlStyle", "PlusesStyle"]
+
+
+class _MetadataBlock(TypedDict):
+    MetadataBlock: _MetadataBlockKind
+
+
+_Tag: TypeAlias = Union[
+    Literal["Paragraph"],
+    _HeadingStart,
+    _BlockQuote,
+    _CodeBlock,
+    Literal["HtmlBlock"],
+    _ListStart,
+    Literal["Item"],
+    _FootnoteDefinition,
+    Literal["DefinitionList"],
+    Literal["DefinitionListTitle"],
+    Literal["DefinitionListDefinition"],
+    _Table,
+    Literal["TableHead"],
+    Literal["TableRow"],
+    Literal["TableCell"],
+    Literal["Emphasis"],
+    Literal["Strong"],
+    Literal["Strikethrough"],
+    _Link,
+    _Image,
+    _MetadataBlock,
 ]
 
-TagEnd: TypeAlias = Union[
-    Literal[
-        "Paragraph",
-        "CodeBlock",
-        "HtmlBlock",
-        "Item",
-        "FootnoteDefinition",
-        "DefinitionList",
-        "DefinitionListTitle",
-        "DefinitionListDefinition",
-        "Table",
-        "TableHead",
-        "TableRow",
-        "TableCell",
-    ],
-    tuple[Heading, HeadingLevel],
-    tuple[Literal["BlockQuote"], Optional[BlockQuoteKind]],
-    tuple[Literal["List"], bool],
+
+class _HeadingEnd(TypedDict):
+    Heading: _HeadingLevel
+
+
+class _ListEnd(TypedDict):
+    List: bool
+
+
+_TagEnd: TypeAlias = Union[
+    Literal["Paragraph"],
+    _HeadingEnd,
+    _BlockQuote,
+    Literal["CodeBlock"],
+    Literal["HtmlBlock"],
+    _ListEnd,
+    Literal["Item"],
+    Literal["FootnoteDefinition"],
+    Literal["DefinitionList"],
+    Literal["DefinitionListTitle"],
+    Literal["DefinitionListDefinition"],
+    Literal["Table"],
+    Literal["TableHead"],
+    Literal["TableRow"],
+    Literal["TableCell"],
+    Literal["Emphasis"],
+    Literal["Strong"],
+    Literal["Strikethrough"],
+    Literal["Link"],
+    Literal["Image"],
+    _MetadataBlock,
 ]
+
+
+class _Start(TypedDict):
+    Start: _Tag
+
+
+class _End(TypedDict):
+    End: _TagEnd
+
+
+class _Text(TypedDict):
+    Text: str
+
+
+class _Code(TypedDict):
+    Code: str
+
+
+class _InlineMath(TypedDict):
+    InlineMath: str
+
+
+class _DisplayMath(TypedDict):
+    DisplayMath: str
+
+
+class _Html(TypedDict):
+    Html: str
+
+
+class _InlineHtml(TypedDict):
+    Html: str
+
+
+class _FootnoteReference(TypedDict):
+    FootnoteReference: str
+
+
+class _TaskListMarker(TypedDict):
+    FootnoteReference: str
+
 
 Event: TypeAlias = Union[
-    Literal[
-        "SoftBreak",
-        "HardBreak",
-        "Rule",
-        "Emphasis",
-        "Strong",
-        "Strikethrough",
-        "Link",
-        "Image",
-    ],
-    tuple[Literal["Start"], Tag],
-    tuple[Literal["End"], TagEnd],
-    tuple[Literal["Text"], str],
-    tuple[Literal["Code"], str],
-    tuple[Literal["InlineMath"], str],
-    tuple[Literal["DisplayMath"], str],
-    tuple[Literal["Html"], str],
-    tuple[Literal["InlineHtml"], str],
-    tuple[Literal["FootnoteReference"], str],
-    tuple[Literal["TaskListMarker"], bool],
-    tuple[Literal["MetadataBlock"], MetadataBlockKind],
+    _Start,
+    _End,
+    _Text,
+    _Code,
+    _InlineMath,
+    _DisplayMath,
+    _Html,
+    _InlineHtml,
+    _FootnoteReference,
+    Literal["SoftBreak"],
+    Literal["HardBreak"],
+    Literal["Rule"],
+    _TaskListMarker,
 ]
+
+__all__ = ("Event",)

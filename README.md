@@ -40,11 +40,11 @@ for event in pyromark.events("# Hello world"):
     # so you will get static type checking
     # and Tab completions in your IDE!
     match event:
-        case ("Start", ("Heading", {"level": heading_level})):
+        case {"Start": {"Heading": {"level": heading_level}}}:
             print(f"Heading with {heading_level} level started")
-        case ("Text", text):
+        case {"Text": text}:
             print(f"Got {text!r} text")
-        case ("End", ("Heading", heading_level)):
+        case {"End": {"Heading": heading_level}}:
             print(f"Heading with {heading_level} level ended")
         case other_event:
             print(f"Got {other_event!r}")

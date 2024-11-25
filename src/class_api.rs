@@ -25,11 +25,11 @@ impl Markdown {
     ///         # so you will get static type checking
     ///         # and Tab completions in your IDE!
     ///         match event:
-    ///             case ("Start", ("Heading", {"level": heading_level})):
+    ///             case {"Start": {"Heading": {"level": heading_level}}}:
     ///                 print(f"Heading with {heading_level} level started")
-    ///             case ("Text", text):
+    ///             case {"Text": text}:
     ///                 print(f"Got {text!r} text")
-    ///             case ("End", ("Heading", heading_level)):
+    ///             case {"End": {"Heading": heading_level}}:
     ///                 print(f"Heading with {heading_level} level ended")
     ///             case other_event:
     ///                 print(f"Got {other_event!r}")
@@ -40,11 +40,11 @@ impl Markdown {
         py: Python<'py>,
         markdown: &str,
         merge_text: bool,
-    ) -> PyResult<Bound<'py, PyAny>> {
+    ) -> pythonize::Result<Bound<'py, PyAny>> {
         let v = py.allow_threads(move || {
-            crate::common::parse_events(markdown, self.0, merge_text)
-        })?;
-        crate::common::serde_into_py(py, &v)
+            crate::common::events(markdown, self.0, merge_text)
+        });
+        pythonize::pythonize(py, &v)
     }
 
     /// Examples:
