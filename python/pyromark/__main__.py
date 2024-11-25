@@ -24,7 +24,7 @@ def _parse_args(
         "-o",
         "--output",
         type=argparse.FileType("w", encoding="utf-8"),
-        help="output file path, defaults to stdout",
+        help="output file path, default is stdout",
     )
     for opt_name in pyromark.Options.__members__:
         parser.add_argument(
@@ -33,7 +33,7 @@ def _parse_args(
     parser.add_argument(
         "file",
         type=argparse.FileType("r", encoding="utf-8"),
-        help="input file path or '-' for stdin",
+        help="utf-8 input file path or '-' for stdin",
     )
     parsed_args = parser.parse_args(args)
     try:
