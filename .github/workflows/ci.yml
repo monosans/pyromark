@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@v3
+      - uses: astral-sh/setup-uv@v4
       - run: uv tool run --from pre-commit@latest --with pre-commit-uv --no-cache --python 3.13 pre-commit run --all-files
   run-rustfmt:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
@@ -80,7 +80,7 @@ jobs:
           name: wheels-linux-${{ matrix.target }}
           path: dist
       - if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-unknown-linux-gnu' }}
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
       - name: pytest
@@ -125,7 +125,7 @@ jobs:
           name: wheels-windows-${{ matrix.target }}
           path: dist
       - if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-pc-windows-msvc' }}
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
       - name: pytest
@@ -172,7 +172,7 @@ jobs:
           name: wheels-macos-${{ matrix.target }}
           path: dist
       - if: ${{ !startsWith(github.ref, 'refs/tags/') && matrix.target == 'x86_64-apple-darwin' }}
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
       - name: pytest
