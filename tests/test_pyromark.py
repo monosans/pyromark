@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pyromark
 import pytest
-from pyromark.__main__ import _main as pyromark_cli  # noqa: PLC2701
+from pyromark._cli import main as pyromark_cli  # noqa: PLC2701
 
 TABLE = """\
 | foo | bar |
