@@ -2,6 +2,16 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.7.0] - 2024-11-25
+
+Breaking:
+
+- pyromark.events now uses `pythonize` Rust crate, the output will differ and will be more correct.
+
+Feature:
+
+- Support `--output` flag in CLI.
+
 ## [0.6.2] - 2024-11-18
 
 - Improve error messages.
