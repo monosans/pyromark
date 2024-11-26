@@ -44,7 +44,7 @@ impl Markdown {
         let v = py.allow_threads(move || {
             crate::common::events(markdown, self.0, merge_text)
         });
-        pythonize::pythonize(py, &v)
+        pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
     }
 
     /// Examples:

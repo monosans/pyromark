@@ -1,3 +1,12 @@
+pub(crate) struct PythonizeCustom;
+
+impl<'py> pythonize::PythonizeTypes<'py> for PythonizeCustom {
+    type List = pyo3::types::PyTuple;
+    type Map = pyo3::types::PyDict;
+    type NamedMap =
+        pythonize::PythonizeUnnamedMappingAdapter<'py, pyo3::types::PyDict>;
+}
+
 pub(crate) fn build_options(options: u32) -> pulldown_cmark::Options {
     pulldown_cmark::Options::from_bits_truncate(options)
 }

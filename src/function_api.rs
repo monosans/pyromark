@@ -38,7 +38,7 @@ pub(crate) fn events<'py>(
             merge_text,
         )
     });
-    pythonize::pythonize(py, &v)
+    pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
 }
 
 /// Examples:

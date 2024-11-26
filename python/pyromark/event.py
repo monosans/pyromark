@@ -11,8 +11,8 @@ _HeadingLevel: TypeAlias = Literal["H1", "H2", "H3", "H4", "H5", "H6"]
 class _HeadingData(TypedDict):
     level: _HeadingLevel
     id: Optional[str]
-    classes: list[str]
-    attrs: list[tuple[str, Optional[str]]]
+    classes: tuple[str, ...]
+    attrs: tuple[tuple[str, Optional[str]], ...]
 
 
 class _HeadingStart(TypedDict):
@@ -51,7 +51,7 @@ _Alignment: TypeAlias = Literal["None", "Left", "Center", "Right"]
 
 
 class _Table(TypedDict):
-    Table: list[_Alignment]
+    Table: tuple[_Alignment, ...]
 
 
 _LinkType: TypeAlias = Literal[
