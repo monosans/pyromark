@@ -53,4 +53,4 @@ class Options(IntFlag):
 
     if sys.version_info < (3, 11):
         __str__ = int.__repr__
-        __format__ = int.__format__
+        __format__ = int.__format__  # type: ignore[assignment]
