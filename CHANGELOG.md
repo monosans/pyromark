@@ -2,15 +2,22 @@
 
 [Semantic Versioning](https://semver.org/)
 
-## [0.7.0] - 2024-11-25
+## [0.7.0] - 2024-11-26
 
 Breaking:
 
-- pyromark.events now uses `pythonize` Rust crate, the output will differ and will be more correct.
+- The `options` argument can no longer be `None`. Use `Options(0)` instead.
+- `pyromark.events` now uses `pythonize` Rust crate, the output will be different and more correct.
+- The only exported member of `pyromark.event` is now `Event`.
 
 Feature:
 
-- Support `--output` flag in CLI.
+- Support for the `--output` flag in the CLI.
+- Backport `__str__` and `__format__` behavior for `pyromark.Options` from Python 3.11.
+
+Fix:
+
+- Ensure that the input file is always closed in the CLI.
 
 ## [0.6.2] - 2024-11-18
 
