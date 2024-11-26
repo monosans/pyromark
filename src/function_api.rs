@@ -45,7 +45,6 @@ pub(crate) fn events<'py>(
 ///     ```python
 ///     html = pyromark.html(
 ///         "# Hello world",
-///         # See pyromark.Options for all available options
 ///         options=(
 ///             pyromark.Options.ENABLE_TABLES
 ///             | pyromark.Options.ENABLE_MATH
