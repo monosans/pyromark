@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 from enum import IntFlag
 
 
@@ -49,3 +50,7 @@ class Options(IntFlag):
     """<https://docs.rs/pulldown-cmark/0.12.2/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_GFM>"""
     ENABLE_DEFINITION_LIST = 1 << 12
     """<https://docs.rs/pulldown-cmark/0.12.2/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_DEFINITION_LIST>"""
+
+    if sys.version_info < (3, 11):
+        __str__ = int.__repr__
+        __format__ = int.__format__
