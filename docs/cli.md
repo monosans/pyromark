@@ -16,13 +16,12 @@ usage: pyromark [-h] [-v] [-o OUTPUT] [--enable-tables] [--enable-footnotes] [--
 Blazingly fast Markdown parser.
 
 positional arguments:
-  file                  input file path or '-' for stdin
+  file                  utf-8 input file path or '-' for stdin
 
 options:
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
-  -o OUTPUT, --output OUTPUT
-                        output file path, defaults to stdout
+  -o OUTPUT, --output OUTPUT output file path, default is stdout
   --enable-tables
   --enable-footnotes
   --enable-strikethrough
