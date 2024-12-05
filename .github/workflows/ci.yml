@@ -111,7 +111,7 @@ jobs:
         with:
           python-version: |
             ${{ matrix.architecture != 'arm64' && '3.9' || '' }}
-            3.10
+            ${{ matrix.architecture != 'arm64' && '3.10' || '' }}
             3.11
             3.12
             ${{ matrix.architecture == 'arm64' && 'pypy3.9' || '' }}
@@ -122,7 +122,7 @@ jobs:
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --interpreter ${{ matrix.architecture != 'arm64' && '3.9' || '' }} --interpreter '3.10 3.11 3.12 3.13' --interpreter ${{ matrix.architecture == 'arm64' && 'pypy3.9' || '' }} --interpreter 'pypy3.10'
+          args: --release --out dist --interpreter ${{ matrix.architecture != 'arm64' && '3.9 3.10' || '' }} --interpreter '3.11 3.12 3.13' --interpreter ${{ matrix.architecture == 'arm64' && 'pypy3.9' || '' }} --interpreter 'pypy3.10'
           sccache: "true"
       - uses: actions/upload-artifact@v4
         with:
