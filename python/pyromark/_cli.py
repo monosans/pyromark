@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from collections.abc import Sequence
 from typing import Optional
 
@@ -37,7 +38,6 @@ def main(args: Optional[Sequence[str]] = None, /) -> None:
     parsed_args = _parse_args(args)
     try:
         content = parsed_args.file.read()
-        parsed_args.file.close()
 
         opts = pyromark.Options(0)
         for opt_name, opt in pyromark.Options.__members__.items():
@@ -50,6 +50,7 @@ def main(args: Optional[Sequence[str]] = None, /) -> None:
         else:
             parsed_args.output.write(html)
     finally:
-        parsed_args.file.close()
+        if parsed_args.file is not sys.stdin:
+            parsed_args.file.close()
         if parsed_args.output is not None:
             parsed_args.output.close()
