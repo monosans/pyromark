@@ -52,9 +52,7 @@ jobs:
           - x86_64-unknown-linux-musl
           - i686-unknown-linux-musl
           - aarch64-unknown-linux-musl
-          - arm-unknown-linux-musleabihf
           - armv7-unknown-linux-musleabihf
-          - powerpc64le-unknown-linux-musl
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -112,11 +110,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: |
-            3.9
+            ${{ matrix.architecture != 'arm64' && '3.9' || '' }}
             3.10
             3.11
             3.12
-            pypy3.9
+            ${{ matrix.architecture == 'arm64' && 'pypy3.9' || '' }}
             pypy3.10
             3.13
           architecture: ${{ matrix.architecture }}
@@ -124,7 +122,7 @@ jobs:
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --interpreter '3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10'
+          args: --release --out dist --interpreter ${{ matrix.architecture != 'arm64' && '3.9' || '' }} --interpreter '3.10 3.11 3.12 3.13' --interpreter ${{ matrix.architecture == 'arm64' && 'pypy3.9' || '' }} --interpreter 'pypy3.10'
           sccache: "true"
       - uses: actions/upload-artifact@v4
         with:
