@@ -113,7 +113,7 @@ jobs:
             ${{ matrix.architecture != 'arm64' && '3.9' || '' }}
             ${{ matrix.architecture != 'arm64' && '3.10' || '' }}
             ${{ matrix.architecture != 'arm64' && '3.11' || '' }}
-            3.12
+            ${{ matrix.architecture != 'arm64' && '3.12' || '' }}
             ${{ matrix.architecture == 'arm64' && 'pypy3.9' || '' }}
             ${{ matrix.architecture == 'arm64' && 'pypy3.10' || '' }}
             3.13
@@ -122,7 +122,7 @@ jobs:
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --interpreter ${{ matrix.architecture != 'arm64' && '3.9 3.10 3.11' || '' }} --interpreter '3.11 3.12 3.13' --interpreter ${{ matrix.architecture == 'arm64' && 'pypy3.9 pypy3.10' || '' }}
+          args: --release --out dist --interpreter ${{ matrix.architecture != 'arm64' && '3.9 3.10 3.11 3.12' || '' }} --interpreter '3.13' --interpreter ${{ matrix.architecture == 'arm64' && 'pypy3.9 pypy3.10' || '' }}
           sccache: "true"
       - uses: actions/upload-artifact@v4
         with:
