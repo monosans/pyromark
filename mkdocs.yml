@@ -62,7 +62,6 @@ plugins:
               - "!^_(?:[^_].*[^_]|_(?:all|doc|format|main|module|new|slots|str)__)$"
             members_order: source
             merge_init_into_class: true
-            modernize_annotations: true
             separate_signature: true
             show_if_no_docstring: true
             show_signature_annotations: true
