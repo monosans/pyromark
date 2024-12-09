@@ -56,6 +56,8 @@ plugins:
             - https://docs.python.org/3/objects.inv
             - https://typing-extensions.readthedocs.io/en/stable/objects.inv
           options:
+            docstring_options:
+              ignore_init_summary: true
             filters:
               - "!^_(?:[^_].*[^_]|_(?:all|doc|format|main|module|new|slots|str)__)$"
             members_order: source
