@@ -17,11 +17,11 @@ pip install -U pyromark
 
 <https://pyromark.readthedocs.io>
 
-### Basic examples
+## Basic examples
 
 See documentation for more comprehensive examples.
 
-#### Convert Markdown to HTML
+### Convert Markdown to HTML
 
 ```python
 import pyromark
@@ -30,7 +30,7 @@ html = pyromark.html("# Hello world")
 assert html == "<h1>Hello world</h1>\n"
 ```
 
-#### Iterating over Markdown elements
+### Iterating over Markdown elements
 
 ```python
 import pyromark
