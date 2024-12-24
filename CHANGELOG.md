@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.7.1] - 2024-12-24
+
+- Don't close input file in CLI if it is stdin.
+
 ## [0.7.0] - 2024-11-26
 
 Breaking:
