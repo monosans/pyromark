@@ -36,11 +36,11 @@ scripts.pyromark = "pyromark._cli:main"
 [dependency-groups]
 dev = ["mypy[faster-cache]==1.14", "pytest==8.3.4", "ruff==0.8.4"]
 docs = [
-  "black==24.10",
   "mkdocs-material==9.5.49",
   "mkdocs-minify-html-plugin==0.2.3",
   "mkdocstrings==0.27",
-  "mkdocstrings-python==1.13.0",
+  "mkdocstrings-python==1.13",
+  "ruff==0.8.4",
 ]
 
 [tool.maturin]
