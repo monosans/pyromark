@@ -13,7 +13,7 @@ concurrency:
 jobs:
   run-clippy:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,7 +21,7 @@ jobs:
       - run: cargo +stable clippy --all-targets --all-features -- -Dwarnings -Wclippy::pedantic
   run-pre-commit:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,7 +32,7 @@ jobs:
       - run: uv tool run --from pre-commit@latest --with pre-commit-uv --no-cache --python 3.13 pre-commit run --all-files
   run-rustfmt:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,7 +40,7 @@ jobs:
       - run: rustup toolchain install nightly --profile minimal --component rustfmt --no-self-update --allow-downgrade
       - run: cargo +nightly fmt --check
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         target:
@@ -186,7 +186,7 @@ jobs:
           uv run --no-sync pytest
         working-directory: ./tests
   sdist:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -200,7 +200,7 @@ jobs:
           name: wheels-sdist
           path: dist
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ github.repository_owner == 'monosans' && startsWith(github.ref, 'refs/tags/') }}
     needs:
       - linux
