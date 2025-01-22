@@ -94,7 +94,7 @@ jobs:
           uv run --no-sync pytest
         working-directory: ./tests
   windows:
-    runs-on: windows-latest
+    runs-on: windows-2025
     strategy:
       matrix:
         include:
@@ -146,7 +146,7 @@ jobs:
         include:
           - runner: macos-13
             target: x86_64-apple-darwin
-          - runner: macos-14
+          - runner: macos-15
             target: aarch64-apple-darwin
       fail-fast: false
     steps:
