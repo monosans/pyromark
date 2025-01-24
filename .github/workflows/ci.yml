@@ -157,12 +157,12 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.setup-python-version || '3.9 3.10 3.11 3.12 pypy3.9 pypy3.10 3.13'}}
+          python-version: "${{ matrix.setup-python-version || '[3.9, 3.10, 3.11, 3.12, pypy3.9, pypy3.10, 3.13]' }}"
           check-latest: true
       - uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist --interpreter ${{ matrix.maturin-python-version || '3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10' }}
+          args: --release --out dist --interpreter '${{ matrix.maturin-python-version || '3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10' }}'
           sccache: "true"
           manylinux: ${{ matrix.manylinux || 'auto' }}
       - uses: actions/upload-artifact@v4
