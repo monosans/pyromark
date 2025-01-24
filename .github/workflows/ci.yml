@@ -157,7 +157,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
-          python-version: "${{ matrix.setup-python-version || '3.9\n3.10\n3.11\n3.12\npypy3.9\npypy3.10\n3.13' }}"
+          python-version: "3.13"
           check-latest: true
       - uses: PyO3/maturin-action@v1
         with:
@@ -165,7 +165,7 @@ jobs:
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           sccache: "true"
-          before-script-linux: python3 -m ensurepip
+          before-script-linux: python3 -m pip --version || python3 -m ensurepip
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ matrix.target }}-${{ matrix.manylinux || 'auto' }}
