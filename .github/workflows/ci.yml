@@ -100,54 +100,22 @@ jobs:
             manylinux: "2_28"
           - target: x86_64-apple-darwin
             runner: macos-13
-            setup-python: |
-              3.9
-              3.10
-              3.11
-              3.12
-              pypy3.9
-              pypy3.10
-              3.13
+            setup-python: true
           - target: aarch64-apple-darwin
             runner: macos-15
-            setup-python: |
-              3.9
-              3.10
-              3.11
-              3.12
-              pypy3.9
-              pypy3.10
-              3.13
+            setup-python: true
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
-            setup-python: |
-              3.9
-              3.10
-              3.11
-              3.12
-              pypy3.9
-              pypy3.10
-              3.13
+            setup-python: true
+            setup-python-architecture: x64
           - target: i686-pc-windows-msvc
             runner: windows-2025
-            setup-python: |
-              3.9
-              3.10
-              3.11
-              3.12
-              pypy3.9
-              pypy3.10
-              3.13
+            setup-python: true
+            setup-python-architecture: x86
           - target: aarch64-pc-windows-msvc
             runner: windows-2025
-            setup-python: |
-              3.9
-              3.10
-              3.11
-              3.12
-              pypy3.9
-              pypy3.10
-              3.13
+            setup-python: true
+            setup-python-architecture: arm64
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -156,7 +124,8 @@ jobs:
       - if: ${{ matrix.setup-python }}
         uses: actions/setup-python@v5
         with:
-          python-version: "${{ matrix.setup-python }}"
+          python-version: "${{ matrix.setup-python-versions || '3.9\n3.10\n3.11\n3.12\npypy3.9\npypy3.10\n3.13' }}"
+          architecture: "${{ matrix.setup-python-architecture || '' }}"
           check-latest: true
       - uses: PyO3/maturin-action@v1
         with:
