@@ -62,11 +62,15 @@ impl Markdown {
     ///         # and Tab completions in your IDE!
     ///         match event:
     ///             case {"Start": {"Heading": {"level": heading_level}}}:
-    ///                 print(f"Heading with {heading_level} level started, {range_=}")
+    ///                 print(
+    ///                     f"Heading with {heading_level} level started, {range_=}"
+    ///                 )
     ///             case {"Text": text}:
     ///                 print(f"Got {text!r} text, {range_=}")
     ///             case {"End": {"Heading": heading_level}}:
-    ///                 print(f"Heading with {heading_level} level ended, {range_=}")
+    ///                 print(
+    ///                     f"Heading with {heading_level} level ended, {range_=}"
+    ///                 )
     ///             case other_event:
     ///                 print(f"Got {other_event!r}, {range_=}")
     ///     ```
