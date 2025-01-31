@@ -30,3 +30,12 @@ pub(crate) fn events(
         parser.collect()
     }
 }
+
+pub(crate) fn events_with_range(
+    markdown: &str,
+    options: pulldown_cmark::Options,
+) -> Vec<(pulldown_cmark::Event, std::ops::Range<usize>)> {
+    pulldown_cmark::Parser::new_ext(markdown, options)
+        .into_offset_iter()
+        .collect()
+}
