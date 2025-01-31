@@ -63,13 +63,15 @@ impl Markdown {
     ///         match event:
     ///             case {"Start": {"Heading": {"level": heading_level}}}:
     ///                 print(
-    ///                     f"Heading with {heading_level} level started, {range_=}"
+    ///                     f"Heading with {heading_level} level started, "
+    ///                     f"{range_=}"
     ///                 )
     ///             case {"Text": text}:
     ///                 print(f"Got {text!r} text, {range_=}")
     ///             case {"End": {"Heading": heading_level}}:
     ///                 print(
-    ///                     f"Heading with {heading_level} level ended, {range_=}"
+    ///                     f"Heading with {heading_level} level ended, "
+    ///                     f"{range_=}"
     ///                 )
     ///             case other_event:
     ///                 print(f"Got {other_event!r}, {range_=}")
