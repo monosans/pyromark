@@ -210,4 +210,10 @@ Event: TypeAlias = Union[
     _TaskListMarker,
 ]
 
-__all__ = ("Event",)
+
+class Range(TypedDict):
+    start: int
+    end: int
+
+
+__all__ = ("Event", "Range")
