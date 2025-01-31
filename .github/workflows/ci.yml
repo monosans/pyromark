@@ -129,11 +129,10 @@ jobs:
             setup-python: true
             setup-python-architecture: arm64
             setup-python-versions: |
-              3.12
               pypy3.9
               pypy3.10
               3.13
-            maturin-python: 3.12 3.13 pypy3.9 pypy3.10
+            maturin-python: 3.13 pypy3.9 pypy3.10
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
