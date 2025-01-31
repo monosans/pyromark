@@ -131,8 +131,7 @@ jobs:
             setup-python-versions: |
               pypy3.9
               pypy3.10
-              3.13
-            maturin-python: 3.13 pypy3.9 pypy3.10
+            maturin-python: pypy3.9 pypy3.10
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
