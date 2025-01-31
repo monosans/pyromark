@@ -113,7 +113,7 @@ jobs:
               3.11
               3.12
               3.13
-            maturin-python: 3.10 3.11 3.12 3.13
+            maturin-python: 3.10 3.11 3.12 3.13 pypy3.10
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python: true
@@ -123,7 +123,7 @@ jobs:
               3.11
               3.12
               3.13
-            maturin-python: 3.10 3.11 3.12 3.13
+            maturin-python: 3.10 3.11 3.12 3.13 pypy3.10
           - target: aarch64-pc-windows-msvc
             runner: windows-2025
             setup-python: true
