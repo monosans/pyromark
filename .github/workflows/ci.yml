@@ -11,34 +11,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 jobs:
-  run-clippy:
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - run: cargo +stable clippy --all-targets --all-features -- -Dwarnings -Wclippy::pedantic
-  run-pre-commit:
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: false
-      - run: uv tool run --from pre-commit@latest --with pre-commit-uv --no-cache --python 3.13 pre-commit run --all-files
-  run-rustfmt:
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - run: rustup toolchain install nightly --profile minimal --component rustfmt --no-self-update --allow-downgrade
-      - run: cargo +nightly fmt --check
   build:
     runs-on: ${{ matrix.runner }}
     strategy:
@@ -126,10 +98,8 @@ jobs:
               3.10
               3.11
               3.12
-              pypy3.9
-              pypy3.10
               3.13
-            # build-python-versions: 3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10
+            build-python-versions: 3.9 3.10 3.11 3.12 3.13
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
@@ -138,10 +108,8 @@ jobs:
               3.10
               3.11
               3.12
-              pypy3.9
-              pypy3.10
               3.13
-            # build-python-versions: 3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10
+            build-python-versions: 3.9 3.10 3.11 3.12 3.13
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -164,33 +132,63 @@ jobs:
         with:
           name: wheels-${{ matrix.target }}-${{ matrix.manylinux || 'auto' }}
           path: dist
-      # - if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-      #   uses: astral-sh/setup-uv@v5
-      #   with:
-      #     enable-cache: true
-      # - name: pytest
-      #   if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-      #   shell: bash
-      #   run: |
-      #     set -e
-      #     uv sync --no-install-project --frozen
-      #     uv pip install --find-links ../dist --no-index pyromark
-      #     uv run --no-sync pytest
-      #   working-directory: ./tests
-  sdist:
+  pytest:
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    needs:
+      - build
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        python-version:
+          - "3.9"
+          - "3.13"
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: |
+          set -e
+          uv sync --no-install-project --frozen --python ${{ matrix.python-version }}
+          uv pip install --find-links ../dist --no-index pyromark
+          uv run --no-sync pytest
+  check:
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    needs:
+      - build
+      - clippy
+      - pre-commit
+      - pytest
+      - rustfmt
+      - sdist
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
+  clippy:
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: PyO3/maturin-action@v1
+      - run: cargo +stable clippy --all-targets --all-features -- -Dwarnings -Wclippy::pedantic
+  pre-commit:
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
         with:
-          command: sdist
-          args: --out dist
-      - uses: actions/upload-artifact@v4
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v5
         with:
-          name: wheels-sdist
-          path: dist
+          enable-cache: false
+      - run: uv tool run --from pre-commit@latest --with pre-commit-uv --no-cache --python 3.13 pre-commit run --all-files
   release:
     runs-on: ubuntu-24.04
     if: ${{ github.repository_owner == 'monosans' && startsWith(github.ref, 'refs/tags/') }}
@@ -209,3 +207,26 @@ jobs:
         with:
           command: upload
           args: --non-interactive --skip-existing wheels-*/*
+  rustfmt:
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: rustup toolchain install nightly --profile minimal --component rustfmt --no-self-update --allow-downgrade
+      - run: cargo +nightly fmt --check
+  sdist:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-sdist
+          path: dist
