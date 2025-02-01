@@ -4,7 +4,7 @@ requires = ["maturin>=1,<2"]
 
 [project]
 name = "pyromark"
-version = "0.7.1"
+version = "0.8.0"
 description = "Blazingly fast Markdown parser"
 readme = "README.md"
 keywords = ["converter", "html"]

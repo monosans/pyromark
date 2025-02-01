@@ -2,6 +2,11 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.8.0] - 2025-02-01
+
+- Add `events_with_range` which returns `(Event, Range)` pairs.
+- Build for more platforms and more manylinux versions to improve performance on modern systems.
+
 ## [0.7.1] - 2024-12-24
 
 - Don't close input file in CLI if it is stdin.
