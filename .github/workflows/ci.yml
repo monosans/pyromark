@@ -157,7 +157,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - run: cargo +stable clippy --all-targets --all-features -- -Dwarnings -Wclippy::pedantic
+      - run: rustup toolchain install beta --profile minimal --component clippy --allow-downgrade
+      - run: cargo +beta clippy --all-targets --all-features -- -Dwarnings -Wclippy::pedantic
   pre-commit:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
@@ -168,7 +169,7 @@ jobs:
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: false
-      - run: uv tool run --from pre-commit@latest --with pre-commit-uv --no-cache --python 3.13 pre-commit run --all-files
+      - run: uv tool run --from pre-commit@latest --with pre-commit-uv --no-cache --python 3.13 pre-commit run --all-files --show-diff-on-failure
   pytest:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     needs:
@@ -223,7 +224,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - run: rustup toolchain install nightly --profile minimal --component rustfmt --no-self-update --allow-downgrade
+      - run: rustup toolchain install nightly --profile minimal --component rustfmt --allow-downgrade
       - run: cargo +nightly fmt --check
   sdist:
     runs-on: ubuntu-24.04
