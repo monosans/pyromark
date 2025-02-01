@@ -64,6 +64,9 @@ jobs:
           - target: powerpc64le-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_28"
+          - target: powerpc64le-unknown-linux-gnu
+            runner: ubuntu-24.04
+            manylinux: musllinux_1_2
           - target: s390x-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2014"
@@ -126,6 +129,7 @@ jobs:
           args: --release --out dist --interpreter '${{ matrix.build-python-versions || '3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10' }}'
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
+          rust-toolchain: beta
           sccache: "true"
           before-script-linux: python3 -m pip --version || python3 -m ensurepip
       - uses: actions/upload-artifact@v4
@@ -207,6 +211,7 @@ jobs:
         with:
           command: upload
           args: --non-interactive --skip-existing wheels-*/*
+          rust-toolchain: beta
   rustfmt:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
@@ -226,6 +231,7 @@ jobs:
         with:
           command: sdist
           args: --out dist
+          rust-toolchain: beta
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-sdist
