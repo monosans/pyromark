@@ -46,6 +46,9 @@ jobs:
           - target: aarch64-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
+          - target: arm-unknown-linux-musleabihf
+            runner: ubuntu-24.04
+            manylinux: musllinux_1_2
           - target: armv7-unknown-linux-gnueabihf
             runner: ubuntu-24.04
             manylinux: "2014"
@@ -64,7 +67,7 @@ jobs:
           - target: powerpc64le-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_28"
-          - target: powerpc64le-unknown-linux-gnu
+          - target: powerpc64le-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
           - target: s390x-unknown-linux-gnu
@@ -101,10 +104,8 @@ jobs:
               3.10
               3.11
               3.12
-              pypy3.9
-              pypy3.10
               3.13
-            # build-python-versions: 3.9 3.10 3.11 3.12 3.13
+            build-python-versions: 3.9 3.10 3.11 3.12 3.13
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
@@ -113,10 +114,8 @@ jobs:
               3.10
               3.11
               3.12
-              pypy3.9
-              pypy3.10
               3.13
-            # build-python-versions: 3.9 3.10 3.11 3.12 3.13
+            build-python-versions: 3.9 3.10 3.11 3.12 3.13
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
