@@ -101,8 +101,10 @@ jobs:
               3.10
               3.11
               3.12
+              pypy3.9
+              pypy3.10
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13
+            # build-python-versions: 3.9 3.10 3.11 3.12 3.13
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
@@ -111,8 +113,10 @@ jobs:
               3.10
               3.11
               3.12
+              pypy3.9
+              pypy3.10
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13
+            # build-python-versions: 3.9 3.10 3.11 3.12 3.13
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
