@@ -52,10 +52,11 @@ for event in pyromark.events("# Hello world"):
 
 ## Performance
 
-130x faster than [Markdown](https://pypi.org/project/Markdown/),
-101x faster than [markdown-it-py](https://pypi.org/project/markdown-it-py/),
-71x faster than [mistune](https://pypi.org/project/mistune/),
-8x faster than [markdown-it-pyrs](https://pypi.org/project/markdown-it-pyrs/).
+160x faster than [markdown2](https://pypi.org/project/markdown2/),
+131x faster than [Markdown](https://pypi.org/project/Markdown/),
+121x faster than [mistletoe](https://pypi.org/project/markdown-it-py/),
+107x faster than [markdown-it-py](https://pypi.org/project/markdown-it-py/),
+82x faster than [mistune](https://pypi.org/project/mistune/).
 
 If you use threading, the difference with other libraries will be even more enormous, since pyromark releases the [GIL](https://docs.python.org/3/glossary.html#term-global-interpreter-lock).
 
