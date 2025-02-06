@@ -34,13 +34,13 @@ urls.repository = "https://github.com/monosans/pyromark"
 scripts.pyromark = "pyromark._cli:main"
 
 [dependency-groups]
-dev = ["mypy[faster-cache]==1.15.0", "pytest==8.3.4", "ruff==0.9.4"]
+dev = ["mypy[faster-cache]==1.15.0", "pytest==8.3.4", "ruff==0.9.5"]
 docs = [
   "mkdocs-material==9.6.2",
   "mkdocs-minify-html-plugin==0.2.4",
   "mkdocstrings==0.28.0",
   "mkdocstrings-python==1.14.5",
-  "ruff==0.9.4",
+  "ruff==0.9.5",
 ]
 
 [tool.maturin]
