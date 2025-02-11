@@ -170,6 +170,8 @@ jobs:
         with:
           enable-cache: false
       - run: uv tool run --from pre-commit@latest --with pre-commit-uv --no-cache --python 3.13 pre-commit run --all-files --show-diff-on-failure
+        env:
+          RUFF_OUTPUT_FORMAT: github
   pytest:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     needs:
@@ -196,7 +198,7 @@ jobs:
         run: |
           set -e
           uv sync --no-install-project --frozen --python ${{ matrix.python-version }}
-          uv pip install --find-links dist --no-index pyromark
+          uv pip install --find-links dist pyromark
           uv run --no-sync pytest
   release:
     runs-on: ubuntu-24.04
