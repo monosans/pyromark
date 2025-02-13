@@ -6,9 +6,10 @@
 
 This release does not contain any breaking changes.
 
-- Bump pulldown-cmark from 0.12.2 to 0.13.0. See <https://github.com/pulldown-cmark/pulldown-cmark/releases/tag/v0.13.0>.
-- Add new options from pulldown-cmark: ENABLE_SUPERSCRIPT, ENABLE_SUBSCRIPT, ENABLE_WIKILINKS.
-- Add new event types related to new options.
+- Bump pulldown-cmark from v0.12.2 to v0.13.0. See <https://github.com/pulldown-cmark/pulldown-cmark/releases/tag/v0.13.0>.
+- Add new options from pulldown-cmark v0.13.0: ENABLE_SUPERSCRIPT, ENABLE_SUBSCRIPT, ENABLE_WIKILINKS.
+- Add new event types associated with the new options.
+- Add a simple script to the documentation to compare performance with other libraries.
 
 ## [0.8.0] - 2025-02-01
 
