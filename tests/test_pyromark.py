@@ -308,7 +308,7 @@ In old syntax, this is a footnote followed by a code block.
 </code></pre>
 <p>In new syntax, this undefined footnote definition renders as
 literal text <sup class="footnote-reference"><a href="#4">4</a></sup>. In old syntax, it creates a dangling link.</p>
-<p><del>Hi</del> Hello, <del>there</del> world!</p>
+<p><del>Hi</del> Hello, <sub>there</sub> world!</p>
 <ul>
 <li><input disabled="" type="checkbox"/>
 foo</li>
