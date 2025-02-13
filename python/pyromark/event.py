@@ -54,7 +54,7 @@ class _Table(TypedDict):
     Table: tuple[_Alignment, ...]
 
 
-class _Wikilink(TypedDict):
+class _WikiLink(TypedDict):
     has_pothole: bool
 
 
@@ -68,7 +68,7 @@ _LinkType: TypeAlias = Union[
     Literal["ShortcutUnknown"],
     Literal["Autolink"],
     Literal["Email"],
-    _Wikilink,
+    _WikiLink,
 ]
 
 
