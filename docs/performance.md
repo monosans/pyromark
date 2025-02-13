@@ -2,12 +2,12 @@
 
 | Library     | Version | Seconds | n times slower than pyromark |
 | ----------- | ------- | ------- | ---------------------------- |
-| markdown2   | 2.5.3   | 3.918   | 160                          |
-| markdown    | 3.7     | 3.207   | 131                          |
-| mistletoe   | 1.4.0   | 2.962   | 121                          |
-| markdown_it | 3.0.0   | 2.610   | 107                          |
-| mistune     | 3.1.1   | 2.012   | 82                           |
-| pyromark    | 0.8.0   | 0.024   | 1                            |
+| markdown2   | 2.5.3   | 4.005   | 160                          |
+| markdown    | 3.7     | 3.245   | 130                          |
+| mistletoe   | 1.4.0   | 2.980   | 119                          |
+| markdown_it | 3.0.0   | 2.583   | 103                          |
+| mistune     | 3.1.1   | 1.885   | 75                           |
+| pyromark    | 0.9.0   | 0.025   | 1                            |
 
 ```python
 # pip install markdown markdown2 markdown-it-py mistletoe mistune pyromark requests
