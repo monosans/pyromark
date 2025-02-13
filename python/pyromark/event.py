@@ -54,16 +54,21 @@ class _Table(TypedDict):
     Table: tuple[_Alignment, ...]
 
 
-_LinkType: TypeAlias = Literal[
-    "Inline",
-    "Reference",
-    "ReferenceUnknown",
-    "Collapsed",
-    "CollapsedUnknown",
-    "Shortcut",
-    "ShortcutUnknown",
-    "Autolink",
-    "Email",
+class _Wikilink(TypedDict):
+    has_pothole: bool
+
+
+_LinkType: TypeAlias = Union[
+    Literal["Inline"],
+    Literal["Reference"],
+    Literal["ReferenceUnknown"],
+    Literal["Collapsed"],
+    Literal["CollapsedUnknown"],
+    Literal["Shortcut"],
+    Literal["ShortcutUnknown"],
+    Literal["Autolink"],
+    Literal["Email"],
+    _Wikilink,
 ]
 
 
@@ -115,6 +120,8 @@ _Tag: TypeAlias = Union[
     Literal["Emphasis"],
     Literal["Strong"],
     Literal["Strikethrough"],
+    Literal["Superscript"],
+    Literal["Subscript"],
     _Link,
     _Image,
     _MetadataBlock,
@@ -148,6 +155,8 @@ _TagEnd: TypeAlias = Union[
     Literal["Emphasis"],
     Literal["Strong"],
     Literal["Strikethrough"],
+    Literal["Superscript"],
+    Literal["Subscript"],
     Literal["Link"],
     Literal["Image"],
     _MetadataBlock,
