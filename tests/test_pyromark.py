@@ -350,7 +350,7 @@ def test_pyromark(
     tmp_path: Path,
 ) -> None:
     file = tmp_path / "tmp.md"
-    file.write_text(markdown)
+    file.write_text(markdown, encoding="utf-8")
 
     pyromark_cli((str(file),))
     capture = capsys.readouterr()
