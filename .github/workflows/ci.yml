@@ -18,7 +18,7 @@ jobs:
         include:
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-24.04
-            manylinux: "2014"
+            manylinux: "2_17"
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_28"
@@ -30,13 +30,13 @@ jobs:
             manylinux: musllinux_1_2
           - target: i686-unknown-linux-gnu
             runner: ubuntu-24.04
-            manylinux: "2014"
+            manylinux: "2_17"
           - target: i686-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-24.04-arm
-            manylinux: "2014"
+            manylinux: "2_17"
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-24.04-arm
             manylinux: "2_28"
@@ -48,7 +48,7 @@ jobs:
             manylinux: musllinux_1_2
           - target: armv7-unknown-linux-gnueabihf
             runner: ubuntu-24.04
-            manylinux: "2014"
+            manylinux: "2_17"
           - target: armv7-unknown-linux-gnueabihf
             runner: ubuntu-24.04
             manylinux: "2_28"
@@ -57,10 +57,10 @@ jobs:
             manylinux: musllinux_1_2
           - target: powerpc64-unknown-linux-gnu
             runner: ubuntu-24.04
-            manylinux: "2014"
+            manylinux: "2_17"
           - target: powerpc64le-unknown-linux-gnu
             runner: ubuntu-24.04
-            manylinux: "2014"
+            manylinux: "2_17"
           - target: powerpc64le-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_28"
@@ -69,7 +69,7 @@ jobs:
             manylinux: musllinux_1_2
           - target: s390x-unknown-linux-gnu
             runner: ubuntu-24.04
-            manylinux: "2014"
+            manylinux: "2_17"
           - target: s390x-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_28"
