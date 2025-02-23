@@ -95,6 +95,8 @@ jobs:
               3.11
               3.12
               3.13t
+              pypy3.9
+              pypy3.10
               3.13
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
