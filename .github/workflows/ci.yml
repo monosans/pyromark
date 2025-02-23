@@ -31,7 +31,7 @@ jobs:
           - target: i686-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_17"
-            # rust-toolchain: beta
+            rust-toolchain: stable
           - target: i686-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
