@@ -31,7 +31,7 @@ jobs:
           - target: i686-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_17"
-            rust-toolchain: nightly
+            # rust-toolchain: beta
           - target: i686-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
@@ -47,10 +47,9 @@ jobs:
           - target: aarch64-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
-          - target: arm-unknown-linux-musleabihf
-            runner: ubuntu-24.04
-            manylinux: musllinux_1_2
-            rust-toolchain: nightly
+          # - target: arm-unknown-linux-musleabihf
+          #   runner: ubuntu-24.04
+          #   manylinux: musllinux_1_2
           - target: armv7-unknown-linux-gnueabihf
             runner: ubuntu-24.04
             manylinux: "2_17"
