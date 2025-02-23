@@ -31,7 +31,7 @@ jobs:
           - target: i686-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_17"
-            rust-toolchain: stable
+            rust-toolchain: nightly
           - target: i686-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
@@ -50,7 +50,7 @@ jobs:
           - target: arm-unknown-linux-musleabihf
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
-            rust-toolchain: stable
+            rust-toolchain: nightly
           - target: armv7-unknown-linux-gnueabihf
             runner: ubuntu-24.04
             manylinux: "2_17"
