@@ -46,6 +46,9 @@ jobs:
           - target: aarch64-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
+          # - target: arm-unknown-linux-musleabihf
+          #   runner: ubuntu-24.04
+          #   manylinux: musllinux_1_2
           - target: armv7-unknown-linux-gnueabihf
             runner: ubuntu-24.04
             manylinux: "2_17"
@@ -80,6 +83,7 @@ jobs:
               3.10
               3.11
               3.12
+              3.13t
               pypy3.9
               pypy3.10
               3.13
@@ -90,6 +94,7 @@ jobs:
               3.10
               3.11
               3.12
+              3.13t
               pypy3.9
               pypy3.10
               3.13
@@ -101,8 +106,9 @@ jobs:
               3.10
               3.11
               3.12
+              3.13t
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13
+            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
@@ -111,25 +117,25 @@ jobs:
               3.10
               3.11
               3.12
+              3.13t
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13
+            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - if: "${{ matrix.setup-python-versions }}"
-        uses: actions/setup-python@v5
+        uses: quansight-labs/setup-python@v5
         with:
           python-version: "${{ matrix.setup-python-versions }}"
           architecture: "${{ matrix.setup-python-architecture || '' }}"
           check-latest: true
       - uses: PyO3/maturin-action@v1
         with:
-          args: --release --out dist --interpreter '${{ matrix.build-python-versions || '3.9 3.10 3.11 3.12 3.13 pypy3.9 pypy3.10' }}'
+          args: --release --out dist --interpreter '${{ matrix.build-python-versions || '3.9 3.10 3.11 3.12 3.13 3.13t pypy3.9 pypy3.10' }}'
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
-          rust-toolchain: beta
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           before-script-linux: python3 -m pip --version || python3 -m ensurepip
       - uses: actions/upload-artifact@v4
@@ -157,8 +163,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - run: rustup toolchain install beta --profile minimal --component clippy --allow-downgrade
-      - run: cargo +beta clippy --all-targets --all-features -- -Dwarnings -Wclippy::pedantic
+      - run: rustup toolchain install stable --profile minimal --component clippy --allow-downgrade
+      - run: cargo +stable clippy --all-targets --all-features -- -Dwarnings -Wclippy::pedantic
   pre-commit:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
@@ -218,7 +224,6 @@ jobs:
         with:
           command: upload
           args: --non-interactive --skip-existing wheels-*/*
-          rust-toolchain: beta
   rustfmt:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
@@ -238,7 +243,6 @@ jobs:
         with:
           command: sdist
           args: --out dist
-          rust-toolchain: beta
       - uses: actions/upload-artifact@v4
         with:
           name: wheels-sdist
