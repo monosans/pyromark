@@ -86,6 +86,7 @@ jobs:
               3.13t
               pypy3.9
               pypy3.10
+              pypy3.11
               3.13
           - target: aarch64-apple-darwin
             runner: macos-15
@@ -97,6 +98,7 @@ jobs:
               3.13t
               pypy3.9
               pypy3.10
+              pypy3.11
               3.13
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
@@ -107,8 +109,9 @@ jobs:
               3.11
               3.12
               3.13t
+              pypy3.11
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
+            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t pypy3.11
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
@@ -118,8 +121,9 @@ jobs:
               3.11
               3.12
               3.13t
+              pypy3.11
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
+            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t pypy3.11
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -133,7 +137,7 @@ jobs:
           check-latest: true
       - uses: PyO3/maturin-action@v1
         with:
-          args: --release --out dist --interpreter '${{ matrix.build-python-versions || '3.9 3.10 3.11 3.12 3.13 3.13t pypy3.9 pypy3.10' }}'
+          args: --release --out dist --interpreter '${{ matrix.build-python-versions || '3.9 3.10 3.11 3.12 3.13 3.13t pypy3.9 pypy3.10 pypy3.11' }}'
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           rust-toolchain: beta
