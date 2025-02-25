@@ -4,7 +4,6 @@ build:
   tools:
     rust: latest
   commands:
-    - asdf global rust latest
     - asdf plugin add uv
     - asdf install uv latest
     - asdf global uv latest
