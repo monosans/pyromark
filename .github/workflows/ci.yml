@@ -123,15 +123,6 @@ jobs:
               3.13t
               3.13
             build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
-          - target: aarch64-pc-windows-msvc
-            runner: windows-2025
-            setup-python-architecture: aarch64
-            setup-python-versions: |
-              3.11
-              3.12
-              3.13t
-              3.13
-            build-python-versions: 3.11 3.12 3.13 3.13t
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
