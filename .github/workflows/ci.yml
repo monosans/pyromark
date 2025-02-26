@@ -16,80 +16,68 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: x86_64-unknown-linux-gnu
+          - target: x86_64
             runner: ubuntu-24.04
             manylinux: "2_17"
-          - target: x86_64-unknown-linux-gnu
+          - target: x86_64
             runner: ubuntu-24.04
             manylinux: "2_28"
-          - target: x86_64-unknown-linux-gnu
+          - target: x86_64
             runner: ubuntu-24.04
             manylinux: "2_34"
-          - target: x86_64-unknown-linux-musl
+          - target: x86_64
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
-          - target: i686-unknown-linux-gnu
+          - target: i686
             runner: ubuntu-24.04
             manylinux: "2_17"
             rust-toolchain: stable
-          - target: i686-unknown-linux-musl
+          - target: i686
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
-          - target: aarch64-unknown-linux-gnu
+          - target: aarch64
             runner: ubuntu-24.04-arm
             manylinux: "2_17"
-          - target: aarch64-unknown-linux-gnu
+          - target: aarch64
             runner: ubuntu-24.04-arm
             manylinux: "2_28"
-          - target: aarch64-unknown-linux-gnu
+          - target: aarch64
             runner: ubuntu-24.04-arm
             manylinux: "2_34"
-          - target: aarch64-unknown-linux-musl
+          - target: aarch64
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
-          # - target: arm-unknown-linux-musleabihf
-          #   runner: ubuntu-24.04
-          #   manylinux: musllinux_1_2
-          - target: armv7-unknown-linux-gnueabihf
-            runner: ubuntu-24.04
-            manylinux: "2_17"
-          - target: armv7-unknown-linux-gnueabihf
-            runner: ubuntu-24.04
-            manylinux: "2_28"
-          - target: armv7-unknown-linux-musleabihf
+          - target: arm
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
-          - target: powerpc64-unknown-linux-gnu
+          - target: armv7
             runner: ubuntu-24.04
             manylinux: "2_17"
-          - target: powerpc64le-unknown-linux-gnu
-            runner: ubuntu-24.04
-            manylinux: "2_17"
-          - target: powerpc64le-unknown-linux-gnu
+          - target: armv7
             runner: ubuntu-24.04
             manylinux: "2_28"
-          - target: powerpc64le-unknown-linux-musl
+          - target: armv7
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
-          - target: s390x-unknown-linux-gnu
+          - target: ppc64
             runner: ubuntu-24.04
             manylinux: "2_17"
-          - target: s390x-unknown-linux-gnu
+          - target: ppc64le
+            runner: ubuntu-24.04
+            manylinux: "2_17"
+          - target: ppc64le
             runner: ubuntu-24.04
             manylinux: "2_28"
-          - target: x86_64-apple-darwin
-            runner: macos-13
-            setup-python-versions: |
-              3.9
-              3.10
-              3.11
-              3.12
-              3.13t
-              pypy3.9
-              pypy3.10
-              pypy3.11
-              3.13
-          - target: aarch64-apple-darwin
+          - target: ppc64le
+            runner: ubuntu-24.04
+            manylinux: musllinux_1_2
+          - target: s390x
+            runner: ubuntu-24.04
+            manylinux: "2_17"
+          - target: s390x
+            runner: ubuntu-24.04
+            manylinux: "2_28"
+          - target: x86_64
             runner: macos-15
             setup-python-versions: |
               3.9
@@ -101,7 +89,19 @@ jobs:
               pypy3.10
               pypy3.11
               3.13
-          - target: x86_64-pc-windows-msvc
+          - target: aarch64
+            runner: macos-15
+            setup-python-versions: |
+              3.9
+              3.10
+              3.11
+              3.12
+              3.13t
+              pypy3.9
+              pypy3.10
+              pypy3.11
+              3.13
+          - target: x86_64
             runner: windows-2025
             setup-python-architecture: x64
             setup-python-versions: |
@@ -112,7 +112,7 @@ jobs:
               3.13t
               3.13
             build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
-          - target: i686-pc-windows-msvc
+          - target: i686
             runner: windows-2025
             setup-python-architecture: x86
             setup-python-versions: |
@@ -123,6 +123,15 @@ jobs:
               3.13t
               3.13
             build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
+          - target: aarch64
+            runner: windows-2025
+            setup-python-architecture: x64
+            setup-python-versions: |
+              3.11
+              3.12
+              3.13t
+              3.13
+            build-python-versions: 3.11 3.12 3.13 3.13t
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
