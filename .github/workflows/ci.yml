@@ -31,7 +31,7 @@ jobs:
           - target: i686-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_17"
-            # rust-toolchain: stable
+            rust-toolchain: stable
           - target: i686-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
@@ -114,7 +114,7 @@ jobs:
             build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
           - target: i686-pc-windows-msvc
             runner: windows-2025
-            setup-python-architecture: x86
+            setup-python-architecture: x64
             setup-python-versions: |
               3.9
               3.10
