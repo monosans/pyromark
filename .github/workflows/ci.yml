@@ -47,9 +47,9 @@ jobs:
           - target: aarch64
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
-          - target: arm
-            runner: ubuntu-24.04
-            manylinux: musllinux_1_2
+          # - target: arm
+          #   runner: ubuntu-24.04
+          #   manylinux: musllinux_1_2
           - target: armv7
             runner: ubuntu-24.04
             manylinux: "2_17"
@@ -124,7 +124,7 @@ jobs:
               3.13
             build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
           - target: aarch64
-            runner: windows-2025
+            runner: windows-latest
             setup-python-architecture: x64
             setup-python-versions: |
               3.11
