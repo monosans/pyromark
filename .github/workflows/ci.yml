@@ -31,7 +31,6 @@ jobs:
           - target: i686-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_17"
-            rust-toolchain: stable
           - target: i686-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
@@ -139,7 +138,7 @@ jobs:
           args: --release --out dist --interpreter '${{ matrix.build-python-versions || '3.9 3.10 3.11 3.12 3.13 3.13t pypy3.9 pypy3.10 pypy3.11' }}'
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
-          rust-toolchain: ${{ matrix.rust-toolchain || 'beta' }}
+          rust-toolchain: beta
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           before-script-linux: python3 -m pip --version || python3 -m ensurepip
       - uses: actions/upload-artifact@v4
