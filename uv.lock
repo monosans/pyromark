@@ -851,7 +851,7 @@ requires-dist = [{ name = "typing-extensions", specifier = ">=3.7.4.2" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "mypy", extras = ["faster-cache"], specifier = "==1.15.0" },
+    { name = "mypy", extras = ["faster-cache"], specifier = "==1.15" },
     { name = "pytest", specifier = "==8.3.5" },
     { name = "pytest-github-actions-annotate-failures", specifier = "==0.3" },
     { name = "ruff", specifier = "==0.9.9" },
