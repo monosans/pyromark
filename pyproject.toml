@@ -38,14 +38,14 @@ dev = [
   "mypy[faster-cache]==1.15",
   "pytest==8.3.5",
   "pytest-github-actions-annotate-failures==0.3",
-  "ruff==0.9.9",
+  "ruff==0.9.10",
 ]
 docs = [
   "mkdocs-material==9.6.7",
   "mkdocs-minify-html-plugin==0.2.5",
   "mkdocstrings==0.28.2",
   "mkdocstrings-python==1.16.2",
-  "ruff==0.9.9",
+  "ruff==0.9.10",
 ]
 
 [tool.maturin]
