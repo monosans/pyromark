@@ -853,14 +853,14 @@ dev = [
     { name = "mypy", extras = ["faster-cache"], specifier = "==1.15" },
     { name = "pytest", specifier = "==8.3.5" },
     { name = "pytest-github-actions-annotate-failures", specifier = "==0.3" },
-    { name = "ruff", specifier = "==0.10.0" },
+    { name = "ruff", specifier = "==0.10" },
 ]
 docs = [
     { name = "mkdocs-material", specifier = "==9.6.8" },
     { name = "mkdocs-minify-html-plugin", specifier = "==0.2.5" },
-    { name = "mkdocstrings", specifier = "==0.29.0" },
+    { name = "mkdocstrings", specifier = "==0.29" },
     { name = "mkdocstrings-python", specifier = "==1.16.5" },
-    { name = "ruff", specifier = "==0.10.0" },
+    { name = "ruff", specifier = "==0.10" },
 ]
 
 [[package]]
