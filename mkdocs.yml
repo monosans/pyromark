@@ -52,7 +52,7 @@ plugins:
       default_handler: python
       handlers:
         python:
-          import:
+          inventories:
             - https://docs.python.org/3/objects.inv
             - https://typing-extensions.readthedocs.io/en/stable/objects.inv
           options:
