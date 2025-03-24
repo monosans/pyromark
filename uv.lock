@@ -611,7 +611,7 @@ wheels = [
 
 [[package]]
 name = "mkdocstrings-python"
-version = "1.16.7"
+version = "1.16.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "griffe" },
@@ -619,9 +619,9 @@ dependencies = [
     { name = "mkdocstrings" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/52/e0/cc35acb47593c138efbfc9dc296ccc26b7ad4452e868fd309f05f6ba0ded/mkdocstrings_python-1.16.7.tar.gz", hash = "sha256:cdfc1a99fe5f6f0d90446a364ef7cac12014a4ef46114b2677a58cec84007117", size = 1475398 }
+sdist = { url = "https://files.pythonhosted.org/packages/8e/b8/62190ea298fdb1e84670ef548590748c633ab4e05b35bcf902e89f2f28c6/mkdocstrings_python-1.16.8.tar.gz", hash = "sha256:9453ccae69be103810c1cf6435ce71c8f714ae37fef4d87d16aa92a7c800fe1d", size = 205119 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ab/5e/dc978b9fd6331e2070369579ad8f52145e9ef22a69bfc2811110be95e6d4/mkdocstrings_python-1.16.7-py3-none-any.whl", hash = "sha256:a5589a5be247a28ba651287f83630c69524042f8055d93b5c203d804a3409333", size = 1998312 },
+    { url = "https://files.pythonhosted.org/packages/67/d0/ef6e82f7a68c7ac02e1a01815fbe88773f4f9e40728ed35bd1664a5d76f2/mkdocstrings_python-1.16.8-py3-none-any.whl", hash = "sha256:211b7aaf776cd45578ecb531e5ad0d3a35a8be9101a6bfa10de38a69af9d8fd8", size = 124116 },
 ]
 
 [[package]]
@@ -859,7 +859,7 @@ docs = [
     { name = "mkdocs-material", specifier = "==9.6.9" },
     { name = "mkdocs-minify-html-plugin", specifier = "==0.3.1" },
     { name = "mkdocstrings", specifier = "==0.29" },
-    { name = "mkdocstrings-python", specifier = "==1.16.7" },
+    { name = "mkdocstrings-python", specifier = "==1.16.8" },
     { name = "ruff", specifier = "==0.11.2" },
 ]
 
