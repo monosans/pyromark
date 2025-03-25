@@ -128,7 +128,7 @@ jobs:
         with:
           persist-credentials: false
       - if: "${{ matrix.setup-python-versions }}"
-        uses: quansight-labs/setup-python@v5
+        uses: actions/setup-python@v5
         with:
           python-version: "${{ matrix.setup-python-versions }}"
           architecture: "${{ matrix.setup-python-architecture || '' }}"
