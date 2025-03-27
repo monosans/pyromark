@@ -151,14 +151,14 @@ wheels = [
 
 [[package]]
 name = "griffe"
-version = "1.6.3"
+version = "1.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bf/28/f61564ce1237727f0daa0b28e18201252e032aa7d7fb0e4fa0b447ecad4b/griffe-1.6.3.tar.gz", hash = "sha256:568cc9e50de04f6c76234bf46dd7f3a264ea3cbb1380fb54818e81e3675a83cf", size = 393810 }
+sdist = { url = "https://files.pythonhosted.org/packages/cc/e1/7dded768fe1adf67879bcd86cf83476e7b19f13d95e6504b6c2b91092f8c/griffe-1.7.0.tar.gz", hash = "sha256:72e9c1593c7af92a387906293fc4a318c2e8e8aef501c64678c809794b4bdca4", size = 394351 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8a/11/46f2e6370ecf8e9e3ab01ad422fb9ea5b90579bdc4b1a8527aa745b20758/griffe-1.6.3-py3-none-any.whl", hash = "sha256:7a0c559f10d8a9016f4d0b4ceaacc087e31e2370cb1aa9a59006a30d5a279fb3", size = 128922 },
+    { url = "https://files.pythonhosted.org/packages/66/b3/6201c5dc97ed76398eb419d17fe18db6b4b3ffb2baa2bae91b4c65126096/griffe-1.7.0-py3-none-any.whl", hash = "sha256:6b44efc53a3f290d42c4da521f42235177b3bd107877dd55955318a37930c572", size = 129118 },
 ]
 
 [[package]]
