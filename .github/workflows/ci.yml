@@ -76,6 +76,9 @@ jobs:
           - target: s390x-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_28"
+          - target: riscv64gc-unknown-linux-gnu
+            runner: ubuntu-24.04
+            manylinux: "2_31"
           - target: x86_64-apple-darwin
             runner: macos-15
             setup-python-versions: |
