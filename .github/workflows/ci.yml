@@ -138,7 +138,6 @@ jobs:
             runner: windows-11-arm
             setup-python-architecture: arm64
             setup-python-versions: |
-              3.9
               3.10
               3.11
               3.12
