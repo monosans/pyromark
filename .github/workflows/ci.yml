@@ -28,9 +28,9 @@ jobs:
           - target: x86_64-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
-          # - target: i686-unknown-linux-gnu
-          #   runner: ubuntu-24.04
-          #   manylinux: "2_17"
+          - target: i686-unknown-linux-gnu
+            runner: ubuntu-24.04
+            manylinux: "2_17"
           - target: i686-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
@@ -115,8 +115,11 @@ jobs:
               3.11
               3.12
               3.13t
+              pypy3.9
+              pypy3.10
+              pypy3.11
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
+            # build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
@@ -126,8 +129,25 @@ jobs:
               3.11
               3.12
               3.13t
+              pypy3.9
+              pypy3.10
+              pypy3.11
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
+            # build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
+          - target: aarch64-pc-windows-msvc
+            runner: windows-11-arm
+            setup-python-architecture: arm64
+            setup-python-versions: |
+              3.9
+              3.10
+              3.11
+              3.12
+              3.13t
+              pypy3.9
+              pypy3.10
+              pypy3.11
+              3.13
+            # build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
