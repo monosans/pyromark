@@ -1,4 +1,4 @@
-pub(crate) struct PythonizeCustom;
+pub struct PythonizeCustom;
 
 impl<'py> pythonize::PythonizeTypes<'py> for PythonizeCustom {
     type List = pyo3::types::PyTuple;
@@ -7,18 +7,18 @@ impl<'py> pythonize::PythonizeTypes<'py> for PythonizeCustom {
         pythonize::PythonizeUnnamedMappingAdapter<'py, pyo3::types::PyDict>;
 }
 
-pub(crate) fn build_options(options: u32) -> pulldown_cmark::Options {
+pub const fn build_options(options: u32) -> pulldown_cmark::Options {
     pulldown_cmark::Options::from_bits_truncate(options)
 }
 
-pub(crate) fn html(markdown: &str, options: pulldown_cmark::Options) -> String {
+pub fn html(markdown: &str, options: pulldown_cmark::Options) -> String {
     let parser = pulldown_cmark::Parser::new_ext(markdown, options);
     let mut html_output = String::new();
     pulldown_cmark::html::push_html(&mut html_output, parser);
     html_output
 }
 
-pub(crate) fn events(
+pub fn events(
     markdown: &str,
     options: pulldown_cmark::Options,
     merge_text: bool,
@@ -31,7 +31,7 @@ pub(crate) fn events(
     }
 }
 
-pub(crate) fn events_with_range(
+pub fn events_with_range(
     markdown: &str,
     options: pulldown_cmark::Options,
 ) -> Vec<(pulldown_cmark::Event, std::ops::Range<usize>)> {

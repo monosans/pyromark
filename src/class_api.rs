@@ -1,13 +1,13 @@
 use pyo3::prelude::*;
 
 #[pyclass(frozen, module = "pyromark._pyromark")]
-pub(crate) struct Markdown(pulldown_cmark::Options);
+pub struct Markdown(pulldown_cmark::Options);
 
 #[pymethods]
 impl Markdown {
     #[new]
     #[pyo3(signature = (*, options = 0))]
-    fn new(options: u32) -> Self {
+    const fn new(options: u32) -> Self {
         Self(crate::common::build_options(options))
     }
 

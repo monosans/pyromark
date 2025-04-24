@@ -25,7 +25,7 @@ use pyo3::prelude::*;
 ///     ```
 #[pyfunction]
 #[pyo3(signature = (markdown, /, *, options = 0, merge_text = true))]
-pub(crate) fn events<'py>(
+pub fn events<'py>(
     py: Python<'py>,
     markdown: &str,
     options: u32,
@@ -70,7 +70,7 @@ pub(crate) fn events<'py>(
 ///     ```
 #[pyfunction]
 #[pyo3(signature = (markdown, /, *, options = 0))]
-pub(crate) fn events_with_range<'py>(
+pub fn events_with_range<'py>(
     py: Python<'py>,
     markdown: &str,
     options: u32,
@@ -98,7 +98,7 @@ pub(crate) fn events_with_range<'py>(
 ///     ```
 #[pyfunction]
 #[pyo3(signature = (markdown, /, *, options = 0))]
-pub(crate) fn html(py: Python<'_>, markdown: &str, options: u32) -> String {
+pub fn html(py: Python<'_>, markdown: &str, options: u32) -> String {
     py.allow_threads(move || {
         crate::common::html(markdown, crate::common::build_options(options))
     })
