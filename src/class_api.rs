@@ -1,6 +1,6 @@
 use pyo3::prelude::*;
 
-#[pyclass(frozen, module = "pyromark._pyromark")]
+#[pyclass(frozen, immutable_type, module = "pyromark._pyromark")]
 pub struct Markdown(pulldown_cmark::Options);
 
 #[pymethods]
