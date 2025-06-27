@@ -5,7 +5,7 @@ from __future__ import annotations
 from pyromark._options import Options
 from pyromark._pyromark import (
     Markdown,
-    __version__ as __version__,  # noqa: PLC0414
+    __version__ as __version__,
     events,
     events_with_range,
     html,
