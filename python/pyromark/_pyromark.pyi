@@ -21,6 +21,7 @@ def events_with_range(
     options: Options = Options(0),  # noqa: B008, PYI011
 ) -> tuple[tuple[Event, Range], ...]: ...
 def html(markdown: str, /, *, options: Options = Options(0)) -> str: ...  # noqa: B008, PYI011
+
 @final
 class Markdown:
     def __init__(self, *, options: Options = Options(0)) -> None: ...  # noqa: B008, PYI011
