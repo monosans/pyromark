@@ -891,7 +891,7 @@ dev = [
 docs = [
     { name = "mkdocs-material", specifier = "==9.6.15" },
     { name = "mkdocs-minify-html-plugin", specifier = "==0.3.1" },
-    { name = "mkdocstrings", specifier = "==0.30.0" },
+    { name = "mkdocstrings", specifier = "==0.30" },
     { name = "mkdocstrings-python", specifier = "==1.16.12" },
     { name = "ruff", specifier = "==0.12.4" },
 ]
