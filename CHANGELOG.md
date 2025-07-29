@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.9.3] - 2025-07-29
+
+- Remove loongarch64-unknown-linux-gnu target as it is not supported by PyPI.
+
 ## [0.9.2] - 2025-07-29
 
 - Add CPython 3.14 and free-threaded CPython 3.14 support.

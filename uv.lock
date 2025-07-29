@@ -868,7 +868,7 @@ wheels = [
 
 [[package]]
 name = "pyromark"
-version = "0.9.2"
+version = "0.9.3"
 source = { virtual = "." }
 dependencies = [
     { name = "typing-extensions" },
