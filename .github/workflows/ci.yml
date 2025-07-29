@@ -46,9 +46,9 @@ jobs:
           - target: aarch64-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
-          - target: arm-unknown-linux-musleabihf
-            runner: ubuntu-24.04
-            manylinux: musllinux_1_2
+          # - target: arm-unknown-linux-musleabihf
+          #   runner: ubuntu-24.04
+          #   manylinux: musllinux_1_2
           - target: armv7-unknown-linux-gnueabihf
             runner: ubuntu-24.04
             manylinux: "2_17"
@@ -167,6 +167,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "${{ matrix.setup-python-versions }}"
+          allow-prereleases: true
           architecture: "${{ matrix.setup-python-architecture || '' }}"
           check-latest: true
       - uses: PyO3/maturin-action@v1
