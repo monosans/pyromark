@@ -103,3 +103,24 @@ pub fn html(py: Python<'_>, markdown: &str, options: u32) -> String {
         crate::common::html(markdown, crate::common::build_options(options))
     })
 }
+
+/// Examples:
+///     ```python
+///     html = pyromark.html_with_syntax_highlighting(
+///         "```python\nprint('hello')\n```",
+///         options=(
+///             pyromark.Options.ENABLE_TABLES
+///             | pyromark.Options.ENABLE_MATH
+///             | pyromark.Options.ENABLE_GFM
+///         ),
+///         syntax_theme="base16-ocean.dark"
+///     )
+///     # Returns HTML with syntax highlighted code blocks
+///     ```
+#[pyfunction]
+#[pyo3(signature = (markdown, /, *, options = 0, syntax_theme = None))]
+pub fn html_with_syntax_highlighting(py: Python<'_>, markdown: &str, options: u32, syntax_theme: Option<&str>) -> String {
+    py.allow_threads(move || {
+        crate::common::html_with_syntax_highlighting(markdown, crate::common::build_options(options), syntax_theme)
+    })
+}

@@ -22,6 +22,11 @@ def _parse_args(args: Optional[Sequence[str]], /) -> argparse.Namespace:
         type=argparse.FileType("w", encoding="utf-8"),
         help="output file path, default is stdout",
     )
+    parser.add_argument(
+        "--syntax-highlighting",
+        action="store_true",
+        help="enable syntax highlighting for code blocks",
+    )
     for opt_name in pyromark.Options.__members__:
         parser.add_argument(
             "--" + opt_name.lower().replace("_", "-"), action="store_true"
@@ -44,7 +49,11 @@ def main(args: Optional[Sequence[str]] = None, /) -> None:
             if getattr(parsed_args, opt_name.lower()):
                 opts |= opt
 
-        html = pyromark.html(content, options=opts)
+        if parsed_args.syntax_highlighting:
+            html = pyromark.html_with_syntax_highlighting(content, options=opts)
+        else:
+            html = pyromark.html(content, options=opts)
+            
         if parsed_args.output is None:
             print(html, end="")
         else:

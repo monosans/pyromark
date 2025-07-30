@@ -30,6 +30,29 @@ html = pyromark.html("# Hello world")
 assert html == "<h1>Hello world</h1>\n"
 ```
 
+### Convert Markdown to HTML with syntax highlighting
+
+```python
+import pyromark
+
+# Basic HTML generation (original functionality)
+html = pyromark.html('''
+```python
+def hello():
+    print("Hello, world!")
+```
+''')
+
+# HTML generation with syntax highlighting (new feature!)
+html = pyromark.html_with_syntax_highlighting('''
+```python  
+def hello():
+    print("Hello, world!")
+```
+''')
+# Returns HTML with beautifully highlighted code blocks
+```
+
 ### Iterating over Markdown elements
 
 ```python

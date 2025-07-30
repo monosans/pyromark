@@ -48,6 +48,7 @@ fn _pyromark(m: &Bound<'_, PyModule>) -> PyResult<()> {
         m
     )?)?;
     m.add_function(wrap_pyfunction!(crate::function_api::html, m)?)?;
+    m.add_function(wrap_pyfunction!(crate::function_api::html_with_syntax_highlighting, m)?)?;
     m.add_class::<crate::class_api::Markdown>()?;
     Ok(())
 }
