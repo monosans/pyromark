@@ -26,6 +26,7 @@ pulldown-cmark = { version = "=0.13.0", default-features = false, features = [
 ] }
 pyo3 = { version = "=0.25.1", features = ["extension-module"] }
 pythonize = "=0.25.0"
+syntect = { version = "5.2", default-features = false, features = ["default-fancy"] }
 
 [profile.release]
 strip = true

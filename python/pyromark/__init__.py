@@ -9,6 +9,7 @@ from pyromark._pyromark import (
     events,
     events_with_range,
     html,
+    html_with_syntax_highlighting,
 )
 
-__all__ = ("Markdown", "Options", "events", "events_with_range", "html")
+__all__ = ("Markdown", "Options", "events", "events_with_range", "html", "html_with_syntax_highlighting")

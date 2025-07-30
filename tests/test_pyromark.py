@@ -382,3 +382,63 @@ def test_cli_version(capsys: pytest.CaptureFixture[str]) -> None:
     capture = capsys.readouterr()
     assert not capture.err
     assert capture.out == f"{pyromark.__version__}\n"
+
+
+def test_syntax_highlighting() -> None:
+    """Test the new syntax highlighting functionality."""
+    # Test basic Python syntax highlighting
+    python_code = '''```python
+def hello():
+    print("Hello, world!")
+```'''
+    
+    html_normal = pyromark.html(python_code)
+    html_highlighted = pyromark.html_with_syntax_highlighting(python_code)
+    
+    # Normal HTML should have language class but no color styles
+    assert '<code class="language-python">' in html_normal
+    assert 'style="color:' not in html_normal
+    
+    # Highlighted HTML should have both language class and color styles
+    assert '<code class="language-python">' in html_highlighted
+    assert 'style="color:' in html_highlighted
+    assert 'style="background-color:#2b303b;"' in html_highlighted
+    
+    # Test fallback for unknown language
+    unknown_code = '''```unknownlang
+some code
+```'''
+    html_unknown = pyromark.html_with_syntax_highlighting(unknown_code)
+    assert '<code class="language-unknownlang">' in html_unknown
+    assert 'some code' in html_unknown
+    
+    # Test code block without language
+    plain_code = '''```
+plain code
+```'''
+    html_plain = pyromark.html_with_syntax_highlighting(plain_code)
+    assert '<pre' in html_plain
+    assert '<code>' in html_plain
+    assert 'plain code' in html_plain
+
+
+def test_cli_syntax_highlighting(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    """Test CLI syntax highlighting option."""
+    test_file = tmp_path / "test.md"
+    test_file.write_text('```python\nprint("hello")\n```', encoding="utf-8")
+    
+    # Test without syntax highlighting
+    pyromark_cli((str(test_file),))
+    capture = capsys.readouterr()
+    assert not capture.err
+    assert '<code class="language-python">' in capture.out
+    assert 'style="color:' not in capture.out
+    
+    # Test with syntax highlighting
+    pyromark_cli(("--syntax-highlighting", str(test_file)))
+    capture = capsys.readouterr()
+    assert not capture.err
+    assert '<code class="language-python">' in capture.out
+    assert 'style="color:' in capture.out
