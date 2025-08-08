@@ -140,7 +140,6 @@ jobs:
             runner: windows-11-arm
             setup-python-architecture: arm64
             setup-python-versions: |
-              3.9
               3.10
               3.11
               3.12
@@ -151,6 +150,7 @@ jobs:
               pypy3.10
               pypy3.11
               3.13
+            build-python-versions: 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.9 pypy3.10 pypy3.11
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
