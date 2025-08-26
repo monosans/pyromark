@@ -44,7 +44,7 @@ docs = [
   "mkdocs-material==9.6.18",
   "mkdocs-minify-html-plugin==0.3.4",
   "mkdocstrings==0.30",
-  "mkdocstrings-python==1.17.0",
+  "mkdocstrings-python==1.18.0",
   "ruff==0.12.10",
 ]
 
