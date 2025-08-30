@@ -1,10 +1,10 @@
 pub struct PythonizeCustom;
 
-impl<'py> pythonize::PythonizeTypes<'py> for PythonizeCustom {
+impl pythonize::PythonizeTypes for PythonizeCustom {
     type List = pyo3::types::PyTuple;
     type Map = pyo3::types::PyDict;
     type NamedMap =
-        pythonize::PythonizeUnnamedMappingAdapter<'py, pyo3::types::PyDict>;
+        pythonize::PythonizeUnnamedMappingAdapter<pyo3::types::PyDict>;
 }
 
 pub const fn build_options(options: u32) -> pulldown_cmark::Options {
