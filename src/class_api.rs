@@ -41,7 +41,7 @@ impl Markdown {
         markdown: &str,
         merge_text: bool,
     ) -> pythonize::Result<Bound<'py, PyAny>> {
-        let v = py.allow_threads(move || {
+        let v = py.detach(move || {
             crate::common::events(markdown, self.0, merge_text)
         });
         pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
@@ -82,9 +82,8 @@ impl Markdown {
         py: Python<'py>,
         markdown: &str,
     ) -> pythonize::Result<Bound<'py, PyAny>> {
-        let v = py.allow_threads(move || {
-            crate::common::events_with_range(markdown, self.0)
-        });
+        let v = py
+            .detach(move || crate::common::events_with_range(markdown, self.0));
         pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
     }
 
@@ -95,6 +94,6 @@ impl Markdown {
     ///     ```
     #[pyo3(signature = (markdown, /))]
     fn html(&self, py: Python<'_>, markdown: &str) -> String {
-        py.allow_threads(move || crate::common::html(markdown, self.0))
+        py.detach(move || crate::common::html(markdown, self.0))
     }
 }

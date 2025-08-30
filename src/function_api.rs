@@ -31,7 +31,7 @@ pub fn events<'py>(
     options: u32,
     merge_text: bool,
 ) -> pythonize::Result<Bound<'py, PyAny>> {
-    let v = py.allow_threads(move || {
+    let v = py.detach(move || {
         crate::common::events(
             markdown,
             crate::common::build_options(options),
@@ -75,7 +75,7 @@ pub fn events_with_range<'py>(
     markdown: &str,
     options: u32,
 ) -> pythonize::Result<Bound<'py, PyAny>> {
-    let v = py.allow_threads(move || {
+    let v = py.detach(move || {
         crate::common::events_with_range(
             markdown,
             crate::common::build_options(options),
@@ -99,7 +99,7 @@ pub fn events_with_range<'py>(
 #[pyfunction]
 #[pyo3(signature = (markdown, /, *, options = 0))]
 pub fn html(py: Python<'_>, markdown: &str, options: u32) -> String {
-    py.allow_threads(move || {
+    py.detach(move || {
         crate::common::html(markdown, crate::common::build_options(options))
     })
 }
