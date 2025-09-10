@@ -7,7 +7,7 @@ build:
     - asdf plugin add uv
     - asdf install uv latest
     - asdf global uv latest
-    - uv tool install --from maturin@latest maturin
+    - uv tool install maturin
     - uv sync --group docs --no-group dev --frozen --no-cache --python 3.13
     - uv run --no-sync $HOME/.local/bin/maturin develop --uv --locked
     - uv run --no-sync mkdocs build -d $READTHEDOCS_OUTPUT/html
