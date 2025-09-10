@@ -242,7 +242,7 @@ jobs:
       - name: pytest
         run: |
           set -e
-          uv sync --no-install-project --frozen --python ${{ matrix.python-version }}
+          uv sync --no-install-project --locked --python ${{ matrix.python-version }}
           uv pip install --find-links dist pyromark
           uv run --no-sync pytest
   release:
