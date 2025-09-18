@@ -53,4 +53,9 @@ python-source = "python"
 module-name = "pyromark._pyromark"
 
 [tool.uv]
-package = false
+cache-keys = [
+  { file = "pyproject.toml" },
+  { file = "src/**/*.rs" },
+  { file = "Cargo.toml" },
+  { file = "Cargo.lock" },
+]
