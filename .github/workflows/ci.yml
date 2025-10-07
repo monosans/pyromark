@@ -124,8 +124,9 @@ jobs:
               3.13t
               3.14
               3.14t
+              pypy3.11
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t
+            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.11
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
@@ -137,23 +138,15 @@ jobs:
               3.13t
               3.14
               3.14t
+              pypy3.11
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t
-          # - target: aarch64-pc-windows-msvc
-          #   runner: windows-11-arm
-          #   setup-python-architecture: arm64
-          #   setup-python-versions: |
-          #     3.9
-          #     3.10
-          #     3.11
-          #     3.12
-          #     3.13t
-          #     3.14
-          #     3.14t
-          #     pypy3.9
-          #     pypy3.10
-          #     pypy3.11
-          #     3.13
+            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.11
+          - target: aarch64-pc-windows-msvc
+            runner: windows-11-arm
+            setup-python-architecture: arm64
+            setup-python-versions: |
+              3.14
+            build-python-versions: "3.14"
       fail-fast: false
     steps:
       - uses: actions/checkout@v5
