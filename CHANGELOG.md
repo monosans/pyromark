@@ -2,6 +2,11 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.9.4] - 2025-10-09
+
+- Add full support for free-threaded Python.
+- Add i686-unknown-linux-gnu manylinux_2_28 wheels.
+
 ## [0.9.3] - 2025-07-29
 
 - Remove loongarch64-unknown-linux-gnu target as it is not supported by PyPI.
