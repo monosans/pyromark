@@ -95,8 +95,6 @@ jobs:
               3.13t
               3.14
               3.14t
-              pypy3.9
-              pypy3.10
               pypy3.11
               3.13
           - target: aarch64-apple-darwin
@@ -109,8 +107,6 @@ jobs:
               3.13t
               3.14
               3.14t
-              pypy3.9
-              pypy3.10
               pypy3.11
               3.13
           - target: x86_64-pc-windows-msvc
@@ -150,8 +146,6 @@ jobs:
           #     3.13t
           #     3.14
           #     3.14t
-          #     pypy3.9
-          #     pypy3.10
           #     pypy3.11
           #     3.13
       fail-fast: false
@@ -168,7 +162,7 @@ jobs:
           check-latest: true
       - uses: PyO3/maturin-action@v1
         with:
-          args: --release --out dist --interpreter '${{ matrix.build-python-versions || '3.9 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.9 pypy3.10 pypy3.11' }}'
+          args: --release --out dist --interpreter '${{ matrix.build-python-versions || '3.9 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.11' }}'
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           rust-toolchain: beta
