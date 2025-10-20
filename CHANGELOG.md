@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.9.6] - 2025-10-20
+
+- Remove loongarch64-unknown-linux-gnu target as it is not supported by PyPI.
+
 ## [0.9.5] - 2025-10-20
 
 - Add aarch64-pc-windows-msvc target.
