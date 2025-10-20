@@ -2,6 +2,12 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.9.5] - 2025-10-20
+
+- Add aarch64-pc-windows-msvc target.
+- Add loongarch64-unknown-linux-gnu target.
+- Drop support for PyPy 3.9 and PyPy 3.10.
+
 ## [0.9.4] - 2025-10-09
 
 - Add full support for free-threaded Python.
