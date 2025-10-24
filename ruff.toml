@@ -8,8 +8,8 @@ line-ending = "lf"
 skip-magic-trailing-comma = true
 
 [lint]
+future-annotations = true
 ignore = [
-  "A005",
   "ANN401",
   "ASYNC109",
   "BLE001",
@@ -32,7 +32,6 @@ ignore = [
   "DOC402",
   "DOC501",
   "FURB180",
-  "ISC001",
   "PLR0904",
   "PLR0911",
   "PLR0912",
@@ -59,7 +58,7 @@ ignore = [
   "TRY400",
 ]
 select = ["ALL"]
-unfixable = ["RUF027", "T"]
+unfixable = ["RUF027"]
 
 [lint.per-file-ignores]
 "tests/*" = ["FBT001", "S101"]
