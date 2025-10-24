@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.9.7] - 2025-10-24
+
+- Fix Python 3.13 and 3.14 builds on Windows.
+
 ## [0.9.6] - 2025-10-20
 
 - Remove loongarch64-unknown-linux-gnu target as it is not supported by PyPI.
