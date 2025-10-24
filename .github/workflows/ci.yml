@@ -117,11 +117,17 @@ jobs:
               3.10
               3.11
               3.12
-              3.13t
               3.14
-              3.14t
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t
+            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.14
+          - target: x86_64-pc-windows-msvc
+            runner: windows-2025
+            setup-python-architecture: x64
+            setup-python-versions: |
+              3.13t
+              3.14t
+            build-python-versions: 3.13t 3.14t
+            artifact_suffix: "-freethreaded"
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
@@ -130,11 +136,17 @@ jobs:
               3.10
               3.11
               3.12
-              3.13t
               3.14
-              3.14t
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t
+            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.14
+          - target: i686-pc-windows-msvc
+            runner: windows-2025
+            setup-python-architecture: x86
+            setup-python-versions: |
+              3.13t
+              3.14t
+            build-python-versions: 3.13t 3.14t
+            artifact_suffix: "-freethreaded"
           - target: aarch64-pc-windows-msvc
             runner: windows-11-arm
             setup-python-architecture: arm64
