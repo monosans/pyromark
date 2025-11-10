@@ -4,12 +4,11 @@ from __future__ import annotations
 import argparse
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Optional
 
 import pyromark
 
 
-def _parse_args(args: Optional[Sequence[str]], /) -> argparse.Namespace:
+def _parse_args(args: Sequence[str] | None, /) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         pyromark.__name__, description=pyromark.__doc__
     )
@@ -27,7 +26,7 @@ def _parse_args(args: Optional[Sequence[str]], /) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def main(args: Optional[Sequence[str]] = None, /) -> None:
+def main(args: Sequence[str] | None = None, /) -> None:
     parsed_args = _parse_args(args)
     content = Path(parsed_args.file).read_text(encoding="utf-8")
 

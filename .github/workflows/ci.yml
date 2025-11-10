@@ -88,7 +88,6 @@ jobs:
           - target: x86_64-apple-darwin
             runner: macos-15
             setup-python-versions: |
-              3.9
               3.10
               3.11
               3.12
@@ -100,7 +99,6 @@ jobs:
           - target: aarch64-apple-darwin
             runner: macos-15
             setup-python-versions: |
-              3.9
               3.10
               3.11
               3.12
@@ -113,13 +111,12 @@ jobs:
             runner: windows-2025
             setup-python-architecture: x64
             setup-python-versions: |
-              3.9
               3.10
               3.11
               3.12
               3.14
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.14
+            build-python-versions: 3.10 3.11 3.12 3.13 3.14
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x64
@@ -132,13 +129,12 @@ jobs:
             runner: windows-2025
             setup-python-architecture: x86
             setup-python-versions: |
-              3.9
               3.10
               3.11
               3.12
               3.14
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.14
+            build-python-versions: 3.10 3.11 3.12 3.13 3.14
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
@@ -178,7 +174,7 @@ jobs:
           check-latest: true
       - uses: PyO3/maturin-action@v1
         with:
-          args: --interpreter '${{ matrix.build-python-versions || '3.9 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.11' }}' --out dist --release
+          args: --interpreter '${{ matrix.build-python-versions || '3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.11' }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           rust-toolchain: beta
@@ -236,7 +232,7 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - "3.9"
+          - "3.10"
           - "3.14"
           - "3.14t"
       fail-fast: false
