@@ -14,6 +14,7 @@ theme:
     - content.action.edit
     - content.code.copy
     - navigation.footer
+    - navigation.prune
     - navigation.top
     - toc.follow
   icon:
@@ -58,10 +59,12 @@ plugins:
           options:
             docstring_options:
               ignore_init_summary: true
+            docstring_section_style: list
             filters:
               - "!^_(?:[^_].*[^_]|_(?:all|doc|format|main|module|new|slots|str)__)$"
             members_order: source
             merge_init_into_class: true
+            parameter_headings: true
             separate_signature: true
             show_if_no_docstring: true
             show_signature_annotations: true
@@ -70,3 +73,4 @@ plugins:
             show_symbol_type_heading: true
             show_symbol_type_toc: true
             signature_crossrefs: true
+            type_parameter_headings: true
