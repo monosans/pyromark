@@ -2,7 +2,7 @@ version: 2
 build:
   os: ubuntu-lts-latest
   tools:
-    python: "3.14"
+    python: "3.13"
     rust: latest
   commands:
     - asdf plugin add uv
