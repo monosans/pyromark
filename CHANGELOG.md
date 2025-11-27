@@ -2,6 +2,30 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.9.8] - 2025-11-27
+
+- Drop support for EOL Python 3.9.
+- Fix InlineHtml and TaskListMarker event types.
+
+## [0.9.7] - 2025-10-24
+
+- Fix Python 3.13 and 3.14 builds on Windows.
+
+## [0.9.6] - 2025-10-20
+
+- Remove loongarch64-unknown-linux-gnu target as it is not supported by PyPI.
+
+## [0.9.5] - 2025-10-20
+
+- Add aarch64-pc-windows-msvc target.
+- Add loongarch64-unknown-linux-gnu target.
+- Drop support for PyPy 3.9 and PyPy 3.10.
+
+## [0.9.4] - 2025-10-09
+
+- Add full support for free-threaded Python.
+- Add i686-unknown-linux-gnu manylinux_2_28 wheels.
+
 ## [0.9.3] - 2025-07-29
 
 - Remove loongarch64-unknown-linux-gnu target as it is not supported by PyPI.

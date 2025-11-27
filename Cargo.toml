@@ -1,6 +1,6 @@
 [package]
 name = "pyromark"
-version = "0.9.3"
+version = "0.9.8"
 edition = "2024"
 license = "MIT"
 include = [
@@ -24,8 +24,8 @@ pulldown-cmark = { version = "=0.13.0", default-features = false, features = [
   "serde",
   "simd",
 ] }
-pyo3 = { version = "=0.26.0", features = ["extension-module"] }
-pythonize = "=0.26.0"
+pyo3 = { version = "=0.27.1", features = ["extension-module"] }
+pythonize = "=0.27.0"
 
 [profile.release]
 strip = true

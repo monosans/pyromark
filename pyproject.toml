@@ -4,12 +4,12 @@ requires = ["maturin>=1,<2"]
 
 [project]
 name = "pyromark"
-version = "0.9.3"
+version = "0.9.8"
 description = "Blazingly fast Markdown parser"
 readme = "README.md"
 keywords = ["converter", "html"]
 authors = [{ name = "monosans", email = "hsyqixco@protonmail.com" }]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
   "Natural Language :: English",
   "Operating System :: MacOS",
@@ -17,7 +17,6 @@ classifiers = [
   "Operating System :: POSIX :: Linux",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -28,7 +27,7 @@ classifiers = [
   "Programming Language :: Rust",
   "Typing :: Typed",
 ]
-dependencies = ["typing-extensions>=3.7.4.2"]
+dependencies = ["typing-extensions>=3.7.4"]
 urls.documentation = "https://pyromark.readthedocs.io"
 urls.repository = "https://github.com/monosans/pyromark"
 scripts.pyromark = "pyromark._cli:main"
@@ -36,16 +35,16 @@ scripts.pyromark = "pyromark._cli:main"
 [dependency-groups]
 dev = [
   "mypy[faster-cache]==1.18.2",
-  "pytest==8.4.2",
+  "pytest==9.0.1",
   "pytest-github-actions-annotate-failures==0.3",
-  "ruff==0.13.3",
+  "ruff==0.14.6",
 ]
 docs = [
-  "mkdocs-material==9.6.21",
-  "mkdocs-minify-html-plugin==0.3.4",
+  "mkdocs-material==9.7.0",
+  "mkdocs-minify-html-plugin==0.3.9",
   "mkdocstrings==0.30.1",
-  "mkdocstrings-python==1.18.2",
-  "ruff==0.13.3",
+  "mkdocstrings-python==1.19.0",
+  "ruff==0.14.6",
 ]
 
 [tool.maturin]

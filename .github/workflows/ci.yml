@@ -88,75 +88,81 @@ jobs:
           - target: x86_64-apple-darwin
             runner: macos-15
             setup-python-versions: |
-              3.9
               3.10
               3.11
               3.12
-              3.13t
-              3.14
-              3.14t
-              pypy3.9
-              pypy3.10
-              pypy3.11
               3.13
+              3.13t
+              3.14t
+              pypy3.11
+              3.14
           - target: aarch64-apple-darwin
             runner: macos-15
             setup-python-versions: |
-              3.9
               3.10
               3.11
               3.12
-              3.13t
-              3.14
-              3.14t
-              pypy3.9
-              pypy3.10
-              pypy3.11
               3.13
+              3.13t
+              3.14t
+              pypy3.11
+              3.14
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x64
             setup-python-versions: |
-              3.9
               3.10
               3.11
               3.12
-              3.13t
-              3.14
-              3.14t
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t
+              3.14
+            build-python-versions: 3.10 3.11 3.12 3.13 3.14
+          - target: x86_64-pc-windows-msvc
+            runner: windows-2025
+            setup-python-architecture: x64
+            setup-python-versions: |
+              3.13t
+              3.14t
+            build-python-versions: 3.13t 3.14t
+            artifact_suffix: "-freethreaded"
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
             setup-python-versions: |
-              3.9
               3.10
               3.11
               3.12
-              3.13t
-              3.14
-              3.14t
               3.13
-            build-python-versions: 3.9 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t
-          # - target: aarch64-pc-windows-msvc
-          #   runner: windows-11-arm
-          #   setup-python-architecture: arm64
-          #   setup-python-versions: |
-          #     3.9
-          #     3.10
-          #     3.11
-          #     3.12
-          #     3.13t
-          #     3.14
-          #     3.14t
-          #     pypy3.9
-          #     pypy3.10
-          #     pypy3.11
-          #     3.13
+              3.14
+            build-python-versions: 3.10 3.11 3.12 3.13 3.14
+          - target: i686-pc-windows-msvc
+            runner: windows-2025
+            setup-python-architecture: x86
+            setup-python-versions: |
+              3.13t
+              3.14t
+            build-python-versions: 3.13t 3.14t
+            artifact_suffix: "-freethreaded"
+          - target: aarch64-pc-windows-msvc
+            runner: windows-11-arm
+            setup-python-architecture: arm64
+            setup-python-versions: |
+              3.11
+              3.12
+              3.13
+              3.14
+            build-python-versions: 3.11 3.12 3.13 3.14
+          - target: aarch64-pc-windows-msvc
+            runner: windows-11-arm
+            setup-python-architecture: arm64
+            setup-python-versions: |
+              3.13t
+              3.14t
+            build-python-versions: 3.13t 3.14t
+            artifact_suffix: "-freethreaded"
       fail-fast: false
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - if: "${{ matrix.setup-python-versions }}"
@@ -168,14 +174,15 @@ jobs:
           check-latest: true
       - uses: PyO3/maturin-action@v1
         with:
-          args: --release --out dist --interpreter '${{ matrix.build-python-versions || '3.9 3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.9 pypy3.10 pypy3.11' }}'
+          args: --interpreter '${{ matrix.build-python-versions || '3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.11' }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           rust-toolchain: beta
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
-          name: wheels-${{ matrix.target }}-${{ matrix.manylinux || 'auto' }}
+          name: |
+            ${{ format('wheels-{0}-{1}{2}', matrix.target, matrix.manylinux || 'auto', matrix.artifact_suffix || '') }}
           path: dist
   check:
     if: ${{ always() && github.event_name == 'pull_request' }}
@@ -196,7 +203,7 @@ jobs:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -208,13 +215,13 @@ jobs:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: false
-      - run: uv tool run --no-cache --python 3.13 prek run --all-files --show-diff-on-failure
+      - run: uv tool run --no-cache --python 3.14 prek run --all-files --show-diff-on-failure
         env:
           RUFF_OUTPUT_FORMAT: github
   pytest:
@@ -225,18 +232,20 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - "3.9"
-          - "3.13"
+          - "3.10"
+          - "3.14"
+          - "3.14t"
       fail-fast: false
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
-          name: wheels-x86_64-unknown-linux-gnu-2_28
           path: dist
-      - uses: astral-sh/setup-uv@v6
+          pattern: wheels-x86_64-unknown-linux-gnu-2_28*
+          merge-multiple: "true"
+      - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - name: pytest
@@ -254,17 +263,17 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
       - uses: PyO3/maturin-action@v1
         with:
           command: upload
-          args: --non-interactive --skip-existing wheels-*/*
+          args: --skip-existing --non-interactive wheels-*/*
           rust-toolchain: beta
   rustfmt:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -275,7 +284,7 @@ jobs:
   sdist:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: PyO3/maturin-action@v1
@@ -283,14 +292,14 @@ jobs:
           command: sdist
           args: --out dist
           rust-toolchain: beta
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: wheels-sdist
           path: dist
   udeps:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: actions-rust-lang/setup-rust-toolchain@v1

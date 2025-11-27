@@ -1,18 +1,18 @@
 # ruff: noqa: PYI030
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import Literal, TypeAlias
 
-from typing_extensions import Literal, TypeAlias, TypedDict
+from typing_extensions import TypedDict
 
 _HeadingLevel: TypeAlias = Literal["H1", "H2", "H3", "H4", "H5", "H6"]
 
 
 class _HeadingData(TypedDict):
     level: _HeadingLevel
-    id: Optional[str]
+    id: str | None
     classes: tuple[str, ...]
-    attrs: tuple[tuple[str, Optional[str]], ...]
+    attrs: tuple[tuple[str, str | None], ...]
 
 
 class _HeadingStart(TypedDict):
@@ -25,14 +25,14 @@ _BlockQuoteKind: TypeAlias = Literal[
 
 
 class _BlockQuote(TypedDict):
-    BlockQuote: Optional[_BlockQuoteKind]
+    BlockQuote: _BlockQuoteKind | None
 
 
 class _Fenced(TypedDict):
     Fenced: str
 
 
-_CodeBlockKind: TypeAlias = Union[Literal["Indented"], _Fenced]
+_CodeBlockKind: TypeAlias = Literal["Indented"] | _Fenced
 
 
 class _CodeBlock(TypedDict):
@@ -40,7 +40,7 @@ class _CodeBlock(TypedDict):
 
 
 class _ListStart(TypedDict):
-    List: Optional[int]
+    List: int | None
 
 
 class _FootnoteDefinition(TypedDict):
@@ -58,18 +58,18 @@ class _WikiLink(TypedDict):
     has_pothole: bool
 
 
-_LinkType: TypeAlias = Union[
-    Literal["Inline"],
-    Literal["Reference"],
-    Literal["ReferenceUnknown"],
-    Literal["Collapsed"],
-    Literal["CollapsedUnknown"],
-    Literal["Shortcut"],
-    Literal["ShortcutUnknown"],
-    Literal["Autolink"],
-    Literal["Email"],
-    _WikiLink,
-]
+_LinkType: TypeAlias = (
+    Literal["Inline"]
+    | Literal["Reference"]
+    | Literal["ReferenceUnknown"]
+    | Literal["Collapsed"]
+    | Literal["CollapsedUnknown"]
+    | Literal["Shortcut"]
+    | Literal["ShortcutUnknown"]
+    | Literal["Autolink"]
+    | Literal["Email"]
+    | _WikiLink
+)
 
 
 class _LinkData(TypedDict):
@@ -101,31 +101,31 @@ class _MetadataBlock(TypedDict):
     MetadataBlock: _MetadataBlockKind
 
 
-_Tag: TypeAlias = Union[
-    Literal["Paragraph"],
-    _HeadingStart,
-    _BlockQuote,
-    _CodeBlock,
-    Literal["HtmlBlock"],
-    _ListStart,
-    Literal["Item"],
-    _FootnoteDefinition,
-    Literal["DefinitionList"],
-    Literal["DefinitionListTitle"],
-    Literal["DefinitionListDefinition"],
-    _Table,
-    Literal["TableHead"],
-    Literal["TableRow"],
-    Literal["TableCell"],
-    Literal["Emphasis"],
-    Literal["Strong"],
-    Literal["Strikethrough"],
-    Literal["Superscript"],
-    Literal["Subscript"],
-    _Link,
-    _Image,
-    _MetadataBlock,
-]
+_Tag: TypeAlias = (
+    Literal["Paragraph"]
+    | _HeadingStart
+    | _BlockQuote
+    | _CodeBlock
+    | Literal["HtmlBlock"]
+    | _ListStart
+    | Literal["Item"]
+    | _FootnoteDefinition
+    | Literal["DefinitionList"]
+    | Literal["DefinitionListTitle"]
+    | Literal["DefinitionListDefinition"]
+    | _Table
+    | Literal["TableHead"]
+    | Literal["TableRow"]
+    | Literal["TableCell"]
+    | Literal["Emphasis"]
+    | Literal["Strong"]
+    | Literal["Strikethrough"]
+    | Literal["Superscript"]
+    | Literal["Subscript"]
+    | _Link
+    | _Image
+    | _MetadataBlock
+)
 
 
 class _HeadingEnd(TypedDict):
@@ -136,31 +136,31 @@ class _ListEnd(TypedDict):
     List: bool
 
 
-_TagEnd: TypeAlias = Union[
-    Literal["Paragraph"],
-    _HeadingEnd,
-    _BlockQuote,
-    Literal["CodeBlock"],
-    Literal["HtmlBlock"],
-    _ListEnd,
-    Literal["Item"],
-    Literal["FootnoteDefinition"],
-    Literal["DefinitionList"],
-    Literal["DefinitionListTitle"],
-    Literal["DefinitionListDefinition"],
-    Literal["Table"],
-    Literal["TableHead"],
-    Literal["TableRow"],
-    Literal["TableCell"],
-    Literal["Emphasis"],
-    Literal["Strong"],
-    Literal["Strikethrough"],
-    Literal["Superscript"],
-    Literal["Subscript"],
-    Literal["Link"],
-    Literal["Image"],
-    _MetadataBlock,
-]
+_TagEnd: TypeAlias = (
+    Literal["Paragraph"]
+    | _HeadingEnd
+    | _BlockQuote
+    | Literal["CodeBlock"]
+    | Literal["HtmlBlock"]
+    | _ListEnd
+    | Literal["Item"]
+    | Literal["FootnoteDefinition"]
+    | Literal["DefinitionList"]
+    | Literal["DefinitionListTitle"]
+    | Literal["DefinitionListDefinition"]
+    | Literal["Table"]
+    | Literal["TableHead"]
+    | Literal["TableRow"]
+    | Literal["TableCell"]
+    | Literal["Emphasis"]
+    | Literal["Strong"]
+    | Literal["Strikethrough"]
+    | Literal["Superscript"]
+    | Literal["Subscript"]
+    | Literal["Link"]
+    | Literal["Image"]
+    | _MetadataBlock
+)
 
 
 class _Start(TypedDict):
@@ -192,7 +192,7 @@ class _Html(TypedDict):
 
 
 class _InlineHtml(TypedDict):
-    Html: str
+    InlineHtml: str
 
 
 class _FootnoteReference(TypedDict):
@@ -200,24 +200,24 @@ class _FootnoteReference(TypedDict):
 
 
 class _TaskListMarker(TypedDict):
-    FootnoteReference: str
+    TaskListMarker: bool
 
 
-Event: TypeAlias = Union[
-    _Start,
-    _End,
-    _Text,
-    _Code,
-    _InlineMath,
-    _DisplayMath,
-    _Html,
-    _InlineHtml,
-    _FootnoteReference,
-    Literal["SoftBreak"],
-    Literal["HardBreak"],
-    Literal["Rule"],
-    _TaskListMarker,
-]
+Event: TypeAlias = (
+    _Start
+    | _End
+    | _Text
+    | _Code
+    | _InlineMath
+    | _DisplayMath
+    | _Html
+    | _InlineHtml
+    | _FootnoteReference
+    | Literal["SoftBreak"]
+    | Literal["HardBreak"]
+    | Literal["Rule"]
+    | _TaskListMarker
+)
 
 
 class Range(TypedDict):
