@@ -192,7 +192,7 @@ class _Html(TypedDict):
 
 
 class _InlineHtml(TypedDict):
-    Html: str
+    InlineHtml: str
 
 
 class _FootnoteReference(TypedDict):
@@ -200,7 +200,7 @@ class _FootnoteReference(TypedDict):
 
 
 class _TaskListMarker(TypedDict):
-    FootnoteReference: str
+    TaskListMarker: bool
 
 
 Event: TypeAlias = (
