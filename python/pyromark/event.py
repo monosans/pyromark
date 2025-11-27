@@ -192,7 +192,7 @@ class _Html(TypedDict):
 
 
 class _InlineHtml(TypedDict):
-    Html: str
+    InlineHtml: str
 
 
 class _FootnoteReference(TypedDict):
