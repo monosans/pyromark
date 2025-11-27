@@ -2,6 +2,11 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.9.8] - 2025-11-27
+
+- Drop support for EOL Python 3.9.
+- Fix InlineHtml and TaskListMarker event types.
+
 ## [0.9.7] - 2025-10-24
 
 - Fix Python 3.13 and 3.14 builds on Windows.
