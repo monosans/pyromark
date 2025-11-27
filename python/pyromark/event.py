@@ -200,7 +200,7 @@ class _FootnoteReference(TypedDict):
 
 
 class _TaskListMarker(TypedDict):
-    FootnoteReference: str
+    TaskListMarker: bool
 
 
 Event: TypeAlias = (
