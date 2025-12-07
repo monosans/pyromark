@@ -34,17 +34,17 @@ scripts.pyromark = "pyromark._cli:main"
 
 [dependency-groups]
 dev = [
-  "mypy[faster-cache]==1.18.2",
-  "pytest==9.0.1",
+  "mypy[faster-cache]==1.19.0",
+  "pytest==9.0.2",
   "pytest-github-actions-annotate-failures==0.3",
-  "ruff==0.14.6",
+  "ruff==0.14.8",
 ]
 docs = [
   "mkdocs-material==9.7.0",
   "mkdocs-minify-html-plugin==0.3.9",
-  "mkdocstrings==0.30.1",
-  "mkdocstrings-python==1.19.0",
-  "ruff==0.14.6",
+  "mkdocstrings==1.0.0",
+  "mkdocstrings-python==2.0.1",
+  "ruff==0.14.8",
 ]
 
 [tool.maturin]
