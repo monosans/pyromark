@@ -82,9 +82,9 @@ jobs:
           - target: riscv64gc-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_31"
-          # - target: loongarch64-unknown-linux-gnu
-          #   runner: ubuntu-24.04
-          #   manylinux: "2_36"
+          - target: loongarch64-unknown-linux-gnu
+            runner: ubuntu-24.04
+            manylinux: "2_36"
           - target: x86_64-apple-darwin
             runner: macos-15
             setup-python-versions: |
@@ -125,6 +125,13 @@ jobs:
               3.14t
             build-python-versions: 3.13t 3.14t
             artifact_suffix: "-freethreaded"
+          - target: x86_64-pc-windows-msvc
+            runner: windows-2025
+            setup-python-architecture: x64
+            setup-python-versions: |
+              pypy3.11
+            build-python-versions: pypy3.11
+            artifact_suffix: "-pypy"
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
@@ -143,15 +150,23 @@ jobs:
               3.14t
             build-python-versions: 3.13t 3.14t
             artifact_suffix: "-freethreaded"
+          - target: i686-pc-windows-msvc
+            runner: windows-2025
+            setup-python-architecture: x86
+            setup-python-versions: |
+              pypy3.11
+            build-python-versions: pypy3.11
+            artifact_suffix: "-pypy"
           - target: aarch64-pc-windows-msvc
             runner: windows-11-arm
             setup-python-architecture: arm64
             setup-python-versions: |
+              3.10
               3.11
               3.12
               3.13
               3.14
-            build-python-versions: 3.11 3.12 3.13 3.14
+            build-python-versions: 3.10 3.11 3.12 3.13 3.14
           - target: aarch64-pc-windows-msvc
             runner: windows-11-arm
             setup-python-architecture: arm64
@@ -160,6 +175,13 @@ jobs:
               3.14t
             build-python-versions: 3.13t 3.14t
             artifact_suffix: "-freethreaded"
+          - target: aarch64-pc-windows-msvc
+            runner: windows-11-arm
+            setup-python-architecture: arm64
+            setup-python-versions: |
+              pypy3.11
+            build-python-versions: pypy3.11
+            artifact_suffix: "-pypy"
       fail-fast: false
     steps:
       - uses: actions/checkout@v6
