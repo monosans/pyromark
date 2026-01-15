@@ -156,9 +156,8 @@ jobs:
             runner: windows-11-arm
             setup-python-architecture: arm64
             setup-python-versions: |
-              3.13t
               3.14t
-            build-python-versions: 3.13t 3.14t
+            build-python-versions: 3.14t
             artifact_suffix: "-freethreaded"
       fail-fast: false
     steps:
