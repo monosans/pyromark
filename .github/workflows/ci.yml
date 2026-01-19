@@ -264,11 +264,10 @@ jobs:
       id-token: write
     steps:
       - uses: actions/download-artifact@v7
-      - uses: PyO3/maturin-action@v1
+      - uses: astral-sh/setup-uv@v7
         with:
-          command: upload
-          args: --skip-existing --non-interactive wheels-*/*
-          rust-toolchain: beta
+          enable-cache: false
+      - run: uv publish --trusted-publishing always --no-cache 'wheels-*/*'
   rustfmt:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
