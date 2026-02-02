@@ -53,14 +53,14 @@ mod function_api;
 use pyo3::prelude::*;
 
 #[pymodule(gil_used = false)]
-fn _pyromark(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add("__version__", env!("CARGO_PKG_VERSION"))?;
-    m.add_function(wrap_pyfunction!(crate::function_api::events, m)?)?;
-    m.add_function(wrap_pyfunction!(
-        crate::function_api::events_with_range,
-        m
-    )?)?;
-    m.add_function(wrap_pyfunction!(crate::function_api::html, m)?)?;
-    m.add_class::<crate::class_api::Markdown>()?;
-    Ok(())
+mod _pyromark {
+    #[pymodule_export]
+    #[expect(nonstandard_style)]
+    const __version__: &str = env!("CARGO_PKG_VERSION");
+
+    #[pymodule_export]
+    use {
+        crate::class_api::Markdown,
+        crate::function_api::{events, events_with_range, html},
+    };
 }
