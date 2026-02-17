@@ -85,6 +85,9 @@ jobs:
           - target: loongarch64-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_36"
+          - target: loongarch64-unknown-linux-musl
+            runner: ubuntu-24.04
+            manylinux: musllinux_1_2
           - target: x86_64-apple-darwin
             runner: macos-15
             setup-python-versions: |
@@ -152,14 +155,14 @@ jobs:
               3.13
               3.14
             build-python-versions: 3.11 3.12 3.13 3.14
-          # - target: aarch64-pc-windows-msvc
-          #   runner: windows-11-arm
-          #   setup-python-architecture: arm64
-          #   setup-python-versions: |
-          #     3.13t
-          #     3.14t
-          #   build-python-versions: 3.13t 3.14t
-          #   artifact_suffix: "-freethreaded"
+          - target: aarch64-pc-windows-msvc
+            runner: windows-11-arm
+            setup-python-architecture: arm64
+            setup-python-versions: |
+              3.13t
+              3.14t
+            build-python-versions: 3.13t 3.14t
+            artifact_suffix: "-freethreaded"
       fail-fast: false
     steps:
       - uses: actions/checkout@v6
