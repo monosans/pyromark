@@ -52,7 +52,7 @@ mod common;
 mod function_api;
 use pyo3::prelude::*;
 
-#[pymodule(gil_used = false)]
+#[pymodule]
 mod _pyromark {
     #[pymodule_export]
     #[expect(nonstandard_style)]
