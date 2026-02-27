@@ -9,7 +9,7 @@ nav:
   - cli.md
   - performance.md
 theme:
-  name: material
+  name: materialx
   features:
     - content.action.edit
     - content.code.copy
