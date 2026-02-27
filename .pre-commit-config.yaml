@@ -10,7 +10,6 @@ repos:
         exclude_types:
           - rust
       - id: check-symlinks
-      - id: check-toml
       - id: check-xml
       - id: destroyed-symlinks
       - id: end-of-file-fixer
@@ -19,6 +18,10 @@ repos:
         args:
           - --fix=lf
       - id: trailing-whitespace
+  - repo: https://github.com/tombi-toml/tombi-pre-commit
+    rev: v0.7.33
+    hooks:
+      - id: tombi-format
   - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.8.1
     hooks:
