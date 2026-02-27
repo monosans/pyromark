@@ -15,7 +15,6 @@ theme:
     - content.code.copy
     - navigation.footer
     - navigation.prune
-    - navigation.top
     - toc.follow
   icon:
     logo: fontawesome/brands/markdown
@@ -25,12 +24,12 @@ theme:
     - media: "(prefers-color-scheme: light)"
       scheme: default
       toggle:
-        icon: material/lightbulb
+        icon: material/brightness-7
         name: Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       toggle:
-        icon: material/lightbulb-outline
+        icon: material/brightness-4
         name: Light mode
 extra:
   social:
