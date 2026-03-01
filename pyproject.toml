@@ -1,15 +1,11 @@
-[build-system]
-build-backend = "maturin"
-requires = ["maturin>=1,<2"]
-
 [project]
 name = "pyromark"
 version = "0.9.8"
 description = "Blazingly fast Markdown parser"
 readme = "README.md"
-keywords = ["converter", "html"]
-authors = [{ name = "monosans", email = "hsyqixco@protonmail.com" }]
 requires-python = ">=3.10"
+authors = [{ name = "monosans", email = "hsyqixco@protonmail.com" }]
+keywords = ["converter", "html"]
 classifiers = [
   "Natural Language :: English",
   "Operating System :: MacOS",
@@ -27,29 +23,33 @@ classifiers = [
   "Programming Language :: Rust",
   "Typing :: Typed",
 ]
-dependencies = ["typing-extensions>=3.7.4"]
 urls.documentation = "https://pyromark.readthedocs.io"
 urls.repository = "https://github.com/monosans/pyromark"
 scripts.pyromark = "pyromark._cli:main"
+dependencies = ["typing-extensions>=3.7.4"]
 
 [dependency-groups]
 dev = [
   "mypy==1.19.1",
   "pytest==9.0.2",
   "pytest-github-actions-annotate-failures==0.3",
-  "ruff==0.15.2",
+  "ruff==0.15.4",
 ]
 docs = [
-  "mkdocs-material==9.7.3",
+  "mkdocs-materialx==10.0.9",
   "mkdocs-minify-html-plugin==0.3.9",
   "mkdocstrings==1.0.3",
   "mkdocstrings-python==2.0.3",
-  "ruff==0.15.2",
+  "ruff==0.15.4",
 ]
 
+[build-system]
+requires = ["maturin>=1,<2"]
+build-backend = "maturin"
+
 [tool.maturin]
-python-source = "python"
 module-name = "pyromark._pyromark"
+python-source = "python"
 
 [tool.uv]
 cache-keys = [
