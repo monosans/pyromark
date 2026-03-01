@@ -49,9 +49,9 @@ jobs:
           - target: aarch64-unknown-linux-musl
             runner: ubuntu-24.04
             manylinux: musllinux_1_2
-          # - target: arm-unknown-linux-musleabihf
-          #   runner: ubuntu-24.04
-          #   manylinux: musllinux_1_2
+          - target: arm-unknown-linux-musleabihf
+            runner: ubuntu-24.04
+            manylinux: musllinux_1_2
           - target: armv7-unknown-linux-gnueabihf
             runner: ubuntu-24.04
             manylinux: "2_17"
