@@ -82,15 +82,15 @@ jobs:
           - target: riscv64gc-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_31"
-          - target: riscv64gc-unknown-linux-musl
-            runner: ubuntu-24.04
-            manylinux: musllinux_1_2
-          - target: loongarch64-unknown-linux-gnu
-            runner: ubuntu-24.04
-            manylinux: "2_36"
-          - target: loongarch64-unknown-linux-musl
-            runner: ubuntu-24.04
-            manylinux: musllinux_1_2
+          # - target: riscv64gc-unknown-linux-musl
+          #   runner: ubuntu-24.04
+          #   manylinux: musllinux_1_2
+          # - target: loongarch64-unknown-linux-gnu
+          #   runner: ubuntu-24.04
+          #   manylinux: "2_36"
+          # - target: loongarch64-unknown-linux-musl
+          #   runner: ubuntu-24.04
+          #   manylinux: musllinux_1_2
           - target: x86_64-apple-darwin
             runner: macos-15
             setup-python-versions: |
@@ -180,7 +180,7 @@ jobs:
           check-latest: true
       - uses: PyO3/maturin-action@v1
         with:
-          args: --interpreter '${{ matrix.build-python-versions || '3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.11' }}' --out dist --release
+          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || '3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.11' }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           rust-toolchain: beta
