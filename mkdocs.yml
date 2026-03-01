@@ -9,13 +9,12 @@ nav:
   - cli.md
   - performance.md
 theme:
-  name: material
+  name: materialx
   features:
     - content.action.edit
     - content.code.copy
     - navigation.footer
     - navigation.prune
-    - navigation.top
     - toc.follow
   icon:
     logo: fontawesome/brands/markdown
@@ -24,15 +23,13 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: black
       toggle:
-        icon: material/lightbulb
+        icon: material/brightness-7
         name: Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: black
       toggle:
-        icon: material/lightbulb-outline
+        icon: material/brightness-4
         name: Light mode
 extra:
   social:

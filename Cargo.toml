@@ -4,19 +4,19 @@ version = "0.9.8"
 edition = "2024"
 license = "MIT"
 include = [
-  "/python",
-  "/src",
   "/Cargo.lock",
   "/Cargo.toml",
   "/LICENSE",
-  "/pyproject.toml",
   "/README.md",
+  "/pyproject.toml",
+  "/python",
+  "/src",
 ]
 publish = false
 
 [lib]
-name = "_pyromark"
 crate-type = ["cdylib"]
+name = "_pyromark"
 
 [dependencies]
 pulldown-cmark = { version = "=0.13.1", default-features = false, features = [
