@@ -433,6 +433,18 @@ wheels = [
 ]
 
 [[package]]
+name = "mkdocs-document-dates"
+version = "3.7.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "mkdocs" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ec/4f/ab72b1907014ee71f5fa257e1f5fe1ad1a5c2711df93429ac825458cc789/mkdocs_document_dates-3.7.0.tar.gz", hash = "sha256:a6b4a3deaf378f53502752c32ed435184c1059248ca93170893c0e74f45b9fe1", size = 191312, upload-time = "2026-03-03T05:51:24.855Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4d/c4/8992379e141f24ada2824b72417a1f7ba7abdb236baa656711c4c9e0e835/mkdocs_document_dates-3.7.0-py3-none-any.whl", hash = "sha256:c2a6e0eff1fa09ef209677bc365351af47d87242e7380946e412e2213cfc8e2f", size = 197034, upload-time = "2026-03-03T05:51:23.2Z" },
+]
+
+[[package]]
 name = "mkdocs-get-deps"
 version = "0.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -457,7 +469,7 @@ wheels = [
 
 [[package]]
 name = "mkdocs-materialx"
-version = "10.0.9"
+version = "10.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "babel" },
@@ -466,15 +478,16 @@ dependencies = [
     { name = "jinja2" },
     { name = "markdown" },
     { name = "mkdocs" },
+    { name = "mkdocs-document-dates" },
     { name = "mkdocs-material-extensions" },
     { name = "paginate" },
     { name = "pygments" },
     { name = "pymdown-extensions" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e6/70/c33607d1f6eaf7d1e38c9211d4ba15315b002a56804b09eb020d876dab69/mkdocs_materialx-10.0.9.tar.gz", hash = "sha256:134955b3aee995b5245ff26eba00546fd951cc8f55380ab7978962a32ec6c5f1", size = 4095545, upload-time = "2026-02-19T11:01:05.146Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9a/f4/d96971d8d3b2888b1a01ae7bc970f39606690d5819f3f8e4c81aae9965e7/mkdocs_materialx-10.1.0.tar.gz", hash = "sha256:ec608fe1c5f17b74c2555f79b1e8a72a164c9b7305efe704c868565943d10eea", size = 4095981, upload-time = "2026-03-08T07:07:55.816Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2a/7a/ac6b2a05e04392dd9bb68b9aaf8c4f029afec6d99e6412da9dc64951b445/mkdocs_materialx-10.0.9-py3-none-any.whl", hash = "sha256:88229339e7a6c02034abe35786b55238b8a3c2c65ac8299fbdaa6e184a917ecb", size = 9285417, upload-time = "2026-02-19T11:00:51.667Z" },
+    { url = "https://files.pythonhosted.org/packages/c0/fb/e5194cd5c765f2dd6e601186f8448c8c14470296803e9b1619ef11bfa20e/mkdocs_materialx-10.1.0-py3-none-any.whl", hash = "sha256:26c5a5dc32a10655536223ecad3c0b4c4344d8845dec792db1e9a66f77fc2761", size = 9285962, upload-time = "2026-03-08T07:07:47.294Z" },
 ]
 
 [[package]]
@@ -865,7 +878,7 @@ dev = [
     { name = "ruff", specifier = "==0.15.5" },
 ]
 docs = [
-    { name = "mkdocs-materialx", specifier = "==10.0.9" },
+    { name = "mkdocs-materialx", specifier = "==10.1.0" },
     { name = "mkdocs-minify-html-plugin", specifier = "==0.3.9" },
     { name = "mkdocstrings", specifier = "==1.0.3" },
     { name = "mkdocstrings-python", specifier = "==2.0.3" },
