@@ -446,16 +446,16 @@ wheels = [
 
 [[package]]
 name = "mkdocs-get-deps"
-version = "0.2.0"
+version = "0.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "mergedeep" },
     { name = "platformdirs" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/98/f5/ed29cd50067784976f25ed0ed6fcd3c2ce9eb90650aa3b2796ddf7b6870b/mkdocs_get_deps-0.2.0.tar.gz", hash = "sha256:162b3d129c7fad9b19abfdcb9c1458a651628e4b1dea628ac68790fb3061c60c", size = 10239, upload-time = "2023-11-20T17:51:09.981Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/30/c5/8294bbbbdc2c6438158a94798df7ec48d8be64ced30f926941c4dd5d2c38/mkdocs_get_deps-0.2.1.tar.gz", hash = "sha256:177f9629f71716a8250b417f41b0a2d2145a9fd986d84d0d723b2e3406ce3741", size = 11050, upload-time = "2026-03-09T22:10:45.611Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9f/d4/029f984e8d3f3b6b726bd33cafc473b75e9e44c0f7e80a5b29abc466bdea/mkdocs_get_deps-0.2.0-py3-none-any.whl", hash = "sha256:2bf11d0b133e77a0dd036abeeb06dec8775e46efa526dc70667d8863eefc6134", size = 9521, upload-time = "2023-11-20T17:51:08.587Z" },
+    { url = "https://files.pythonhosted.org/packages/ca/fa/ab291bbb8f7453f8449a982843b044b37050c85f5895ef97f599683a1249/mkdocs_get_deps-0.2.1-py3-none-any.whl", hash = "sha256:07d6076298715dfcb8232e7dec083d09015b4e65482ce7f6743cb07cd1da847e", size = 9579, upload-time = "2026-03-09T22:10:44.503Z" },
 ]
 
 [[package]]
