@@ -136,6 +136,7 @@ jobs:
             setup-python-architecture: x64
             setup-python-versions: |
               pypy3.11
+              3.14
             build-python-versions: pypy3.11
             artifact_suffix: "-pypy"
           - target: i686-pc-windows-msvc
