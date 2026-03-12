@@ -126,7 +126,7 @@ dependencies = [
 
 [[package]]
 name = "pyromark"
-version = "0.9.8"
+version = "0.9.9"
 dependencies = [
  "pulldown-cmark",
  "pyo3",
