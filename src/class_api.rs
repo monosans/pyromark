@@ -34,16 +34,55 @@ impl Markdown {
     ///             case other_event:
     ///                 print(f"Got {other_event!r}")
     ///     ```
-    #[pyo3(signature = (markdown, /, *, merge_text = true))]
+    #[pyo3(signature = (markdown, /, *, merge_text = true, broken_link_callback = None))]
     fn events<'py>(
         &self,
         py: Python<'py>,
         markdown: &str,
         merge_text: bool,
+        broken_link_callback: Option<Bound<'py, PyAny>>,
     ) -> pythonize::Result<Bound<'py, PyAny>> {
-        let v = py.detach(move || {
-            crate::common::events(markdown, self.0, merge_text)
-        });
+        // Need to own markdown string so closure can reference it - keep it alive for entire function
+        let markdown_owned = markdown.to_string();
+        let markdown_ref = markdown_owned.as_str();
+
+        let v = if let Some(callback) = broken_link_callback {
+            crate::common::events_with_broken_link_callback(
+                markdown_ref,
+                self.0,
+                merge_text,
+                |broken_link| {
+                    // We're already in a GIL context, just use py
+                    // Create a dict with broken link information
+                    let link_info = pyo3::types::PyDict::new(py);
+                    link_info.set_item("reference", broken_link.reference.as_ref()).ok()?;
+                    link_info.set_item("span", (broken_link.span.start, broken_link.span.end)).ok()?;
+
+                    // Call the Python callback
+                    let result = callback.call1((link_info,)).ok()?;
+
+                    // Check if result is None
+                    if result.is_none() {
+                        return None;
+                    }
+
+                    // Extract (url, title) tuple
+                    let tuple = result.cast::<pyo3::types::PyTuple>().ok()?;
+                    if tuple.len() != 2 {
+                        return None;
+                    }
+
+                    let url = tuple.get_item(0).ok()?.extract::<String>().ok()?;
+                    let title = tuple.get_item(1).ok()?.extract::<String>().ok()?;
+
+                    Some((pulldown_cmark::CowStr::Boxed(url.into()), pulldown_cmark::CowStr::Boxed(title.into())))
+                },
+            )
+        } else {
+            py.detach(move || {
+                crate::common::events(markdown, self.0, merge_text)
+            })
+        };
         pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
     }
 
@@ -76,14 +115,51 @@ impl Markdown {
     ///             case other_event:
     ///                 print(f"Got {other_event!r}, {range_=}")
     ///     ```
-    #[pyo3(signature = (markdown, /))]
+    #[pyo3(signature = (markdown, /, *, broken_link_callback = None))]
     fn events_with_range<'py>(
         &self,
         py: Python<'py>,
         markdown: &str,
+        broken_link_callback: Option<Bound<'py, PyAny>>,
     ) -> pythonize::Result<Bound<'py, PyAny>> {
-        let v = py
-            .detach(move || crate::common::events_with_range(markdown, self.0));
+        // Need to own markdown string so closure can reference it - keep it alive for entire function
+        let markdown_owned = markdown.to_string();
+        let markdown_ref = markdown_owned.as_str();
+
+        let v = if let Some(callback) = broken_link_callback {
+            crate::common::events_with_range_and_broken_link_callback(
+                markdown_ref,
+                self.0,
+                |broken_link| {
+                    // We're already in a GIL context, just use py
+                    // Create a dict with broken link information
+                    let link_info = pyo3::types::PyDict::new(py);
+                    link_info.set_item("reference", broken_link.reference.as_ref()).ok()?;
+                    link_info.set_item("span", (broken_link.span.start, broken_link.span.end)).ok()?;
+
+                    // Call the Python callback
+                    let result = callback.call1((link_info,)).ok()?;
+
+                    // Check if result is None
+                    if result.is_none() {
+                        return None;
+                    }
+
+                    // Extract (url, title) tuple
+                    let tuple = result.cast::<pyo3::types::PyTuple>().ok()?;
+                    if tuple.len() != 2 {
+                        return None;
+                    }
+
+                    let url = tuple.get_item(0).ok()?.extract::<String>().ok()?;
+                    let title = tuple.get_item(1).ok()?.extract::<String>().ok()?;
+
+                    Some((pulldown_cmark::CowStr::Boxed(url.into()), pulldown_cmark::CowStr::Boxed(title.into())))
+                },
+            )
+        } else {
+            py.detach(move || crate::common::events_with_range(markdown, self.0))
+        };
         pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
     }
 
@@ -92,8 +168,50 @@ impl Markdown {
     ///     html = md.html("# Hello world")
     ///     assert html == "<h1>Hello world</h1>\n"
     ///     ```
-    #[pyo3(signature = (markdown, /))]
-    fn html(&self, py: Python<'_>, markdown: &str) -> String {
-        py.detach(move || crate::common::html(markdown, self.0))
+    #[pyo3(signature = (markdown, /, *, broken_link_callback = None))]
+    fn html<'py>(
+        &self,
+        py: Python<'py>,
+        markdown: &str,
+        broken_link_callback: Option<Bound<'py, PyAny>>,
+    ) -> String {
+        // Need to own markdown string so closure can reference it - keep it alive for entire function
+        let markdown_owned = markdown.to_string();
+        let markdown_ref = markdown_owned.as_str();
+
+        if let Some(callback) = broken_link_callback {
+            crate::common::html_with_broken_link_callback(
+                markdown_ref,
+                self.0,
+                |broken_link| {
+                    // We're already in a GIL context, just use py
+                    // Create a dict with broken link information
+                    let link_info = pyo3::types::PyDict::new(py);
+                    link_info.set_item("reference", broken_link.reference.as_ref()).ok()?;
+                    link_info.set_item("span", (broken_link.span.start, broken_link.span.end)).ok()?;
+
+                    // Call the Python callback
+                    let result = callback.call1((link_info,)).ok()?;
+
+                    // Check if result is None
+                    if result.is_none() {
+                        return None;
+                    }
+
+                    // Extract (url, title) tuple
+                    let tuple = result.cast::<pyo3::types::PyTuple>().ok()?;
+                    if tuple.len() != 2 {
+                        return None;
+                    }
+
+                    let url = tuple.get_item(0).ok()?.extract::<String>().ok()?;
+                    let title = tuple.get_item(1).ok()?.extract::<String>().ok()?;
+
+                    Some((pulldown_cmark::CowStr::Boxed(url.into()), pulldown_cmark::CowStr::Boxed(title.into())))
+                },
+            )
+        } else {
+            py.detach(move || crate::common::html(markdown, self.0))
+        }
     }
 }
