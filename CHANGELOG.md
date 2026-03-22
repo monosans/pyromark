@@ -2,6 +2,11 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.9.9] - 2026-03-12
+
+- Add support for riscv64gc-unknown-linux-musl target.
+- Update pulldown-cmark to v0.13.1.
+
 ## [0.9.8] - 2025-11-27
 
 - Drop support for EOL Python 3.9.
