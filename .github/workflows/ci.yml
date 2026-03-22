@@ -82,9 +82,9 @@ jobs:
           - target: riscv64gc-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_31"
-          # - target: riscv64gc-unknown-linux-musl
-          #   runner: ubuntu-24.04
-          #   manylinux: musllinux_1_2
+          - target: riscv64gc-unknown-linux-musl
+            runner: ubuntu-24.04
+            manylinux: musllinux_1_2
           # - target: loongarch64-unknown-linux-gnu
           #   runner: ubuntu-24.04
           #   manylinux: "2_36"
@@ -215,8 +215,28 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: beta
+          target: >
+            x86_64-unknown-linux-gnu,
+            x86_64-unknown-linux-musl,
+            i686-unknown-linux-gnu,
+            i686-unknown-linux-musl,
+            aarch64-unknown-linux-gnu,
+            aarch64-unknown-linux-musl,
+            armv7-unknown-linux-gnueabihf,
+            armv7-unknown-linux-musleabihf,
+            powerpc64-unknown-linux-gnu,
+            powerpc64le-unknown-linux-gnu,
+            powerpc64le-unknown-linux-musl,
+            s390x-unknown-linux-gnu,
+            riscv64gc-unknown-linux-gnu,
+            riscv64gc-unknown-linux-musl,
+            x86_64-apple-darwin,
+            aarch64-apple-darwin,
+            x86_64-pc-windows-msvc,
+            i686-pc-windows-msvc,
+            aarch64-pc-windows-msvc
           components: clippy
-      - run: cargo +beta clippy -- -Dwarnings
+      - run: cargo +beta clippy --all-targets -- -Dwarnings
   pre-commit:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
