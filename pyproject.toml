@@ -33,14 +33,14 @@ dev = [
   "mypy==1.19.1",
   "pytest==9.0.2",
   "pytest-github-actions-annotate-failures==0.4.0",
-  "ruff==0.15.7",
+  "ruff==0.15.8",
 ]
 docs = [
   "mkdocs-materialx==10.1.0",
   "mkdocs-minify-html-plugin==0.3.10",
   "mkdocstrings==1.0.3",
   "mkdocstrings-python==2.0.3",
-  "ruff==0.15.7",
+  "ruff==0.15.8",
 ]
 
 [build-system]
