@@ -451,14 +451,14 @@ wheels = [
 
 [[package]]
 name = "mkdocs-document-dates"
-version = "3.7.0"
+version = "3.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "mkdocs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ec/4f/ab72b1907014ee71f5fa257e1f5fe1ad1a5c2711df93429ac825458cc789/mkdocs_document_dates-3.7.0.tar.gz", hash = "sha256:a6b4a3deaf378f53502752c32ed435184c1059248ca93170893c0e74f45b9fe1", size = 191312, upload-time = "2026-03-03T05:51:24.855Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/05/a9/abac4c075839ed88066efc397f4556cb231244f1274f4432b0318206a7e4/mkdocs_document_dates-3.7.1.tar.gz", hash = "sha256:c035ac978c87330c0c2e882d77a033d917679d0203d00899b664b14fe053d1d9", size = 193757, upload-time = "2026-03-28T11:53:21.451Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4d/c4/8992379e141f24ada2824b72417a1f7ba7abdb236baa656711c4c9e0e835/mkdocs_document_dates-3.7.0-py3-none-any.whl", hash = "sha256:c2a6e0eff1fa09ef209677bc365351af47d87242e7380946e412e2213cfc8e2f", size = 197034, upload-time = "2026-03-03T05:51:23.2Z" },
+    { url = "https://files.pythonhosted.org/packages/cd/9a/7ec1e7e660088fef3459e9c167e1401a339a5736f723daeb0f44b493231e/mkdocs_document_dates-3.7.1-py3-none-any.whl", hash = "sha256:1b8acec55d23ca504152df8d0821f3be1070c5f19d0326e2ec7387ae06d29dab", size = 199121, upload-time = "2026-03-28T11:53:20.196Z" },
 ]
 
 [[package]]
