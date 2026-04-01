@@ -486,7 +486,7 @@ wheels = [
 
 [[package]]
 name = "mkdocs-materialx"
-version = "10.1.1"
+version = "10.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "babel" },
@@ -503,9 +503,9 @@ dependencies = [
     { name = "pymdown-extensions" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/24/12/4bdcccff609b84ed5d3264f46b1f040519ea7585be9b04289c5847aeaf71/mkdocs_materialx-10.1.1.tar.gz", hash = "sha256:18d5ac13ec965238ecdc0707907596428579486a984871e1e0aa89b67972a02e", size = 4098172, upload-time = "2026-03-29T07:22:53.502Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/81/98/3540bc3399cf6c3270acc2d56c6d464d7e876525945865cc38fde8375e4b/mkdocs_materialx-10.1.2.tar.gz", hash = "sha256:a3780d3da46c78ea944482f5bc16815d49ae5b349fc2e07112b72fbd3157db68", size = 4098259, upload-time = "2026-04-01T16:12:21.936Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6e/a9/ac504549e8929e184e6f93bbe6f50f170a6e6dd870f87c861b14ec79e17d/mkdocs_materialx-10.1.1-py3-none-any.whl", hash = "sha256:e5c00cfd27997c2f5484c1611cc7b0d971da1d41dfff5733893ca614af44a1f2", size = 9288581, upload-time = "2026-03-29T07:22:48.67Z" },
+    { url = "https://files.pythonhosted.org/packages/52/ee/5e4c6fc23946b5f39d849472d2e072681174ee4bcd197b3beddbba64fcfd/mkdocs_materialx-10.1.2-py3-none-any.whl", hash = "sha256:96ff2f4d3d9f7c12f1e7e5c407682098bd7295416c596e5b3ba00af3c0fe9079", size = 9288533, upload-time = "2026-04-01T16:12:19.039Z" },
 ]
 
 [[package]]
@@ -925,6 +925,7 @@ docs = [
     { name = "mkdocs-minify-html-plugin" },
     { name = "mkdocstrings" },
     { name = "mkdocstrings-python" },
+    { name = "properdocs" },
     { name = "ruff" },
 ]
 
@@ -939,10 +940,11 @@ dev = [
     { name = "ruff", specifier = "==0.15.8" },
 ]
 docs = [
-    { name = "mkdocs-materialx", specifier = "==10.1.1" },
+    { name = "mkdocs-materialx", specifier = "==10.1.2" },
     { name = "mkdocs-minify-html-plugin", specifier = "==0.3.10" },
     { name = "mkdocstrings", specifier = "==1.0.3" },
     { name = "mkdocstrings-python", specifier = "==2.0.3" },
+    { name = "properdocs", specifier = "==1.6.7" },
     { name = "ruff", specifier = "==0.15.8" },
 ]
 

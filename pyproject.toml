@@ -36,10 +36,11 @@ dev = [
   "ruff==0.15.8",
 ]
 docs = [
-  "mkdocs-materialx==10.1.1",
+  "mkdocs-materialx==10.1.2",
   "mkdocs-minify-html-plugin==0.3.10",
   "mkdocstrings==1.0.3",
   "mkdocstrings-python==2.0.3",
+  "properdocs==1.6.7",
   "ruff==0.15.8",
 ]
 
