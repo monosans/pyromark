@@ -8,4 +8,4 @@ build:
     - asdf plugin add uv
     - asdf install uv latest
     - asdf global uv latest
-    - UV_PROJECT_ENVIRONMENT="${READTHEDOCS_VIRTUALENV_PATH}" uv run --group docs --no-group dev --locked --no-cache mkdocs build -d $READTHEDOCS_OUTPUT/html
+    - UV_PROJECT_ENVIRONMENT="${READTHEDOCS_VIRTUALENV_PATH}" uv run --group docs --no-group dev --locked --no-cache properdocs build -d $READTHEDOCS_OUTPUT/html
