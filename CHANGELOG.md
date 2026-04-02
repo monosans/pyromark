@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.9.10] - 2026-03-22
+
+- Update pulldown-cmark to v0.13.3.
+
 ## [0.9.9] - 2026-03-12
 
 - Add support for riscv64gc-unknown-linux-musl target.
