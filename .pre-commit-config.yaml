@@ -19,7 +19,7 @@ repos:
           - --fix=lf
       - id: trailing-whitespace
   - repo: https://github.com/tombi-toml/tombi-pre-commit
-    rev: v0.9.9
+    rev: v0.9.13
     hooks:
       - id: tombi-format
         exclude: ^(?:Cargo.lock|uv.lock)$
@@ -28,14 +28,14 @@ repos:
     hooks:
       - id: prettier
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.15.7
+    rev: v0.15.9
     hooks:
       - id: ruff-check
         args:
           - --fix
       - id: ruff-format
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.19.1
+    rev: v1.20.0
     hooks:
       - id: mypy
         args:

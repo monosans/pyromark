@@ -1,6 +1,6 @@
 [project]
 name = "pyromark"
-version = "0.9.9"
+version = "0.9.10"
 description = "Blazingly fast Markdown parser"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -30,17 +30,18 @@ dependencies = ["typing-extensions>=3.7.4"]
 
 [dependency-groups]
 dev = [
-  "mypy==1.19.1",
+  "mypy==1.20.0",
   "pytest==9.0.2",
   "pytest-github-actions-annotate-failures==0.4.0",
-  "ruff==0.15.7",
+  "ruff==0.15.9",
 ]
 docs = [
-  "mkdocs-materialx==10.1.0",
+  "mkdocs-materialx==10.1.2",
   "mkdocs-minify-html-plugin==0.3.10",
   "mkdocstrings==1.0.3",
   "mkdocstrings-python==2.0.3",
-  "ruff==0.15.7",
+  "properdocs==1.6.7",
+  "ruff==0.15.9",
 ]
 
 [build-system]
