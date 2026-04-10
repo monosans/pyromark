@@ -486,7 +486,7 @@ wheels = [
 
 [[package]]
 name = "mkdocs-materialx"
-version = "10.1.2"
+version = "10.1.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "babel" },
@@ -503,9 +503,9 @@ dependencies = [
     { name = "pymdown-extensions" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/81/98/3540bc3399cf6c3270acc2d56c6d464d7e876525945865cc38fde8375e4b/mkdocs_materialx-10.1.2.tar.gz", hash = "sha256:a3780d3da46c78ea944482f5bc16815d49ae5b349fc2e07112b72fbd3157db68", size = 4098259, upload-time = "2026-04-01T16:12:21.936Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/16/d1/1897c84662bf8a1b68fafa81e8d020b08223ef2b270ff84c7f5d51954564/mkdocs_materialx-10.1.3.tar.gz", hash = "sha256:d46d56ee5db7e542a4fe537a1726c8e65d992c942e889a16cab9e684b756d3ab", size = 4097804, upload-time = "2026-04-10T12:46:03.972Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/52/ee/5e4c6fc23946b5f39d849472d2e072681174ee4bcd197b3beddbba64fcfd/mkdocs_materialx-10.1.2-py3-none-any.whl", hash = "sha256:96ff2f4d3d9f7c12f1e7e5c407682098bd7295416c596e5b3ba00af3c0fe9079", size = 9288533, upload-time = "2026-04-01T16:12:19.039Z" },
+    { url = "https://files.pythonhosted.org/packages/da/67/1b49fa1caa66a8f8ec87dff9ab58175660e0b9199aaa724c88e043ede478/mkdocs_materialx-10.1.3-py3-none-any.whl", hash = "sha256:e1f8e1f38c5066e77cd483c2587938e26fb6af474d8c37088b93b3c013d77ea8", size = 9288832, upload-time = "2026-04-10T12:45:48.008Z" },
 ]
 
 [[package]]
@@ -940,7 +940,7 @@ dev = [
     { name = "ruff", specifier = "==0.15.10" },
 ]
 docs = [
-    { name = "mkdocs-materialx", specifier = "==10.1.2" },
+    { name = "mkdocs-materialx", specifier = "==10.1.3" },
     { name = "mkdocs-minify-html-plugin", specifier = "==0.3.10" },
     { name = "mkdocstrings", specifier = "==1.0.3" },
     { name = "mkdocstrings-python", specifier = "==2.0.3" },
