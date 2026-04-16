@@ -382,3 +382,43 @@ def test_cli_version(capsys: pytest.CaptureFixture[str]) -> None:
     capture = capsys.readouterr()
     assert not capture.err
     assert capture.out == f"{pyromark.__version__}\n"
+
+
+def test_broken_link_callback() -> None:
+    """Test broken_link_callback functionality."""
+    markdown = "This is a [broken link] reference."
+
+    # Define a callback that fixes broken links
+    def fix_broken_link(link_info: dict[str, str | tuple[int, int]]) -> tuple[str, str] | None:
+        reference = link_info["reference"]
+        assert isinstance(reference, str)
+        assert reference == "broken link"
+        # Check span is provided
+        assert "span" in link_info
+        span = link_info["span"]
+        assert isinstance(span, tuple)
+        assert len(span) == 2
+        # Return (url, title) tuple
+        return (f"https://example.com/{reference}", f"Link to {reference}")
+
+    # Test function API
+    html = pyromark.html(markdown, broken_link_callback=fix_broken_link)
+    assert '<a href="https://example.com/broken%20link" title="Link to broken link">broken link</a>' in html
+
+    # Test class API
+    md = pyromark.Markdown()
+    html2 = md.html(markdown, broken_link_callback=fix_broken_link)
+    assert '<a href="https://example.com/broken%20link" title="Link to broken link">broken link</a>' in html2
+
+    # Test without callback (should leave broken link as-is)
+    html3 = pyromark.html(markdown)
+    assert "[broken link]" in html3
+    assert '<a href=' not in html3
+
+    # Test callback returning None (should leave broken link as-is)
+    def return_none(_link_info: dict[str, str | tuple[int, int]]) -> tuple[str, str] | None:
+        return None
+
+    html4 = pyromark.html(markdown, broken_link_callback=return_none)
+    assert "[broken link]" in html4
+    assert '<a href=' not in html4
