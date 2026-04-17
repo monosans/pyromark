@@ -451,14 +451,15 @@ wheels = [
 
 [[package]]
 name = "mkdocs-document-dates"
-version = "3.7.3"
+version = "3.7.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "mkdocs" },
+    { name = "properdocs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d4/cf/74804b6ea5504efa44ebc4d82bad33b50e91160d7deb831185a05a6ed89d/mkdocs_document_dates-3.7.3.tar.gz", hash = "sha256:6d1603f5cbc7163b870017438e13dc00d7837234300d4522b639a53aa7e73d99", size = 193749, upload-time = "2026-03-30T13:38:28.943Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a3/36/60718707e71cf86ca18680c7830d6204c19cfe6a6320a606c2ad2fbfb970/mkdocs_document_dates-3.7.4.tar.gz", hash = "sha256:75cbb2aea5ee90d9f6fbd5c07d96df1b923f1f9bb6cdc44ef5b90d3c0f74e525", size = 194142, upload-time = "2026-04-17T13:15:12.178Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/92/56/ad7c19e0b21935054b2f29c89603b831c54ef43d937e831c8fa3203bc063/mkdocs_document_dates-3.7.3-py3-none-any.whl", hash = "sha256:247a07330e4a0c5d42cbbd6e23d7549b5a12f9fc3cb13498db6aee2ae66ca778", size = 199114, upload-time = "2026-03-30T13:38:26.952Z" },
+    { url = "https://files.pythonhosted.org/packages/d1/f5/b4fefdd0e8d9bd0b4844de32722d0ef0e6204262318aa1b753133562a6c4/mkdocs_document_dates-3.7.4-py3-none-any.whl", hash = "sha256:5d744c38dd7c2656a7c206da52f3aec9524b8ea6df454a8fc23ba249eb1a7769", size = 199439, upload-time = "2026-04-17T13:15:10.581Z" },
 ]
 
 [[package]]
