@@ -92,7 +92,7 @@ jobs:
           #   runner: ubuntu-24.04
           #   manylinux: musllinux_1_2
           - target: x86_64-apple-darwin
-            runner: macos-26
+            runner: macos-26-intel
             setup-python-versions: |
               3.10
               3.11
