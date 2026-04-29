@@ -59,3 +59,4 @@ cache-keys = [
   { file = "Cargo.toml" },
   { file = "Cargo.lock" },
 ]
+exclude-newer = "3 days"
