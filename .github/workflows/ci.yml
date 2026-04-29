@@ -250,6 +250,7 @@ jobs:
       - run: uv tool run --no-cache --python 3.14 prek run --all-files --show-diff-on-failure
         env:
           RUFF_OUTPUT_FORMAT: github
+          UV_EXCLUDE_NEWER: 3 days
   pytest:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     needs:
