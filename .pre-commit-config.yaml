@@ -19,7 +19,7 @@ repos:
           - --fix=lf
       - id: trailing-whitespace
   - repo: https://github.com/tombi-toml/tombi-pre-commit
-    rev: v0.9.25
+    rev: v0.10.1
     hooks:
       - id: tombi-format
         exclude: ^(?:Cargo.lock|uv.lock)$
@@ -38,8 +38,9 @@ repos:
     rev: v1.20.2
     hooks:
       - id: mypy
+        language: python
         args:
           - --scripts-are-modules
         additional_dependencies:
-          - pytest<9
+          - pytest==9.0.3
           - typing-extensions
