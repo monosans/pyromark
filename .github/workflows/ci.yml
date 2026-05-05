@@ -95,7 +95,7 @@ jobs:
           #   runner: ubuntu-24.04
           #   manylinux: musllinux_1_2
           - target: x86_64-apple-darwin
-            runner: macos-15
+            runner: macos-26-intel
             setup-python-versions: |
               3.10
               3.11
@@ -106,7 +106,7 @@ jobs:
               pypy3.11
               3.14
           - target: aarch64-apple-darwin
-            runner: macos-15
+            runner: macos-26
             setup-python-versions: |
               3.10
               3.11
@@ -161,34 +161,34 @@ jobs:
               3.13
               3.14
             build-python-versions: 3.11 3.12 3.13 3.14
-          - target: aarch64-pc-windows-msvc
-            runner: windows-11-arm
-            setup-python-architecture: arm64
-            setup-python-versions: |
-              3.13t
-              3.14t
-            build-python-versions: 3.13t 3.14t
-            artifact_suffix: "-freethreaded"
+          # - target: aarch64-pc-windows-msvc
+          #   runner: windows-11-arm
+          #   setup-python-architecture: arm64
+          #   setup-python-versions: |
+          #     3.13t
+          #     3.14t
+          #   build-python-versions: 3.13t 3.14t
+          #   artifact_suffix: "-freethreaded"
       fail-fast: false
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           persist-credentials: false
       - if: "${{ matrix.setup-python-versions }}"
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           python-version: "${{ matrix.setup-python-versions }}"
           allow-prereleases: true
           architecture: "${{ matrix.setup-python-architecture || '' }}"
           check-latest: true
-      - uses: PyO3/maturin-action@v1
+      - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
           args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || '3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.11' }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           rust-toolchain: beta
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: |
             ${{ format('wheels-{0}-{1}{2}', matrix.target, matrix.manylinux || 'auto', matrix.artifact_suffix || '') }}
@@ -205,17 +205,17 @@ jobs:
       - udeps
     runs-on: ubuntu-24.04
     steps:
-      - uses: re-actors/alls-green@release/v1
+      - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
         with:
           jobs: ${{ toJSON(needs) }}
   clippy:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           persist-credentials: false
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1
         with:
           toolchain: beta
           target: >
@@ -244,13 +244,13 @@ jobs:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@v7
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           enable-cache: false
-      - run: uv tool run --no-cache --python 3.14 prek run --all-files --show-diff-on-failure
+      - run: uv tool run --exclude-newer '3 days' --no-cache --python 3.14 prek run --all-files --show-diff-on-failure
         env:
           RUFF_OUTPUT_FORMAT: github
   pytest:
@@ -266,15 +266,15 @@ jobs:
           - "3.14t"
       fail-fast: false
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           persist-credentials: false
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           path: dist
           pattern: wheels-x86_64-unknown-linux-gnu-2_28*
           merge-multiple: "true"
-      - uses: astral-sh/setup-uv@v7
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           enable-cache: true
       - name: pytest
@@ -292,8 +292,8 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v8
-      - uses: astral-sh/setup-uv@v7
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           enable-cache: false
       - run: uv publish --trusted-publishing always --no-cache 'wheels-*/*'
@@ -301,10 +301,10 @@ jobs:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           persist-credentials: false
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1
         with:
           toolchain: nightly
           components: rustfmt
@@ -312,25 +312,25 @@ jobs:
   sdist:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           persist-credentials: false
-      - uses: PyO3/maturin-action@v1
+      - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
           command: sdist
           args: --out dist
           rust-toolchain: beta
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: wheels-sdist
           path: dist
   udeps:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           persist-credentials: false
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1
         with:
           toolchain: nightly
           cache-key: x86_64-unknown-linux-gnu
