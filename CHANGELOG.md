@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.9.11] - 2026-05-24
+
+- Update pulldown-cmark to v0.13.4.
+
 ## [0.9.10] - 2026-03-22
 
 - Update pulldown-cmark to v0.13.3.
