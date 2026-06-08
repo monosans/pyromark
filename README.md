@@ -60,7 +60,7 @@ for event in pyromark.events("# Hello world"):
 
 If you use threading, the difference with other libraries will be even more enormous, since pyromark releases the [GIL](https://docs.python.org/3/glossary.html#term-global-interpreter-lock).
 
-See [benchmark](https://monosans.github.io/pyromark/en/latest/performance/).
+See [benchmark](https://monosans.github.io/pyromark/performance/).
 
 ## License
 
