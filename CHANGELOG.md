@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.9.12] - 2026-06-08
+
+- Migrate docs to GitHub Pages.
+
 ## [0.9.11] - 2026-05-24
 
 - Update pulldown-cmark to v0.13.4.
