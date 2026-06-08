@@ -23,7 +23,7 @@ classifiers = [
   "Programming Language :: Rust",
   "Typing :: Typed",
 ]
-urls.documentation = "https://pyromark.readthedocs.io"
+urls.documentation = "https://monosans.github.io/pyromark"
 urls.repository = "https://github.com/monosans/pyromark"
 scripts.pyromark = "pyromark._cli:main"
 dependencies = ["typing-extensions>=3.7.4"]
@@ -33,15 +33,13 @@ dev = [
   "mypy==2.1.0",
   "pytest==9.0.3",
   "pytest-github-actions-annotate-failures==0.4.0",
-  "ruff==0.15.15",
+  "ruff==0.15.16",
 ]
 docs = [
-  "mkdocs-materialx==10.1.6",
-  "mkdocs-minify-html-plugin==0.3.10",
   "mkdocstrings==1.0.4",
-  "mkdocstrings-python==2.0.3",
-  "properdocs==1.6.7",
-  "ruff==0.15.15",
+  "mkdocstrings-python==2.0.4",
+  "ruff==0.15.16",
+  "zensical==0.0.44",
 ]
 
 [build-system]
