@@ -307,7 +307,7 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          name: wheels-x86_64-unknown-linux-gnu-2_28$
+          name: wheels-x86_64-unknown-linux-gnu-2_28
           path: dist
       - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
         with:
