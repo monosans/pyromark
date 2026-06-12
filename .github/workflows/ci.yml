@@ -99,7 +99,6 @@ jobs:
               3.11
               3.12
               3.13
-              3.13t
               3.14t
               pypy3.11
               3.14
@@ -110,7 +109,6 @@ jobs:
               3.11
               3.12
               3.13
-              3.13t
               3.14t
               pypy3.11
               3.14
@@ -127,10 +125,8 @@ jobs:
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x64
-            setup-python-versions: |
-              3.13t
-              3.14t
-            build-python-versions: 3.13t 3.14t
+            setup-python-versions: 3.14t
+            build-python-versions: 3.14t
             artifact_suffix: "-freethreaded"
           - target: i686-pc-windows-msvc
             runner: windows-2025
@@ -145,10 +141,8 @@ jobs:
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
-            setup-python-versions: |
-              3.13t
-              3.14t
-            build-python-versions: 3.13t 3.14t
+            setup-python-versions: 3.14t
+            build-python-versions: 3.14t
             artifact_suffix: "-freethreaded"
           - target: aarch64-pc-windows-msvc
             runner: windows-11-arm
@@ -162,10 +156,8 @@ jobs:
           - target: aarch64-pc-windows-msvc
             runner: windows-11-arm
             setup-python-architecture: arm64
-            setup-python-versions: |
-              3.13t
-              3.14t
-            build-python-versions: 3.13t 3.14t
+            setup-python-versions: 3.14t
+            build-python-versions: 3.14t
             artifact_suffix: "-freethreaded"
       fail-fast: false
     steps:
@@ -181,7 +173,7 @@ jobs:
           check-latest: true
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
-          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || '3.10 3.11 3.12 3.13 3.13t 3.14 3.14t pypy3.11' }}' --out dist --release
+          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || '3.10 3.11 3.12 3.13 3.14 3.14t pypy3.11' }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           rust-toolchain: beta
