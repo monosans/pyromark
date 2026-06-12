@@ -1,6 +1,6 @@
 [project]
 name = "pyromark"
-version = "0.9.11"
+version = "0.9.12"
 description = "Blazingly fast Markdown parser"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -39,7 +39,7 @@ docs = [
   "mkdocstrings==1.0.4",
   "mkdocstrings-python==2.0.4",
   "ruff==0.15.16",
-  "zensical==0.0.44",
+  "zensical==0.0.45",
 ]
 
 [build-system]
