@@ -36,7 +36,7 @@ dev = [
   "ruff==0.15.21",
 ]
 docs = [
-  "mkdocstrings==1.0.5",
+  "mkdocstrings==1.0.6",
   "mkdocstrings-python==2.0.5",
   "ruff==0.15.21",
   "zensical==0.0.50",
