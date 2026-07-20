@@ -39,7 +39,7 @@ docs = [
   "mkdocstrings==1.0.6",
   "mkdocstrings-python==2.0.5",
   "ruff==0.15.22",
-  "zensical==0.0.50",
+  "zensical==0.0.51",
 ]
 
 [build-system]
