@@ -30,16 +30,16 @@ dependencies = ["typing-extensions>=3.7.4"]
 
 [dependency-groups]
 dev = [
-  "mypy==2.1.0",
+  "mypy==2.3.0",
   "pytest==9.1.1",
   "pytest-github-actions-annotate-failures==0.4.2",
-  "ruff==0.15.20",
+  "ruff==0.15.22",
 ]
 docs = [
-  "mkdocstrings==1.0.4",
+  "mkdocstrings==1.0.6",
   "mkdocstrings-python==2.0.5",
-  "ruff==0.15.20",
-  "zensical==0.0.46",
+  "ruff==0.15.22",
+  "zensical==0.0.51",
 ]
 
 [build-system]
