@@ -19,23 +19,23 @@ repos:
           - --fix=lf
       - id: trailing-whitespace
   - repo: https://github.com/tombi-toml/tombi-pre-commit
-    rev: v1.1.6
+    rev: v1.2.1
     hooks:
       - id: tombi-format
         exclude: ^(?:Cargo.lock|uv.lock)$
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.9.1
+    rev: v3.9.5
     hooks:
       - id: prettier
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.15.20
+    rev: v0.15.22
     hooks:
       - id: ruff-check
         args:
           - --fix
       - id: ruff-format
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v2.1.0
+    rev: v2.3.0
     hooks:
       - id: mypy
         language: python
@@ -45,6 +45,6 @@ repos:
           - pytest==9.1.1
           - typing-extensions
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.26.1
+    rev: v1.27.0
     hooks:
       - id: zizmor
