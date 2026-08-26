@@ -1,5 +1,6 @@
 site_name: pyromark
 site_url: https://monosans.github.io/pyromark
+strict: true
 repo_url: https://github.com/monosans/pyromark
 repo_name: monosans/pyromark
 edit_uri: edit/main/docs/

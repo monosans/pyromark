@@ -1,6 +1,5 @@
 # pyromark
 
-[![CI](https://github.com/monosans/pyromark/actions/workflows/ci.yml/badge.svg)](https://github.com/monosans/pyromark/actions/workflows/ci.yml)
 [![Downloads](https://static.pepy.tech/badge/pyromark)](https://pepy.tech/project/pyromark)
 
 pyromark (stands for Python Rust Optimized Markdown) is a blazingly fast CommonMark-compliant Markdown parser for Python.
