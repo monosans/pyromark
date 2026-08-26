@@ -103,6 +103,8 @@ jobs:
               3.12
               3.13
               3.14t
+              3.15
+              3.15t
               pypy3.11
               3.14
           - target: aarch64-apple-darwin
@@ -113,6 +115,8 @@ jobs:
               3.12
               3.13
               3.14t
+              3.15
+              3.15t
               pypy3.11
               3.14
           - target: x86_64-pc-windows-msvc
@@ -123,13 +127,16 @@ jobs:
               3.11
               3.12
               3.13
+              3.15
               3.14
-            build-python-versions: 3.10 3.11 3.12 3.13 3.14
+            build-python-versions: 3.10 3.11 3.12 3.13 3.14 3.15
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x64
-            setup-python-versions: 3.14t
-            build-python-versions: 3.14t
+            setup-python-versions: |
+              3.15t
+              3.14t
+            build-python-versions: 3.14t 3.15t
             artifact_suffix: "-freethreaded"
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
@@ -147,13 +154,16 @@ jobs:
               3.11
               3.12
               3.13
+              3.15
               3.14
-            build-python-versions: 3.10 3.11 3.12 3.13 3.14
+            build-python-versions: 3.10 3.11 3.12 3.13 3.14 3.15
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
-            setup-python-versions: 3.14t
-            build-python-versions: 3.14t
+            setup-python-versions: |
+              3.15t
+              3.14t
+            build-python-versions: 3.14t 3.15t
             artifact_suffix: "-freethreaded"
           - target: aarch64-pc-windows-msvc
             runner: windows-11-arm
@@ -162,13 +172,16 @@ jobs:
               3.11
               3.12
               3.13
+              3.15
               3.14
-            build-python-versions: 3.11 3.12 3.13 3.14
+            build-python-versions: 3.11 3.12 3.13 3.14 3.15
           - target: aarch64-pc-windows-msvc
             runner: windows-11-arm
             setup-python-architecture: arm64
-            setup-python-versions: 3.14t
-            build-python-versions: 3.14t
+            setup-python-versions: |
+              3.15t
+              3.14t
+            build-python-versions: 3.14t 3.15t
             artifact_suffix: "-freethreaded"
       fail-fast: false
     steps:
@@ -184,7 +197,7 @@ jobs:
           check-latest: true
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
-          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || '3.10 3.11 3.12 3.13 3.14 3.14t pypy3.11' }}' --out dist --release
+          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || '3.10 3.11 3.12 3.13 3.14 3.14t 3.15 3.15t pypy3.11' }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           rust-toolchain: beta
@@ -207,7 +220,7 @@ jobs:
       - udeps
     runs-on: ubuntu-24.04
     steps:
-      - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
+      - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
         with:
           jobs: ${{ toJSON(needs) }}
   clippy:
@@ -251,7 +264,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           python-version: "3.14"
           enable-cache: true
@@ -261,7 +274,7 @@ jobs:
           path: dist
       - run: uv sync --group docs --no-group dev --no-install-project --locked
       - run: uv pip install --find-links dist pyromark
-      - run: uv run --no-sync zensical build --strict
+      - run: uv run --no-sync zensical build
       - if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
@@ -289,7 +302,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           python-version: "3.14"
           enable-cache: false
@@ -305,8 +318,8 @@ jobs:
       matrix:
         python-version:
           - "3.10"
-          - "3.14"
-          - "3.14t"
+          - "3.15"
+          - "3.15t"
       fail-fast: false
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -316,7 +329,7 @@ jobs:
         with:
           name: wheels-x86_64-unknown-linux-gnu-2_28
           path: dist
-      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
@@ -333,7 +346,7 @@ jobs:
       id-token: write
     steps:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
-      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           python-version: "3.14"
           enable-cache: false

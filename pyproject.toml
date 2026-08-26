@@ -18,6 +18,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
   "Programming Language :: Rust",
@@ -30,16 +31,16 @@ dependencies = ["typing-extensions>=3.7.4"]
 
 [dependency-groups]
 dev = [
-  "mypy==2.3.0",
+  "mypy==2.3.1",
   "pytest==9.1.1",
   "pytest-github-actions-annotate-failures==0.4.2",
-  "ruff==0.16.1",
+  "ruff==0.16.4",
 ]
 docs = [
   "mkdocstrings==1.0.6",
-  "mkdocstrings-python==2.0.5",
-  "ruff==0.16.1",
-  "zensical==0.0.52",
+  "mkdocstrings-python==2.0.7",
+  "ruff==0.16.4",
+  "zensical==0.0.57",
 ]
 
 [build-system]
