@@ -48,6 +48,8 @@ markdown_extensions:
   - toc:
       permalink: true
 plugins:
+  - minify:
+      minify_html: true
   - mkdocstrings:
       default_handler: python
       handlers:
@@ -73,3 +75,4 @@ plugins:
             show_symbol_type_toc: true
             signature_crossrefs: true
             type_parameter_headings: true
+  - search
