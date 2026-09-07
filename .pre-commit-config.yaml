@@ -19,7 +19,7 @@ repos:
           - --fix=lf
       - id: trailing-whitespace
   - repo: https://github.com/tombi-toml/tombi-pre-commit
-    rev: v1.4.1
+    rev: v1.5.1
     hooks:
       - id: tombi-format
         exclude: ^(?:Cargo.lock|uv.lock)$
@@ -28,7 +28,7 @@ repos:
     hooks:
       - id: prettier
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.16.4
+    rev: v0.16.6
     hooks:
       - id: ruff-check
         args:
@@ -45,6 +45,6 @@ repos:
           - pytest==9.1.1
           - typing-extensions
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.29.0
+    rev: v1.30.0
     hooks:
       - id: zizmor
