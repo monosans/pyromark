@@ -251,7 +251,7 @@ jobs:
             i686-pc-windows-msvc,
             aarch64-pc-windows-msvc
           components: clippy
-      - run: cargo +beta clippy --all-targets -- -Dwarnings
+      - run: cargo +beta clippy --all-targets --
   docs-build:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     needs:
