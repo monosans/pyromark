@@ -18,82 +18,82 @@ jobs:
       matrix:
         include:
           - target: x86_64-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_17"
           - target: x86_64-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_28"
           # - target: x86_64-unknown-linux-gnu
-          #   runner: ubuntu-24.04
+          #   runner: ubuntu-26.04
           #   manylinux: "2_34"
           - target: x86_64-unknown-linux-musl
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: musllinux_1_2
           - target: i686-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_17"
           - target: i686-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_28"
           - target: i686-unknown-linux-musl
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: musllinux_1_2
           - target: aarch64-unknown-linux-gnu
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
             manylinux: "2_17"
           - target: aarch64-unknown-linux-gnu
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
             manylinux: "2_28"
           # - target: aarch64-unknown-linux-gnu
-          #   runner: ubuntu-24.04-arm
+          #   runner: ubuntu-26.04-arm
           #   manylinux: "2_34"
           - target: aarch64-unknown-linux-musl
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: musllinux_1_2
           # - target: arm-unknown-linux-musleabihf
-          #   runner: ubuntu-24.04
+          #   runner: ubuntu-26.04
           #   manylinux: musllinux_1_2
           - target: armv7-unknown-linux-gnueabihf
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_17"
           - target: armv7-unknown-linux-gnueabihf
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_28"
           - target: armv7-unknown-linux-musleabihf
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: musllinux_1_2
           - target: powerpc64-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_17"
           - target: powerpc64le-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_17"
           - target: powerpc64le-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_28"
           - target: powerpc64le-unknown-linux-musl
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: musllinux_1_2
           - target: s390x-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_17"
           - target: s390x-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_28"
           - target: riscv64gc-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_31"
           - target: riscv64gc-unknown-linux-gnu
             runner: ubuntu-24.04
             manylinux: "2_39"
           - target: riscv64gc-unknown-linux-musl
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: musllinux_1_2
           # - target: loongarch64-unknown-linux-gnu
-          #   runner: ubuntu-24.04
+          #   runner: ubuntu-26.04
           #   manylinux: "2_36"
           # - target: loongarch64-unknown-linux-musl
-          #   runner: ubuntu-24.04
+          #   runner: ubuntu-26.04
           #   manylinux: musllinux_1_2
           - target: x86_64-apple-darwin
             runner: macos-26-intel
@@ -166,7 +166,7 @@ jobs:
             build-python-versions: 3.14t 3.15t
             artifact_suffix: "-freethreaded"
           - target: aarch64-pc-windows-msvc
-            runner: windows-11-arm
+            runner: windows-11-vs2026-arm
             setup-python-architecture: arm64
             setup-python-versions: |
               3.11
@@ -176,7 +176,7 @@ jobs:
               3.14
             build-python-versions: 3.11 3.12 3.13 3.14 3.15
           - target: aarch64-pc-windows-msvc
-            runner: windows-11-arm
+            runner: windows-11-vs2026-arm
             setup-python-architecture: arm64
             setup-python-versions: |
               3.15t
@@ -218,14 +218,14 @@ jobs:
       - rustfmt
       - sdist
       - udeps
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
         with:
           jobs: ${{ toJSON(needs) }}
   clippy:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -259,12 +259,12 @@ jobs:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     needs:
       - build
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           python-version: "3.14"
           enable-cache: true
@@ -282,7 +282,7 @@ jobs:
   docs-deploy:
     if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
     needs: docs-build
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     concurrency:
       group: "pages"
       cancel-in-progress: false
@@ -297,12 +297,12 @@ jobs:
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
   pre-commit:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           python-version: "3.14"
           enable-cache: false
@@ -313,7 +313,7 @@ jobs:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     needs:
       - build
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     strategy:
       matrix:
         python-version:
@@ -329,7 +329,7 @@ jobs:
         with:
           name: wheels-x86_64-unknown-linux-gnu-2_28
           path: dist
-      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
@@ -337,7 +337,7 @@ jobs:
       - run: uv pip install --find-links dist pyromark
       - run: uv run --no-sync pytest
   release:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ github.repository_owner == 'monosans' && startsWith(github.ref, 'refs/tags/') }}
     needs:
       - build
@@ -346,14 +346,14 @@ jobs:
       id-token: write
     steps:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
-      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           python-version: "3.14"
           enable-cache: false
       - run: uv publish --trusted-publishing always --no-cache 'wheels-*/*'
   rustfmt:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -364,7 +364,7 @@ jobs:
           components: rustfmt
       - run: cargo +nightly fmt --check
   sdist:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -380,7 +380,7 @@ jobs:
           path: dist
   udeps:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
