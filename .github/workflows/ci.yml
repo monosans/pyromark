@@ -30,10 +30,10 @@ jobs:
             runner: ubuntu-26.04
             manylinux: musllinux_1_2
           - target: i686-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_17"
           - target: i686-unknown-linux-gnu
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             manylinux: "2_28"
           - target: i686-unknown-linux-musl
             runner: ubuntu-26.04
