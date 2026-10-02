@@ -145,10 +145,17 @@ jobs:
             setup-python-architecture: x64
             setup-python-versions: |
               pypy3.11
+              3.14
+            build-python-versions: pypy3.11
+            artifact_suffix: "-pypy311"
+          - target: x86_64-pc-windows-msvc
+            runner: windows-2025
+            setup-python-architecture: x64
+            setup-python-versions: |
               pypy3.12
               3.14
-            build-python-versions: pypy3.11 pypy3.12
-            artifact_suffix: "-pypy"
+            build-python-versions: pypy3.12
+            artifact_suffix: "-pypy312"
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
