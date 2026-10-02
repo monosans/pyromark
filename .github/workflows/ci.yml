@@ -106,6 +106,7 @@ jobs:
               3.15
               3.15t
               pypy3.11
+              pypy3.12
               3.14
           - target: aarch64-apple-darwin
             runner: macos-26
@@ -118,6 +119,7 @@ jobs:
               3.15
               3.15t
               pypy3.11
+              pypy3.12
               3.14
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
@@ -143,8 +145,9 @@ jobs:
             setup-python-architecture: x64
             setup-python-versions: |
               pypy3.11
+              pypy3.12
               3.14
-            build-python-versions: pypy3.11
+            build-python-versions: pypy3.11 pypy3.12
             artifact_suffix: "-pypy"
           - target: i686-pc-windows-msvc
             runner: windows-2025
@@ -197,7 +200,7 @@ jobs:
           check-latest: true
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
-          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || '3.10 3.11 3.12 3.13 3.14 3.14t 3.15 3.15t pypy3.11' }}' --out dist --release
+          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || '3.10 3.11 3.12 3.13 3.14 3.14t 3.15 3.15t pypy3.11 pypy3.12' }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           rust-toolchain: beta
