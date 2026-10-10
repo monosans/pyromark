@@ -105,47 +105,44 @@ jobs:
             runner: macos-26-intel
             pypy: true
             setup-python-versions: |
-              3.10
               3.11
               3.12
               3.13
+              3.14
               3.14t
-              3.15
               3.15t
               pypy3.11
               pypy3.12
-              3.14
+              3.15
           - target: aarch64-apple-darwin
             runner: macos-26
             pypy: true
             setup-python-versions: |
-              3.10
               3.11
               3.12
               3.13
+              3.14
               3.14t
-              3.15
               3.15t
               pypy3.11
               pypy3.12
-              3.14
+              3.15
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x64
             setup-python-versions: |
-              3.10
               3.11
               3.12
               3.13
-              3.15
               3.14
-            build-python-versions: 3.10 3.11 3.12 3.13 3.14 3.15
+              3.15
+            build-python-versions: 3.11 3.12 3.13 3.14 3.15
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x64
             setup-python-versions: |
-              3.15t
               3.14t
+              3.15t
             build-python-versions: 3.14t 3.15t
             artifact_suffix: "-freethreaded"
           - target: x86_64-pc-windows-msvc
@@ -153,26 +150,25 @@ jobs:
             setup-python-architecture: x64
             setup-python-versions: |
               pypy3.11
-              3.14
+              3.15
             build-python-versions: pypy3.11
             artifact_suffix: "-pypy"
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
             setup-python-versions: |
-              3.10
               3.11
               3.12
               3.13
-              3.15
               3.14
-            build-python-versions: 3.10 3.11 3.12 3.13 3.14 3.15
+              3.15
+            build-python-versions: 3.11 3.12 3.13 3.14 3.15
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
             setup-python-versions: |
-              3.15t
               3.14t
+              3.15t
             build-python-versions: 3.14t 3.15t
             artifact_suffix: "-freethreaded"
           - target: aarch64-pc-windows-msvc
@@ -182,15 +178,15 @@ jobs:
               3.11
               3.12
               3.13
-              3.15
               3.14
+              3.15
             build-python-versions: 3.11 3.12 3.13 3.14 3.15
           - target: aarch64-pc-windows-msvc
             runner: windows-11-vs2026-arm
             setup-python-architecture: arm64
             setup-python-versions: |
-              3.15t
               3.14t
+              3.15t
             build-python-versions: 3.14t 3.15t
             artifact_suffix: "-freethreaded"
       fail-fast: false
@@ -207,7 +203,7 @@ jobs:
           check-latest: true
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
-          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || format('3.10 3.11 3.12 3.13 3.14 3.14t 3.15 3.15t{0}', matrix.pypy && ' pypy3.11 pypy3.12' || '') }}' --out dist --release
+          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || format('3.11 3.12 3.13 3.14 3.14t 3.15 3.15t{0}', matrix.pypy && ' pypy3.11 pypy3.12' || '') }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           rust-toolchain: beta
@@ -276,7 +272,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
-          python-version: "3.14"
+          python-version: "3.15"
           enable-cache: true
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
@@ -314,7 +310,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
-          python-version: "3.14"
+          python-version: "3.15"
           enable-cache: false
       - run: uvx --no-cache prek run --all-files --show-diff-on-failure
         env:
@@ -327,7 +323,7 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - "3.10"
+          - "3.11"
           - "3.15"
           - "3.15t"
       fail-fast: false
@@ -358,7 +354,7 @@ jobs:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
-          python-version: "3.14"
+          python-version: "3.15"
           enable-cache: false
       - run: uv publish --trusted-publishing always --no-cache 'wheels-*/*'
   rustfmt:
