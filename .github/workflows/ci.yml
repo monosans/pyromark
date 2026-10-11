@@ -151,7 +151,7 @@ jobs:
             build-python-versions: pypy3.11 pypy3.12
             # PyO3 0.29.3 has no raw-dylib entry for libpypy3.12-c.dll, so it
             # links nothing (fixed by PyO3/pyo3#6429, not released yet). Link
-            # the import libraries that PyPy ships in libs/ instead.
+            # the import libraries that PyPy ships instead.
             pyo3-use-raw-dylib: "0"
             artifact_suffix: "-pypy"
           - target: i686-pc-windows-msvc
@@ -210,17 +210,6 @@ jobs:
           done
           uv python install "${requests[@]}"
           uv python dir --bin >> "${GITHUB_PATH}"
-      - if: ${{ matrix.pyo3-use-raw-dylib == '0' }}
-        shell: bash
-        env:
-          PYTHON_VERSIONS: ${{ matrix.python-versions }}
-        run: |
-          lib="${LIB:-}"
-          for version in ${PYTHON_VERSIONS}; do
-            libs=$("$(uv python find --no-project "${version}")" -c 'import os, sys; print(os.path.join(sys.base_prefix, "libs"))')
-            lib="${libs};${lib}"
-          done
-          echo "LIB=${lib}" >> "${GITHUB_ENV}"
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         env:
           PYO3_USE_RAW_DYLIB: ${{ matrix.pyo3-use-raw-dylib || '1' }}
