@@ -2,6 +2,11 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.9.14] - 2026-10-02
+
+- Add support for Python 3.15 and free-threaded Python 3.15.
+- Add support for PyPy 3.12 on Linux and macOS.
+
 ## [0.9.13] - 2026-06-13
 
 - Add support for PyPy 3.11 on Windows.
