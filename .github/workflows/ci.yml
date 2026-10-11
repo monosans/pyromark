@@ -148,7 +148,10 @@ jobs:
             python-versions: |
               pypy3.11
               pypy3.12
-            build-python-versions: pypy3.11 pypy3.12
+            # Without the .exe, maturin does not find PyPy on PATH and falls
+            # back to its bundled sysconfig, which tags the wheels pp73, so
+            # PyPy 8 (pp80) cannot install them.
+            build-python-versions: pypy3.11.exe pypy3.12.exe
             # PyO3 0.29.3 has no raw-dylib entry for libpypy3.12-c.dll, so it
             # links nothing (fixed by PyO3/pyo3#6429, not released yet). Link
             # the import libraries that PyPy ships instead.
