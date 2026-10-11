@@ -20,9 +20,11 @@ jobs:
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_17"
+            pypy: true
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_28"
+            pypy: true
           # - target: x86_64-unknown-linux-gnu
           #   runner: ubuntu-26.04
           #   manylinux: "2_34"
@@ -32,18 +34,22 @@ jobs:
           - target: i686-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_17"
+            pypy: true
           - target: i686-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_28"
+            pypy: true
           - target: i686-unknown-linux-musl
             runner: ubuntu-26.04
             manylinux: musllinux_1_2
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-26.04-arm
             manylinux: "2_17"
+            pypy: true
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-26.04-arm
             manylinux: "2_28"
+            pypy: true
           # - target: aarch64-unknown-linux-gnu
           #   runner: ubuntu-26.04-arm
           #   manylinux: "2_34"
@@ -97,8 +103,8 @@ jobs:
           #   manylinux: musllinux_1_2
           - target: x86_64-apple-darwin
             runner: macos-26-intel
+            pypy: true
             setup-python-versions: |
-              3.10
               3.11
               3.12
               3.13
@@ -106,11 +112,12 @@ jobs:
               3.15
               3.15t
               pypy3.11
+              pypy3.12
               3.14
           - target: aarch64-apple-darwin
             runner: macos-26
+            pypy: true
             setup-python-versions: |
-              3.10
               3.11
               3.12
               3.13
@@ -118,18 +125,18 @@ jobs:
               3.15
               3.15t
               pypy3.11
+              pypy3.12
               3.14
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x64
             setup-python-versions: |
-              3.10
               3.11
               3.12
               3.13
               3.15
               3.14
-            build-python-versions: 3.10 3.11 3.12 3.13 3.14 3.15
+            build-python-versions: 3.11 3.12 3.13 3.14 3.15
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x64
@@ -150,13 +157,12 @@ jobs:
             runner: windows-2025
             setup-python-architecture: x86
             setup-python-versions: |
-              3.10
               3.11
               3.12
               3.13
               3.15
               3.14
-            build-python-versions: 3.10 3.11 3.12 3.13 3.14 3.15
+            build-python-versions: 3.11 3.12 3.13 3.14 3.15
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
@@ -197,12 +203,11 @@ jobs:
           check-latest: true
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
-          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || '3.10 3.11 3.12 3.13 3.14 3.14t 3.15 3.15t pypy3.11' }}' --out dist --release
+          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || format('3.11 3.12 3.13 3.14 3.14t 3.15 3.15t{0}', matrix.pypy && ' pypy3.11 pypy3.12' || '') }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           rust-toolchain: beta
-          sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: |
             ${{ format('wheels-{0}-{1}{2}', matrix.target, matrix.manylinux || 'auto', matrix.artifact_suffix || '') }}
@@ -233,27 +238,8 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@ecabd13d1c56bd1345c230e542e9144811ad706f # v2
         with:
           toolchain: beta
-          target: >
-            x86_64-unknown-linux-gnu,
-            x86_64-unknown-linux-musl,
-            i686-unknown-linux-gnu,
-            i686-unknown-linux-musl,
-            aarch64-unknown-linux-gnu,
-            aarch64-unknown-linux-musl,
-            armv7-unknown-linux-gnueabihf,
-            armv7-unknown-linux-musleabihf,
-            powerpc64-unknown-linux-gnu,
-            powerpc64le-unknown-linux-gnu,
-            powerpc64le-unknown-linux-musl,
-            s390x-unknown-linux-gnu,
-            riscv64gc-unknown-linux-gnu,
-            riscv64gc-unknown-linux-musl,
-            x86_64-apple-darwin,
-            aarch64-apple-darwin,
-            x86_64-pc-windows-msvc,
-            i686-pc-windows-msvc,
-            aarch64-pc-windows-msvc
           components: clippy
+          cache-save-if: ${{ github.ref == 'refs/heads/main' }}
       - run: cargo +beta clippy --all-targets --
   docs-build:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
@@ -267,13 +253,13 @@ jobs:
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           python-version: "3.14"
-          enable-cache: true
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+          enable-cache: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: wheels-x86_64-unknown-linux-gnu-2_28
           path: dist
       - run: uv sync --group docs --no-group dev --no-install-project --locked
-      - run: uv pip install --find-links dist pyromark
+      - run: uv pip install --no-index --find-links dist pyromark
       - run: uv run --no-sync zensical build
       - if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
@@ -317,7 +303,7 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - "3.10"
+          - "3.11"
           - "3.15"
           - "3.15t"
       fail-fast: false
@@ -325,7 +311,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: wheels-x86_64-unknown-linux-gnu-2_28
           path: dist
@@ -333,8 +319,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
+          prune-cache: true
+          save-cache: ${{ github.ref == 'refs/heads/main' }}
       - run: uv sync --no-install-project --locked
-      - run: uv pip install --find-links dist pyromark
+      - run: uv pip install --no-index --find-links dist pyromark
       - run: uv run --no-sync pytest
   release:
     runs-on: ubuntu-26.04
@@ -345,7 +333,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           python-version: "3.14"
@@ -362,6 +350,7 @@ jobs:
         with:
           toolchain: nightly
           components: rustfmt
+          cache: false
       - run: cargo +nightly fmt --check
   sdist:
     runs-on: ubuntu-26.04
@@ -374,7 +363,7 @@ jobs:
           command: sdist
           args: --out dist
           rust-toolchain: beta
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: wheels-sdist
           path: dist
@@ -388,6 +377,9 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@ecabd13d1c56bd1345c230e542e9144811ad706f # v2
         with:
           toolchain: nightly
-          cache-key: x86_64-unknown-linux-gnu
-      - run: cargo +nightly install --locked cargo-udeps
+          cache: false
+      - uses: taiki-e/install-action@f7e5d7c961414b23f5b25b2da9294395d08513ad # v2.87.26
+        with:
+          tool: cargo-udeps
+          fallback: none
       - run: cargo +nightly udeps
