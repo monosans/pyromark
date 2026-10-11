@@ -156,7 +156,15 @@ jobs:
             runner: windows-2025
             python-versions: |
               pypy3.11
-            build-python-versions: pypy3.11
+              pypy3.12
+            # Without the .exe, maturin does not find PyPy on PATH and falls
+            # back to its bundled sysconfig, which tags the wheels pp73, so
+            # PyPy 8 (pp80) cannot install them.
+            build-python-versions: pypy3.11.exe pypy3.12.exe
+            # PyO3 0.29.3 has no raw-dylib entry for libpypy3.12-c.dll, so it
+            # links nothing (fixed by PyO3/pyo3#6429, not released yet). Link
+            # the import libraries that PyPy ships instead.
+            pyo3-use-raw-dylib: "0"
             artifact_suffix: "-pypy"
           - target: i686-pc-windows-msvc
             runner: windows-2025
@@ -215,6 +223,8 @@ jobs:
           uv python install "${requests[@]}"
           uv python dir --bin >> "${GITHUB_PATH}"
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
+        env:
+          PYO3_USE_RAW_DYLIB: ${{ matrix.pyo3-use-raw-dylib || '1' }}
         with:
           args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || format('3.11 3.12 3.13 3.14 3.14t 3.15 3.15t{0}', matrix.pypy && ' pypy3.11 pypy3.12' || '') }}' --out dist --release
           target: ${{ matrix.target }}
