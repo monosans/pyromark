@@ -108,12 +108,12 @@ jobs:
               3.11
               3.12
               3.13
-              3.14
               3.14t
+              3.15
               3.15t
               pypy3.11
               pypy3.12
-              3.15
+              3.14
           - target: aarch64-apple-darwin
             runner: macos-26
             pypy: true
@@ -121,12 +121,12 @@ jobs:
               3.11
               3.12
               3.13
-              3.14
               3.14t
+              3.15
               3.15t
               pypy3.11
               pypy3.12
-              3.15
+              3.14
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x64
@@ -134,15 +134,15 @@ jobs:
               3.11
               3.12
               3.13
-              3.14
               3.15
+              3.14
             build-python-versions: 3.11 3.12 3.13 3.14 3.15
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x64
             setup-python-versions: |
-              3.14t
               3.15t
+              3.14t
             build-python-versions: 3.14t 3.15t
             artifact_suffix: "-freethreaded"
           - target: x86_64-pc-windows-msvc
@@ -150,7 +150,7 @@ jobs:
             setup-python-architecture: x64
             setup-python-versions: |
               pypy3.11
-              3.15
+              3.14
             build-python-versions: pypy3.11
             artifact_suffix: "-pypy"
           - target: i686-pc-windows-msvc
@@ -160,15 +160,15 @@ jobs:
               3.11
               3.12
               3.13
-              3.14
               3.15
+              3.14
             build-python-versions: 3.11 3.12 3.13 3.14 3.15
           - target: i686-pc-windows-msvc
             runner: windows-2025
             setup-python-architecture: x86
             setup-python-versions: |
-              3.14t
               3.15t
+              3.14t
             build-python-versions: 3.14t 3.15t
             artifact_suffix: "-freethreaded"
           - target: aarch64-pc-windows-msvc
@@ -178,15 +178,15 @@ jobs:
               3.11
               3.12
               3.13
-              3.14
               3.15
+              3.14
             build-python-versions: 3.11 3.12 3.13 3.14 3.15
           - target: aarch64-pc-windows-msvc
             runner: windows-11-vs2026-arm
             setup-python-architecture: arm64
             setup-python-versions: |
-              3.14t
               3.15t
+              3.14t
             build-python-versions: 3.14t 3.15t
             artifact_suffix: "-freethreaded"
       fail-fast: false
@@ -272,7 +272,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
-          python-version: "3.15"
+          python-version: "3.14"
           enable-cache: true
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
@@ -310,7 +310,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
-          python-version: "3.15"
+          python-version: "3.14"
           enable-cache: false
       - run: uvx --no-cache prek run --all-files --show-diff-on-failure
         env:
@@ -354,7 +354,7 @@ jobs:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
-          python-version: "3.15"
+          python-version: "3.14"
           enable-cache: false
       - run: uv publish --trusted-publishing always --no-cache 'wheels-*/*'
   rustfmt:
