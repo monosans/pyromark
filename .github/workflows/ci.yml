@@ -129,7 +129,6 @@ jobs:
               3.14
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
-            python-arch: x86_64
             python-versions: |
               3.11
               3.12
@@ -139,7 +138,6 @@ jobs:
             build-python-versions: 3.11 3.12 3.13 3.14 3.15
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
-            python-arch: x86_64
             python-versions: |
               3.15t
               3.14t
@@ -147,7 +145,6 @@ jobs:
             artifact_suffix: "-freethreaded"
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
-            python-arch: x86_64
             python-versions: |
               pypy3.11
             build-python-versions: pypy3.11
@@ -172,7 +169,6 @@ jobs:
             artifact_suffix: "-freethreaded"
           - target: aarch64-pc-windows-msvc
             runner: windows-11-vs2026-arm
-            python-arch: aarch64
             python-versions: |
               3.11
               3.12
@@ -182,7 +178,6 @@ jobs:
             build-python-versions: 3.11 3.12 3.13 3.14 3.15
           - target: aarch64-pc-windows-msvc
             runner: windows-11-vs2026-arm
-            python-arch: aarch64
             python-versions: |
               3.15t
               3.14t
