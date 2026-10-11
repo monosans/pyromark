@@ -35,11 +35,15 @@ jobs:
             runner: ubuntu-26.04
             manylinux: "2_17"
             pypy: true
-            docker-options: --network host
+            # Docker's seccomp profile on ubuntu-26.04 breaks name resolution
+            # in the 32-bit manylinux images.
+            docker-options: --security-opt seccomp=unconfined
           - target: i686-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_28"
             pypy: true
+            # Docker's seccomp profile on ubuntu-26.04 breaks name resolution
+            # in the 32-bit manylinux images.
             docker-options: --security-opt seccomp=unconfined
           - target: i686-unknown-linux-musl
             runner: ubuntu-26.04
