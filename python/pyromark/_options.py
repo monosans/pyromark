@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import sys
 from enum import IntFlag
 
 
@@ -47,7 +46,3 @@ class Options(IntFlag):
     """<https://docs.rs/pulldown-cmark/0.13.4/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_SUBSCRIPT>"""
     ENABLE_WIKILINKS = 1 << 15
     """<https://docs.rs/pulldown-cmark/0.13.4/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_WIKILINKS>"""
-
-    if sys.version_info < (3, 11):
-        __str__ = int.__repr__
-        __format__ = int.__format__  # type: ignore[assignment]

@@ -1,6 +1,4 @@
-from typing import Final
-
-from typing_extensions import final
+from typing import Final, final
 
 from pyromark._options import Options
 from pyromark.event import Event, Range
