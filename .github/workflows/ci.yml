@@ -193,16 +193,13 @@ jobs:
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
           enable-cache: false
+          python-arch: ${{ matrix.python-arch }}
       - if: ${{ matrix.python-versions }}
         shell: bash
         env:
-          PYTHON_ARCH: ${{ matrix.python-arch }}
           PYTHON_VERSIONS: ${{ matrix.python-versions }}
         run: |
-          for version in ${PYTHON_VERSIONS}; do
-            requests+=("${version}${PYTHON_ARCH:+-${PYTHON_ARCH}}")
-          done
-          uv python install "${requests[@]}"
+          uv python install ${PYTHON_VERSIONS}
           uv python dir --bin >> "${GITHUB_PATH}"
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         env:
