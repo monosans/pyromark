@@ -30,7 +30,7 @@ pub fn events<'py>(
     markdown: &str,
     options: u32,
     merge_text: bool,
-) -> pythonize::Result<Bound<'py, PyAny>> {
+) -> PyResult<Bound<'py, PyAny>> {
     let v = py.detach(move || {
         crate::common::events(
             markdown,
@@ -38,7 +38,7 @@ pub fn events<'py>(
             merge_text,
         )
     });
-    pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
+    crate::convert::tuple(py, &v, crate::convert::event)
 }
 
 /// Examples:
@@ -74,14 +74,14 @@ pub fn events_with_range<'py>(
     py: Python<'py>,
     markdown: &str,
     options: u32,
-) -> pythonize::Result<Bound<'py, PyAny>> {
+) -> PyResult<Bound<'py, PyAny>> {
     let v = py.detach(move || {
         crate::common::events_with_range(
             markdown,
             crate::common::build_options(options),
         )
     });
-    pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
+    crate::convert::tuple(py, &v, crate::convert::event_with_range)
 }
 
 /// Examples:
