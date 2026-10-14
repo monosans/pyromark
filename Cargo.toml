@@ -7,6 +7,7 @@ include = [
   "/Cargo.lock",
   "/Cargo.toml",
   "/LICENSE",
+  "/LICENSE-THIRD-PARTY",
   "/README.md",
   "/pyproject.toml",
   "/python/**/*.py",

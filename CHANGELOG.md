@@ -11,6 +11,7 @@
 - Add `write_html`, which writes HTML into a binary file in chunks.
 - Add `reference_definitions`, which returns the document's link reference definitions.
 - Add `merge_text` to `events_with_range`.
+- Ship the licenses of the bundled third-party code in `LICENSE-THIRD-PARTY`.
 - Speed up `events` and `events_with_range`.
 - Fix reading from stdin with `pyromark -`, broken since 0.9.4.
 - Fix the CLI to read and write UTF-8 regardless of the locale, keep `\r\n` intact, skip a byte order mark and report file errors without a traceback.
