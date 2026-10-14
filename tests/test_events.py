@@ -302,8 +302,9 @@ def test_deeply_nested_input_does_not_overflow_the_stack(markdown: str) -> None:
         pyromark.html,
         lambda markdown: tuple(pyromark.events(markdown)),
         lambda markdown: tuple(pyromark.events_with_range(markdown)),
+        pyromark.reference_definitions,
     ],
-    ids=["html", "events", "events_with_range"],
+    ids=["html", "events", "events_with_range", "refdefs"],
 )
 def test_lone_surrogate_is_rejected(call: Callable[[str], object]) -> None:
     with pytest.raises(UnicodeEncodeError):

@@ -170,3 +170,13 @@ pub fn html(
     });
     Shared::into_error(shared).map_or(Ok(output), Err)
 }
+
+pub fn reference_definitions<'py>(
+    py: Python<'py>,
+    markdown: &str,
+    options: pulldown_cmark::Options,
+) -> PyResult<Bound<'py, pyo3::types::PyDict>> {
+    let parser =
+        py.detach(move || pulldown_cmark::Parser::new_ext(markdown, options));
+    crate::convert::reference_definitions(py, parser.reference_definitions())
+}

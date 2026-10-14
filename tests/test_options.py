@@ -430,6 +430,9 @@ UNKNOWN_BIT_ENTRY_POINTS: Mapping[str, Callable[[pyromark.Options], object]] = {
     "events_with_range": lambda options: pyromark.events_with_range(
         TABLE, options=options
     ),
+    "reference_definitions": lambda options: pyromark.reference_definitions(
+        TABLE, options=options
+    ),
     "Markdown": lambda options: pyromark.Markdown(options=options),
 }
 
