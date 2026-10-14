@@ -4,6 +4,7 @@ from __future__ import annotations
 import errno
 import io
 import os
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -113,6 +114,8 @@ def test_cli_reads_a_file_and_stdin_identically(
 
     assert from_file == from_stdin == pyromark.html(markdown.decode()).encode()
 
+
+README = Path(__file__).parent.parent / "README.md"
 
 CLI_DOC = Path(__file__).parent.parent / "docs" / "cli.md"
 
@@ -476,3 +479,31 @@ def test_cli_stops_writing_to_stdout_after_a_plain_error(
 
     assert str(exc.value).startswith("pyromark: ")
     assert sink.read_bytes() == b""
+
+
+def _readme_shell_commands() -> list[str]:
+    commands = []
+    inside = False
+    for line in README.read_text("utf-8").splitlines():
+        if line.startswith("```"):
+            inside = line.startswith("```bash")
+            continue
+        if inside and line.startswith("pyromark "):
+            commands.append(line)
+    return commands
+
+
+def test_readme_command_line_example_runs(tmp_path: Path) -> None:
+    commands = _readme_shell_commands()
+    assert commands
+
+    for command in commands:
+        arguments = [
+            str(Path(__file__).parent.parent / argument)
+            if argument.endswith(".md")
+            else argument
+            for argument in shlex.split(command)[1:]
+        ]
+        if "-o" in arguments:
+            arguments[arguments.index("-o") + 1] = str(tmp_path / "out.html")
+        pyromark_cli(arguments)
