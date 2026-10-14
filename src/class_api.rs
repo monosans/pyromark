@@ -40,11 +40,11 @@ impl Markdown {
         py: Python<'py>,
         markdown: &str,
         merge_text: bool,
-    ) -> PyResult<Bound<'py, PyAny>> {
+    ) -> pythonize::Result<Bound<'py, PyAny>> {
         let v = py.detach(move || {
             crate::common::events(markdown, self.0, merge_text)
         });
-        crate::convert::tuple(py, &v, crate::convert::event)
+        pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
     }
 
     /// Examples:
@@ -81,10 +81,10 @@ impl Markdown {
         &self,
         py: Python<'py>,
         markdown: &str,
-    ) -> PyResult<Bound<'py, PyAny>> {
+    ) -> pythonize::Result<Bound<'py, PyAny>> {
         let v = py
             .detach(move || crate::common::events_with_range(markdown, self.0));
-        crate::convert::tuple(py, &v, crate::convert::event_with_range)
+        pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
     }
 
     /// Examples:

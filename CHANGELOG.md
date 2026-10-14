@@ -2,11 +2,6 @@
 
 [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
-
-- Speed up `events` and `events_with_range`.
-- Fix the type of wikilink `link_type` in `pyromark.event`.
-
 ## [0.9.14] - 2026-10-02
 
 - Add support for Python 3.15 and free-threaded Python 3.15.

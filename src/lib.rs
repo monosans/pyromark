@@ -49,7 +49,6 @@
 
 mod class_api;
 mod common;
-mod convert;
 mod function_api;
 use pyo3::prelude::*;
 

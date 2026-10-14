@@ -54,12 +54,8 @@ class _Table(TypedDict):
     Table: tuple[_Alignment, ...]
 
 
-class _WikiLinkData(TypedDict):
-    has_pothole: bool
-
-
 class _WikiLink(TypedDict):
-    WikiLink: _WikiLinkData
+    has_pothole: bool
 
 
 _LinkType: TypeAlias = (
