@@ -1,5 +1,7 @@
 use pyo3::prelude::*;
 
+const WRITE_BUFFER_CAPACITY: usize = 64 * 1024;
+
 /// What one parse shares with the Python callbacks it runs: the broken link
 /// callback, and the first exception any of them raised, which ends the
 /// output.
@@ -152,23 +154,104 @@ pub fn check_broken_link_callback(
     ))
 }
 
+/// Runs `sink` over the parser's events with the interpreter detached, then
+/// raises whatever a callback raised. The events end once one has.
+fn render<'input, R, S>(
+    py: Python<'_>,
+    markdown: &'input str,
+    options: pulldown_cmark::Options,
+    broken_link_callback: Option<&Bound<'_, PyAny>>,
+    sink: S,
+) -> PyResult<R>
+where
+    R: Send,
+    S: FnOnce(
+            &mut dyn Iterator<Item = pulldown_cmark::Event<'input>>,
+            &Shared,
+        ) -> R
+        + Send,
+{
+    let shared = Shared::new(broken_link_callback);
+    let output = py.detach(|| {
+        let mut events =
+            parser(markdown, options, &shared).take_while(|_| !shared.failed());
+        sink(&mut events, &shared)
+    });
+    Shared::into_error(shared).map_or(Ok(output), Err)
+}
+
 pub fn html(
     py: Python<'_>,
     markdown: &str,
     options: pulldown_cmark::Options,
     broken_link_callback: Option<&Bound<'_, PyAny>>,
 ) -> PyResult<String> {
-    let shared = Shared::new(broken_link_callback);
-    let output = py.detach(|| {
-        let mut output = String::with_capacity(
-            markdown.len().saturating_add(markdown.len().div_euclid(4)),
-        );
-        let events =
-            parser(markdown, options, &shared).take_while(|_| !shared.failed());
+    let mut output = String::with_capacity(
+        markdown.len().saturating_add(markdown.len().div_euclid(4)),
+    );
+    render(py, markdown, options, broken_link_callback, |events, _| {
         pulldown_cmark::html::push_html(&mut output, events);
-        output
-    });
-    Shared::into_error(shared).map_or(Ok(output), Err)
+    })?;
+    Ok(output)
+}
+
+struct PyWriter<'a> {
+    file: &'a Py<PyAny>,
+    shared: &'a Shared,
+}
+
+#[expect(clippy::missing_trait_methods)]
+impl std::io::Write for PyWriter<'_> {
+    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+        if self.shared.failed() {
+            return Err(std::io::Error::other("a callback raised"));
+        }
+        Python::attach(move |py| {
+            call_write(self.file.bind(py), buf).map_err(move |err| {
+                self.shared.fail(py, err);
+                std::io::Error::other("file.write() raised")
+            })
+        })
+    }
+
+    fn flush(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
+}
+
+fn call_write(file: &Bound<'_, PyAny>, buf: &[u8]) -> PyResult<usize> {
+    let py = file.py();
+    let bytes = pyo3::types::PyBytes::new(py, buf);
+    let written = file.call_method1(pyo3::intern!(py, "write"), (bytes,))?;
+    // Plenty of file-like objects return None after writing everything.
+    if written.is_none() {
+        return Ok(buf.len());
+    }
+    match written.extract::<usize>()? {
+        0 => Err(pyo3::exceptions::PyOSError::new_err(
+            "file.write() wrote nothing",
+        )),
+        written => Ok(written.min(buf.len())),
+    }
+}
+
+pub fn write_html(
+    py: Python<'_>,
+    markdown: &str,
+    file: &Bound<'_, PyAny>,
+    options: pulldown_cmark::Options,
+    broken_link_callback: Option<&Bound<'_, PyAny>>,
+) -> PyResult<()> {
+    let file = file.as_unbound();
+    render(py, markdown, options, broken_link_callback, |events, shared| {
+        let mut writer = std::io::BufWriter::with_capacity(
+            WRITE_BUFFER_CAPACITY,
+            PyWriter { file, shared },
+        );
+        pulldown_cmark::html::write_html_io(&mut writer, events)?;
+        std::io::Write::flush(&mut writer)
+    })?
+    .map_err(Into::into)
 }
 
 pub fn reference_definitions<'py>(

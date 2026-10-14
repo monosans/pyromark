@@ -126,6 +126,46 @@ pub fn html(
     )
 }
 
+/// Like `html`, but writes UTF-8 into a binary file.
+///
+/// The output goes to `file.write()` in 64 KiB chunks instead of being
+/// returned as one `str`.
+///
+/// Examples:
+///     ```python
+///     import io
+///
+///     file = io.BytesIO()
+///     pyromark.write_html("# Hello world", file)
+///     assert file.getvalue() == b"<h1>Hello world</h1>\n"
+///     ```
+#[expect(clippy::doc_markdown, reason = "a blank line in an example")]
+#[pyfunction]
+#[pyo3(signature = (
+    markdown,
+    file,
+    /,
+    *,
+    options = 0,
+    broken_link_callback = None
+))]
+pub fn write_html(
+    py: Python<'_>,
+    markdown: &str,
+    file: &Bound<'_, PyAny>,
+    options: u32,
+    broken_link_callback: Option<&Bound<'_, PyAny>>,
+) -> PyResult<()> {
+    crate::common::check_broken_link_callback(broken_link_callback)?;
+    crate::common::write_html(
+        py,
+        markdown,
+        file,
+        crate::common::build_options(options)?,
+        broken_link_callback,
+    )
+}
+
 /// Return the document's link reference definitions, keyed by label.
 ///
 /// They come in document order. Labels match case-insensitively, and the
