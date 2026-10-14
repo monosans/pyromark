@@ -21,11 +21,9 @@ name = "_pyromark"
 [dependencies]
 pulldown-cmark = { version = "=0.13.4", default-features = false, features = [
   "html",
-  "serde",
   "simd",
 ] }
-pyo3 = "=0.29.3"
-pythonize = "=0.29.0"
+pyo3 = "=0.30.1"
 
 [profile.release]
 strip = true
