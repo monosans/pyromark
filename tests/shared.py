@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import functools
 import operator
+import threading
 from collections.abc import Mapping
 
 import pyromark
@@ -472,3 +473,34 @@ y = 2
 
 
 NON_ASCII_DOC = "é日本\U0001f600 text\n\n" + "[foo]: /url"
+
+
+THREADS = 8
+
+
+RENDERS_PER_THREAD = 20
+
+
+def render_on_threads(
+    md: pyromark.Markdown, markdown: str, /
+) -> tuple[list[str], list[str]]:
+    results: list[str] = []
+    errors: list[str] = []
+    lock = threading.Lock()
+
+    def work() -> None:
+        try:
+            for _ in range(RENDERS_PER_THREAD):
+                value = md.html(markdown)
+                with lock:
+                    results.append(value)
+        except Exception as exc:
+            with lock:
+                errors.append(repr(exc))
+
+    threads = [threading.Thread(target=work) for _ in range(THREADS)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    return results, errors

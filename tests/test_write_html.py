@@ -31,6 +31,28 @@ def test_write_html_matches_html(
     assert file.getvalue().decode() == pyromark.html(markdown, options=options)
 
 
+def test_write_html_passes_through_options() -> None:
+    def broken_link_callback(_broken_link: BrokenLink) -> tuple[str, str]:
+        return "/u", "t"
+
+    def highlight(_language: str | None, code: str) -> str:
+        return f"<x>{code.strip()}</x>"
+
+    markdown = f"{CODE_BLOCKS}\n\n[missing]"
+    file = io.BytesIO()
+    pyromark.write_html(
+        markdown,
+        file,
+        broken_link_callback=broken_link_callback,
+        highlight=highlight,
+    )
+    assert file.getvalue().decode() == pyromark.html(
+        markdown, broken_link_callback=broken_link_callback, highlight=highlight
+    )
+    assert b"<x>x = 1</x>" in file.getvalue()
+    assert b'<a href="/u" title="t">missing</a>' in file.getvalue()
+
+
 def test_write_html_propagates_write_errors() -> None:
     calls: list[int] = []
 
@@ -92,6 +114,15 @@ def test_write_html_stops_at_a_broken_link_callback_error() -> None:
         pyromark.write_html(
             BROKEN_LINKS, _Unwritable(), broken_link_callback=callback
         )
+
+
+def test_write_html_stops_at_a_highlight_error() -> None:
+    def highlight(_language: str | None, _code: str) -> str:
+        msg = "highlight failed"
+        raise LookupError(msg)
+
+    with pytest.raises(LookupError, match=r"^highlight failed$"):
+        pyromark.write_html(CODE_BLOCKS, _Unwritable(), highlight=highlight)
 
 
 def test_write_html_rejects_text_file(tmp_path: Path) -> None:
@@ -203,6 +234,25 @@ def test_write_html_rejects_non_integer_length() -> None:
         pyromark.write_html("# Hello world" * 5000, Nonsense())
 
 
+def test_markdown_write_html_matches_function() -> None:
+    def highlight(_language: str | None, code: str) -> str:
+        return f"<x>{code.strip()}</x>"
+
+    markdown = f"{CODE_BLOCKS}\n\n{TABLE}"
+    options = pyromark.Options.ENABLE_TABLES
+    md = pyromark.Markdown(options=options, highlight=highlight)
+
+    file = io.BytesIO()
+    md.write_html(markdown, file)
+
+    assert file.getvalue().decode() == md.html(markdown)
+    assert file.getvalue().decode() == pyromark.html(
+        markdown, options=options, highlight=highlight
+    )
+    assert b"<x>x = 1</x>" in file.getvalue()
+    assert b"<table>" in file.getvalue()
+
+
 def test_write_html_rejects_a_write_that_takes_nothing() -> None:
     class Stuck(io.RawIOBase):
         @override
@@ -215,35 +265,3 @@ def test_write_html_rejects_a_write_that_takes_nothing() -> None:
 
     with pytest.raises(OSError, match=r"^file\.write\(\) wrote nothing$"):
         pyromark.write_html("# Hello world", Stuck())
-
-
-def test_write_html_passes_through_options() -> None:
-    def broken_link_callback(_broken_link: BrokenLink) -> tuple[str, str]:
-        return "/u", "t"
-
-    markdown = f"{TABLE}\n\n[missing]"
-    options = pyromark.Options.ENABLE_TABLES
-    file = io.BytesIO()
-    pyromark.write_html(
-        markdown,
-        file,
-        options=options,
-        broken_link_callback=broken_link_callback,
-    )
-    assert file.getvalue().decode() == pyromark.html(
-        markdown, options=options, broken_link_callback=broken_link_callback
-    )
-    assert b"<table>" in file.getvalue()
-    assert b'<a href="/u" title="t">missing</a>' in file.getvalue()
-
-
-def test_markdown_write_html_matches_function() -> None:
-    options = pyromark.Options.ENABLE_TABLES
-    md = pyromark.Markdown(options=options)
-
-    file = io.BytesIO()
-    md.write_html(TABLE, file)
-
-    assert file.getvalue().decode() == md.html(TABLE)
-    assert file.getvalue().decode() == pyromark.html(TABLE, options=options)
-    assert b"<table>" in file.getvalue()

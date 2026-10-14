@@ -210,6 +210,68 @@ def test_cli_version(capsys: pytest.CaptureFixture[str]) -> None:
     assert capture.out == f"{pyromark.__version__}\n"
 
 
+_CLI_THEME_FLAGS = {
+    name.lower().replace("_", "-"): theme
+    for name, theme in pyromark.Theme.__members__.items()
+}
+
+
+@pytest.mark.parametrize(("flag", "theme"), _CLI_THEME_FLAGS.items())
+def test_cli_highlight(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    flag: str,
+    theme: pyromark.Theme,
+) -> None:
+    markdown = "~~~python\nx = 1\n~~~"
+    file = tmp_path / "in.md"
+    file.write_text(markdown, encoding="utf-8")
+    stdout = _Stdout()
+    monkeypatch.setattr(sys, "stdout", stdout)
+
+    pyromark_cli(("--highlight", flag, str(file)))
+
+    assert (
+        stdout.buffer.getvalue()
+        == pyromark.html(markdown, highlight=theme).encode()
+    )
+
+
+def test_cli_highlight_writes_to_the_output_file(tmp_path: Path) -> None:
+    markdown = "~~~python\nx = 1\n~~~"
+    input_file = tmp_path / "in.md"
+    input_file.write_text(markdown, encoding="utf-8")
+    output_file = tmp_path / "out.html"
+
+    pyromark_cli((
+        "--highlight",
+        "solarized-dark",
+        "-o",
+        str(output_file),
+        str(input_file),
+    ))
+
+    assert (
+        output_file.read_bytes()
+        == pyromark.html(
+            markdown, highlight=pyromark.Theme.SOLARIZED_DARK
+        ).encode()
+    )
+
+
+def test_cli_rejects_an_unknown_highlight_theme(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    file = tmp_path / "in.md"
+    file.write_text("# Hello world", encoding="utf-8")
+
+    with pytest.raises(SystemExit) as exc:
+        pyromark_cli(("--highlight", "nonexistent", str(file)))
+
+    assert exc.value.code != 0
+    assert "invalid choice" in capsys.readouterr().err
+
+
 class _BrokenPipeBuffer(io.BytesIO):
     """A byte stream whose reader has gone away."""
 

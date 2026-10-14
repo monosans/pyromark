@@ -12,10 +12,12 @@ from pyromark._pyromark import (
     reference_definitions,
     write_html,
 )
+from pyromark._theme import Theme
 
 __all__ = (
     "Markdown",
     "Options",
+    "Theme",
     "events",
     "events_with_range",
     "html",
