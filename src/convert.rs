@@ -362,15 +362,3 @@ pub fn event_with_range<'py>(
     Ok(pyo3::types::PyTuple::new(py, [event(py, parsed)?, range(py, span)?])?
         .into_any())
 }
-
-pub fn tuple<'py, T>(
-    py: Python<'py>,
-    items: &[T],
-    convert: fn(Python<'py>, &T) -> PyResult<Bound<'py, PyAny>>,
-) -> PyResult<Bound<'py, PyAny>> {
-    let items = items
-        .iter()
-        .map(|item| convert(py, item))
-        .collect::<PyResult<Vec<_>>>()?;
-    Ok(pyo3::types::PyTuple::new(py, items)?.into_any())
-}

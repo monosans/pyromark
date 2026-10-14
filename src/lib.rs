@@ -36,6 +36,7 @@
     clippy::multiple_crate_versions,
     clippy::pattern_type_mismatch,
     clippy::question_mark_used,
+    clippy::same_name_method,
     clippy::separated_literal_suffix,
     clippy::shadow_reuse,
     clippy::shadow_unrelated,
@@ -51,6 +52,7 @@ mod class_api;
 mod common;
 mod convert;
 mod function_api;
+mod lazy_api;
 use pyo3::prelude::*;
 
 #[pymodule]

@@ -1,3 +1,4 @@
+from collections.abc import Iterator
 from typing import Final, final
 
 from pyromark._options import Options
@@ -11,13 +12,14 @@ def events(
     *,
     options: Options = Options(0),  # noqa: B008, PYI011
     merge_text: bool = True,
-) -> tuple[Event, ...]: ...
+) -> Iterator[Event]: ...
 def events_with_range(
     markdown: str,
     /,
     *,
     options: Options = Options(0),  # noqa: B008, PYI011
-) -> tuple[tuple[Event, Range], ...]: ...
+    merge_text: bool = False,
+) -> Iterator[tuple[Event, Range]]: ...
 def html(markdown: str, /, *, options: Options = Options(0)) -> str: ...  # noqa: B008, PYI011
 
 @final
@@ -25,8 +27,8 @@ class Markdown:
     def __init__(self, *, options: Options = Options(0)) -> None: ...  # noqa: B008, PYI011
     def events(
         self, markdown: str, /, *, merge_text: bool = True
-    ) -> tuple[Event, ...]: ...
+    ) -> Iterator[Event]: ...
     def events_with_range(
-        self, markdown: str, /
-    ) -> tuple[tuple[Event, Range], ...]: ...
+        self, markdown: str, /, *, merge_text: bool = False
+    ) -> Iterator[tuple[Event, Range]]: ...
     def html(self, markdown: str, /) -> str: ...
