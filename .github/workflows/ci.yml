@@ -157,6 +157,10 @@ jobs:
               python3.11.exe python3.12.exe python3.13.exe python3.14.exe
               python3.14t.exe python3.15.exe python3.15t.exe pypy3.11.exe
               pypy3.12.exe
+            # PyO3 0.29.3 has no raw-dylib entry for libpypy3.12-c.dll, so it
+            # links nothing (fixed by PyO3/pyo3#6429, not released yet). Link
+            # the import libraries that PyPy ships instead.
+            pyo3-use-raw-dylib: "0"
           - target: i686-pc-windows-msvc
             runner: windows-2025
             python-arch: x86
@@ -199,7 +203,7 @@ jobs:
           uv python dir --bin >> "${GITHUB_PATH}"
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         env:
-          PYO3_USE_RAW_DYLIB: "1"
+          PYO3_USE_RAW_DYLIB: ${{ matrix.pyo3-use-raw-dylib || '1' }}
         with:
           args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || format('3.11 3.12 3.13 3.14 3.14t 3.15 3.15t{0}', matrix.pypy && ' pypy3.11 pypy3.12' || '') }}' --out dist --release
           target: ${{ matrix.target }}
