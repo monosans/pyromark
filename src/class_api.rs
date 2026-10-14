@@ -7,8 +7,8 @@ pub struct Markdown(pulldown_cmark::Options);
 impl Markdown {
     #[new]
     #[pyo3(signature = (*, options = 0))]
-    const fn new(options: u32) -> Self {
-        Self(crate::common::build_options(options))
+    fn new(options: u32) -> PyResult<Self> {
+        crate::common::build_options(options).map(Self)
     }
 
     /// Same as [`pyromark.events`][], with these settings.

@@ -5,6 +5,7 @@
 ## [Unreleased]
 
 - **Breaking:** `events`, `events_with_range` and the matching `Markdown` methods return lazy iterators instead of tuples. Wrap the call in `tuple()` if you need a sequence.
+- **Breaking:** `Options` with bits pulldown-cmark does not define raise `ValueError` instead of being ignored.
 - Add `merge_text` to `events_with_range`.
 - Speed up `events` and `events_with_range`.
 - Fix the type of wikilink `link_type` in `pyromark.event`.
