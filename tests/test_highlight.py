@@ -284,3 +284,51 @@ def test_highlight_callback_output_ends_its_line() -> None:
         "~~~\nx\n~~~\n\nafter", highlight=lambda _language, _code: "<pre/>"
     )
     assert html == "<pre/>\n<p>after</p>\n"
+
+
+@pytest.mark.parametrize(
+    ("language", "code"),
+    [
+        ("typescript", "let x: number = 1"),
+        ("tsx", "const a = <A />"),
+        ("toml", "a = 1"),
+        ("dockerfile", "FROM alpine"),
+        ("kotlin", "val x = 1"),
+        ("swift", "let x = 1"),
+        ("zig", "const x = 1;"),
+    ],
+)
+def test_highlight_knows_more_than_the_syntect_defaults(
+    language: str, code: str
+) -> None:
+    def render(fence: str) -> str:
+        return pyromark.html(
+            f"~~~{fence}\n{code}\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB
+        )
+
+    assert render(language) != render("no-such-language")
+
+
+@pytest.mark.parametrize(
+    ("alias", "language", "code"),
+    [
+        ("batch", "bat", "echo %x%"),
+        ("csharp", "cs", "var x = 1;"),
+        ("docker", "dockerfile", "FROM alpine"),
+        ("fsharp", "f#", "let x = 1"),
+        ("jsonc", "json", '{"a": 1}'),
+        ("objc", "objective-c", "@interface A @end"),
+        ("pwsh", "ps1", "$x = 1"),
+        ("python3", "py", "x = 1"),
+        ("Shell", "bash", "echo $HOME"),
+    ],
+)
+def test_highlight_understands_common_aliases(
+    alias: str, language: str, code: str
+) -> None:
+    def render(fence: str) -> str:
+        return pyromark.html(
+            f"~~~{fence}\n{code}\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB
+        )
+
+    assert render(alias) == render(language) != render("no-such-language")

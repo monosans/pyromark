@@ -1,12 +1,34 @@
 use pyo3::prelude::*;
 
 static SYNTAXES: std::sync::LazyLock<syntect::parsing::SyntaxSet> =
-    std::sync::LazyLock::new(
-        syntect::parsing::SyntaxSet::load_defaults_newlines,
-    );
+    std::sync::LazyLock::new(two_face::syntax::extra_newlines);
 
 static THEMES: std::sync::LazyLock<syntect::highlighting::ThemeSet> =
     std::sync::LazyLock::new(syntect::highlighting::ThemeSet::load_defaults);
+
+/// Common fence languages that no syntax lists as its name or extension,
+/// and the token of the syntax they mean.
+const ALIASES: [(&str, &str); 9] = [
+    ("batch", "bat"),
+    ("csharp", "cs"),
+    ("docker", "dockerfile"),
+    ("fsharp", "f#"),
+    ("jsonc", "json"),
+    ("objc", "objective-c"),
+    ("pwsh", "ps1"),
+    ("python3", "py"),
+    ("shell", "bash"),
+];
+
+fn find_syntax(
+    language: &str,
+) -> Option<&'static syntect::parsing::SyntaxReference> {
+    let token = ALIASES
+        .iter()
+        .find(|(alias, _)| alias.eq_ignore_ascii_case(language))
+        .map_or(language, |(_, token)| token);
+    SYNTAXES.find_syntax_by_token(token)
+}
 
 pub enum Highlighter {
     Theme(&'static syntect::highlighting::Theme),
@@ -32,9 +54,7 @@ impl Highlighter {
         match self {
             Self::Theme(theme) => {
                 let syntax = language
-                    .and_then(|language| {
-                        SYNTAXES.find_syntax_by_token(language)
-                    })
+                    .and_then(find_syntax)
                     .unwrap_or_else(|| SYNTAXES.find_syntax_plain_text());
                 syntect::html::highlighted_html_for_string(
                     code, &SYNTAXES, syntax, theme,
