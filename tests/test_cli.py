@@ -275,6 +275,23 @@ def test_cli_rejects_an_unknown_highlight_theme(
     assert "invalid choice" in capsys.readouterr().err
 
 
+def test_cli_help_keeps_urls_and_theme_names_whole(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setenv("COLUMNS", "60")
+    monkeypatch.setenv("PYTHON_COLORS", "0")
+
+    with pytest.raises(SystemExit) as exc:
+        pyromark_cli(("--help",))
+
+    assert exc.value.code == 0
+    words = {word.rstrip(",") for word in capsys.readouterr().out.split()}
+    assert (
+        "https://monosans.github.io/pyromark/guide/#enable-extensions" in words
+    )
+    assert words >= set(_CLI_THEME_FLAGS)
+
+
 class _BrokenPipeBuffer(io.BytesIO):
     """A byte stream whose reader has gone away."""
 
@@ -481,20 +498,25 @@ def test_cli_stops_writing_to_stdout_after_a_plain_error(
     assert sink.read_bytes() == b""
 
 
-def _readme_shell_commands() -> list[str]:
+def _shell_commands(page: Path, /) -> list[str]:
+    """The pyromark commands in the page's bash blocks, run with uvx or not."""
     commands = []
     inside = False
-    for line in README.read_text("utf-8").splitlines():
+    for line in map(str.strip, page.read_text("utf-8").splitlines()):
         if line.startswith("```"):
             inside = line.startswith("```bash")
             continue
-        if inside and line.startswith("pyromark "):
-            commands.append(line)
+        command = line.removeprefix("uvx ")
+        if inside and command.startswith("pyromark "):
+            commands.append(command)
     return commands
 
 
-def test_readme_command_line_example_runs(tmp_path: Path) -> None:
-    commands = _readme_shell_commands()
+@pytest.mark.parametrize("page", [README, CLI_DOC], ids=lambda page: page.name)
+def test_documented_command_line_examples_run(
+    page: Path, tmp_path: Path
+) -> None:
+    commands = _shell_commands(page)
     assert commands
 
     for command in commands:
