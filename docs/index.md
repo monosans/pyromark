@@ -1,12 +1,12 @@
 # pyromark
 
-Blazingly fast CommonMark-compliant Markdown parser for Python, built on the [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) Rust crate.
+A CommonMark-compliant Markdown parser for Python, built on the [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) Rust crate.
 
-- **Fast**: 75–160× faster than pure Python parsers ([benchmark](performance.md)).
-- **Complete**: CommonMark plus tables, footnotes, task lists, math, GitHub alerts and more.
-- **Highlights code**: built-in themes for ~220 languages, no Pygments needed.
-- **Typed**: every event is annotated, so your editor knows its shape.
-- **Thread-friendly**: rendering releases the GIL.
+- 75 to 160 times faster than pure Python parsers ([benchmark](performance.md)).
+- Supports tables, footnotes, task lists, math, GitHub alerts and [other extensions](guide.md#enable-extensions).
+- Highlights code in about 220 languages with bundled themes, so you don't need Pygments.
+- Every event is typed, so your editor knows its shape.
+- Releases the GIL while rendering, so threads render in parallel.
 
 ## Install
 
