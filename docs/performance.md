@@ -14,7 +14,7 @@ Time to render [Rust's INSTALL.md](https://raw.githubusercontent.com/rust-lang/r
 | comrak         | 0.0.16     | Rust       | 0.088   | 2.6                        |
 | pyromark       | 0.10.0     | Rust       | 0.034   | 1                          |
 
-Each library ran once per round, in random order, for 30 rounds. The table shows medians, and each ratio is taken within a round, so load from other programs affects both sides alike. markdown-it-pyrs is left out: it has no wheels for Python 3.13 and newer, and a build from source crashes on 3.14.
+Each library ran once per round, in random order, for 30 rounds. The table shows medians. Each ratio is taken within a round, which limits how much changing load from other programs skews it. markdown-it-pyrs is left out: it has no wheels for Python 3.13 and newer, and a build from source crashes on 3.14.
 
 ```python
 # pip install cmarkgfm comrak markdown markdown2 markdown-it-py marko mistletoe mistune pyromark requests
@@ -49,6 +49,7 @@ renderers = {
     "comrak": lambda: comrak.render_markdown(text),
     "pyromark": lambda: pyromark.html(text),
 }
+written_in = {"cmarkgfm": "C", "comrak": "Rust", "pyromark": "Rust"}
 times = {name: [] for name in renderers}
 for _ in range(30):
     for name in random.sample(list(renderers), len(renderers)):
@@ -59,6 +60,7 @@ for name, seconds in times.items():
         t / p for t, p in zip(seconds, times["pyromark"], strict=True)
     )
     print(
-        f"| {name} | {version(name)} | {statistics.median(seconds):.3f} | {ratio:.1f} |"
+        f"| {name} | {version(name)} | {written_in.get(name, 'Python')} "
+        f"| {statistics.median(seconds):.3f} | {ratio:.1f} |"
     )
 ```
