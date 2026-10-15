@@ -10,6 +10,7 @@ from pyromark._pyromark import (
     events_with_range,
     html,
     reference_definitions,
+    write_html,
 )
 
 __all__ = (
@@ -19,4 +20,5 @@ __all__ = (
     "events_with_range",
     "html",
     "reference_definitions",
+    "write_html",
 )

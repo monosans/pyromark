@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import gc
+import io
 import weakref
 from collections.abc import Callable, Iterable, Iterator, Mapping
 from typing import TypeAlias
@@ -46,6 +47,20 @@ BROKEN_LINKS_CALLS: list[BrokenLink] = [
 ]
 
 
+def _write_html(markdown: str, callback: BrokenLinkCallback | None, /) -> bytes:
+    file = io.BytesIO()
+    pyromark.write_html(markdown, file, broken_link_callback=callback)
+    return file.getvalue()
+
+
+def _markdown_write_html(
+    markdown: str, callback: BrokenLinkCallback | None, /
+) -> bytes:
+    file = io.BytesIO()
+    pyromark.Markdown(broken_link_callback=callback).write_html(markdown, file)
+    return file.getvalue()
+
+
 RUNNERS: Mapping[str, _Runner] = {
     "html": lambda markdown, callback: pyromark.html(
         markdown, broken_link_callback=callback
@@ -72,6 +87,8 @@ RUNNERS: Mapping[str, _Runner] = {
             markdown
         )
     ),
+    "write_html": _write_html,
+    "Markdown.write_html": _markdown_write_html,
 }
 
 
@@ -231,6 +248,11 @@ def test_broken_link_callback_bad_return_type(
 def test_broken_link_callback_must_be_callable(value: object) -> None:
     calls: tuple[Callable[[], object], ...] = (
         lambda: pyromark.html("# Hi", broken_link_callback=value),  # type: ignore[arg-type]
+        lambda: pyromark.write_html(
+            "# Hi",
+            io.BytesIO(),
+            broken_link_callback=value,  # type: ignore[arg-type]
+        ),
         lambda: pyromark.events("# Hi", broken_link_callback=value),  # type: ignore[arg-type]
         lambda: pyromark.events_with_range(
             "# Hi",

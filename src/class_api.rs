@@ -97,6 +97,23 @@ impl Markdown {
         )
     }
 
+    /// Same as [`pyromark.write_html`][], with these settings.
+    #[pyo3(signature = (markdown, file, /))]
+    fn write_html(
+        &self,
+        py: Python<'_>,
+        markdown: &str,
+        file: &Bound<'_, PyAny>,
+    ) -> PyResult<()> {
+        crate::common::write_html(
+            py,
+            markdown,
+            file,
+            self.options,
+            broken_link_callback(self, py),
+        )
+    }
+
     /// Same as [`pyromark.reference_definitions`][], with these settings.
     #[pyo3(signature = (markdown, /))]
     fn reference_definitions<'py>(

@@ -460,4 +460,15 @@ EVENTS_TESTDATA: Mapping[str, tuple[str, tuple[Event, ...]]] = {
 }
 
 
+CODE_BLOCKS = """```python
+x = 1
+```
+
+    indented
+
+```unknown-language
+y = 2
+```"""
+
+
 NON_ASCII_DOC = "é日本\U0001f600 text\n\n" + "[foo]: /url"

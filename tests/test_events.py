@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import gc
+import io
 import threading
 import types
 import typing
@@ -292,7 +293,11 @@ def test_event_ranges_are_utf8_byte_offsets() -> None:
 )
 def test_deeply_nested_input_does_not_overflow_the_stack(markdown: str) -> None:
     options = ALL_OPTIONS
-    assert pyromark.html(markdown, options=options)
+    file = io.BytesIO()
+
+    pyromark.write_html(markdown, file, options=options)
+
+    assert file.getvalue().decode() == pyromark.html(markdown, options=options)
     assert sum(1 for _ in pyromark.events(markdown, options=options)) > 0
 
 
@@ -300,11 +305,12 @@ def test_deeply_nested_input_does_not_overflow_the_stack(markdown: str) -> None:
     "call",
     [
         pyromark.html,
+        lambda markdown: pyromark.write_html(markdown, io.BytesIO()),
         lambda markdown: tuple(pyromark.events(markdown)),
         lambda markdown: tuple(pyromark.events_with_range(markdown)),
         pyromark.reference_definitions,
     ],
-    ids=["html", "events", "events_with_range", "refdefs"],
+    ids=["html", "write_html", "events", "events_with_range", "refdefs"],
 )
 def test_lone_surrogate_is_rejected(call: Callable[[str], object]) -> None:
     with pytest.raises(UnicodeEncodeError):

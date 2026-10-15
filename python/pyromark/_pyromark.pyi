@@ -1,6 +1,8 @@
 from collections.abc import Iterator
 from typing import Final, final
 
+from _typeshed import SupportsWrite
+
 from pyromark._options import Options
 from pyromark.event import BrokenLinkCallback, Event, LinkDef, Range
 
@@ -35,6 +37,14 @@ def reference_definitions(
     *,
     options: Options = Options(0),  # noqa: B008, PYI011
 ) -> dict[str, LinkDef]: ...
+def write_html(
+    markdown: str,
+    file: SupportsWrite[bytes],
+    /,
+    *,
+    options: Options = Options(0),  # noqa: B008, PYI011
+    broken_link_callback: BrokenLinkCallback | None = None,
+) -> None: ...
 
 @final
 class Markdown:
@@ -52,3 +62,6 @@ class Markdown:
     ) -> Iterator[tuple[Event, Range]]: ...
     def html(self, markdown: str, /) -> str: ...
     def reference_definitions(self, markdown: str, /) -> dict[str, LinkDef]: ...
+    def write_html(
+        self, markdown: str, file: SupportsWrite[bytes], /
+    ) -> None: ...

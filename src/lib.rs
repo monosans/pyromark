@@ -65,7 +65,7 @@ mod _pyromark {
     use {
         crate::class_api::Markdown,
         crate::function_api::{
-            events, events_with_range, html, reference_definitions,
+            events, events_with_range, html, reference_definitions, write_html,
         },
     };
 }

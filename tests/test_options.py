@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import functools
+import io
 import operator
 from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
@@ -429,6 +430,9 @@ UNKNOWN_BIT_ENTRY_POINTS: Mapping[str, Callable[[pyromark.Options], object]] = {
     "events": lambda options: pyromark.events(TABLE, options=options),
     "events_with_range": lambda options: pyromark.events_with_range(
         TABLE, options=options
+    ),
+    "write_html": lambda options: pyromark.write_html(
+        TABLE, io.BytesIO(), options=options
     ),
     "reference_definitions": lambda options: pyromark.reference_definitions(
         TABLE, options=options
