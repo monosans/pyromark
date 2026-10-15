@@ -2,7 +2,7 @@
 
 [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [0.10.0] - 2026-10-15
 
 - **Breaking:** `events`, `events_with_range` and the matching `Markdown` methods return lazy iterators instead of tuples. Wrap the call in `tuple()` if you need a sequence.
 - **Breaking:** `Options` with bits pulldown-cmark does not define raise `ValueError` instead of being ignored.
