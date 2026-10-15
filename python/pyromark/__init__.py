@@ -1,4 +1,4 @@
-"""Blazingly fast Markdown parser."""
+"""Blazingly fast Markdown pull parser."""
 
 from __future__ import annotations
 

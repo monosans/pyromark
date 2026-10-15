@@ -9,7 +9,9 @@ include = [
   "/LICENSE",
   "/README.md",
   "/pyproject.toml",
-  "/python",
+  "/python/**/*.py",
+  "/python/**/*.pyi",
+  "/python/**/py.typed",
   "/src",
 ]
 publish = false

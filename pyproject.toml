@@ -1,11 +1,24 @@
 [project]
 name = "pyromark"
 version = "0.9.14"
-description = "Blazingly fast Markdown parser"
+description = "Blazingly fast CommonMark-compliant Markdown pull parser"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "monosans", email = "hsyqixco@protonmail.com" }]
-keywords = ["converter", "html"]
+keywords = [
+  "commonmark",
+  "gfm",
+  "html",
+  "markdown",
+  "markdown-parser",
+  "markdown-to-html",
+  "parser",
+  "pull-parser",
+  "pulldown-cmark",
+  "pyo3",
+  "rust",
+  "syntax-highlighting",
+]
 classifiers = [
   "Natural Language :: English",
   "Operating System :: MacOS",
