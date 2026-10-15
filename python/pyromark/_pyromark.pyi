@@ -4,7 +4,14 @@ from typing import Final, final
 from _typeshed import SupportsWrite
 
 from pyromark._options import Options
-from pyromark.event import BrokenLinkCallback, Event, LinkDef, Range
+from pyromark._theme import Theme
+from pyromark.event import (
+    BrokenLinkCallback,
+    Event,
+    HighlightCallback,
+    LinkDef,
+    Range,
+)
 
 __version__: Final[str]
 
@@ -30,6 +37,7 @@ def html(
     *,
     options: Options = Options(0),  # noqa: B008, PYI011
     broken_link_callback: BrokenLinkCallback | None = None,
+    highlight: Theme | HighlightCallback | None = None,
 ) -> str: ...
 def reference_definitions(
     markdown: str,
@@ -44,6 +52,7 @@ def write_html(
     *,
     options: Options = Options(0),  # noqa: B008, PYI011
     broken_link_callback: BrokenLinkCallback | None = None,
+    highlight: Theme | HighlightCallback | None = None,
 ) -> None: ...
 
 @final
@@ -53,6 +62,7 @@ class Markdown:
         *,
         options: Options = Options(0),  # noqa: B008, PYI011
         broken_link_callback: BrokenLinkCallback | None = None,
+        highlight: Theme | HighlightCallback | None = None,
     ) -> None: ...
     def events(
         self, markdown: str, /, *, merge_text: bool = True

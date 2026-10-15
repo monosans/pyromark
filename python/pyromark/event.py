@@ -297,10 +297,19 @@ Returns `(destination_url, title)`, or `None` to leave the reference as
 text. If it raises, the call it was passed to stops and raises it.
 """
 
+HighlightCallback: TypeAlias = Callable[[str | None, str], str | None]
+"""Renders a code block, given its language and its code.
+
+The language is the first word of the opening fence, or `None`. Returns the
+block's HTML, which is inserted verbatim, or `None` to render the block as
+usual. If it raises, the call it was passed to stops and raises it.
+"""
+
 __all__: Final = (
     "BrokenLink",
     "BrokenLinkCallback",
     "Event",
+    "HighlightCallback",
     "LinkDef",
     "Range",
 )

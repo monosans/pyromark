@@ -2,8 +2,9 @@ use pyo3::prelude::*;
 
 /// Parser settings, given once and reused for every call.
 ///
-/// Takes the same keyword arguments as `html`. Instances are immutable, so
-/// one can be shared between threads.
+/// Takes the same keyword arguments as `html`; `highlight` only affects
+/// `html` and `write_html`. Instances are immutable, so one can be shared
+/// between threads.
 ///
 /// Examples:
 ///     ```python
@@ -14,6 +15,7 @@ use pyo3::prelude::*;
 pub struct Markdown {
     options: pulldown_cmark::Options,
     broken_link_callback: Option<Py<PyAny>>,
+    highlighter: Option<crate::highlight::Highlighter>,
 }
 
 fn broken_link_callback<'a, 'py>(
@@ -29,17 +31,20 @@ impl Markdown {
     #[pyo3(signature = (
         *,
         options = 0,
-        broken_link_callback = None
+        broken_link_callback = None,
+        highlight = None
     ))]
     fn new(
         options: u32,
         broken_link_callback: Option<&Bound<'_, PyAny>>,
+        highlight: Option<&Bound<'_, PyAny>>,
     ) -> PyResult<Self> {
         crate::common::check_broken_link_callback(broken_link_callback)?;
         Ok(Self {
             options: crate::common::build_options(options)?,
             broken_link_callback: broken_link_callback
                 .map(|callback| callback.clone().unbind()),
+            highlighter: crate::highlight::build_highlighter(highlight)?,
         })
     }
 
@@ -47,7 +52,12 @@ impl Markdown {
         &self,
         visit: pyo3::pyclass::PyVisit<'_>,
     ) -> Result<(), pyo3::pyclass::PyTraverseError> {
-        visit.call(&self.broken_link_callback)
+        visit.call(&self.broken_link_callback)?;
+        visit.call(
+            self.highlighter
+                .as_ref()
+                .and_then(crate::highlight::Highlighter::callback),
+        )
     }
 
     /// Same as [`pyromark.events`][], with these settings.
@@ -94,6 +104,7 @@ impl Markdown {
             markdown,
             self.options,
             broken_link_callback(self, py),
+            self.highlighter.as_ref(),
         )
     }
 
@@ -111,6 +122,7 @@ impl Markdown {
             file,
             self.options,
             broken_link_callback(self, py),
+            self.highlighter.as_ref(),
         )
     }
 

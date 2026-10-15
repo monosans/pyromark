@@ -103,26 +103,38 @@ pub fn events_with_range(
 ///     )
 ///     assert html == '<p><a href="/Hello">Hello</a></p>\n'
 ///     ```
+///
+///     Highlight code blocks:
+///
+///     ```python
+///     html = pyromark.html(
+///         "~~~python\nx = 1\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB
+///     )
+///     ```
 #[pyfunction]
 #[pyo3(signature = (
     markdown,
     /,
     *,
     options = 0,
-    broken_link_callback = None
+    broken_link_callback = None,
+    highlight = None
 ))]
 pub fn html(
     py: Python<'_>,
     markdown: &str,
     options: u32,
     broken_link_callback: Option<&Bound<'_, PyAny>>,
+    highlight: Option<&Bound<'_, PyAny>>,
 ) -> PyResult<String> {
     crate::common::check_broken_link_callback(broken_link_callback)?;
+    let highlighter = crate::highlight::build_highlighter(highlight)?;
     crate::common::html(
         py,
         markdown,
         crate::common::build_options(options)?,
         broken_link_callback,
+        highlighter.as_ref(),
     )
 }
 
@@ -147,7 +159,8 @@ pub fn html(
     /,
     *,
     options = 0,
-    broken_link_callback = None
+    broken_link_callback = None,
+    highlight = None
 ))]
 pub fn write_html(
     py: Python<'_>,
@@ -155,14 +168,17 @@ pub fn write_html(
     file: &Bound<'_, PyAny>,
     options: u32,
     broken_link_callback: Option<&Bound<'_, PyAny>>,
+    highlight: Option<&Bound<'_, PyAny>>,
 ) -> PyResult<()> {
     crate::common::check_broken_link_callback(broken_link_callback)?;
+    let highlighter = crate::highlight::build_highlighter(highlight)?;
     crate::common::write_html(
         py,
         markdown,
         file,
         crate::common::build_options(options)?,
         broken_link_callback,
+        highlighter.as_ref(),
     )
 }
 

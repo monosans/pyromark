@@ -154,13 +154,77 @@ pub fn check_broken_link_callback(
     ))
 }
 
-/// Runs `sink` over the parser's events with the interpreter detached, then
-/// raises whatever a callback raised. The events end once one has.
+/// The events `html` and `write_html` render: the parser's, with code blocks
+/// highlighted, ending early once a callback has raised.
+struct Render<'a, 'input> {
+    parser: Parser<'input>,
+    shared: &'a Shared,
+    highlighter: Option<&'a crate::highlight::Highlighter>,
+    pending: Vec<pulldown_cmark::Event<'input>>,
+}
+
+#[expect(clippy::missing_trait_methods)]
+impl<'input> Iterator for Render<'_, 'input> {
+    type Item = pulldown_cmark::Event<'input>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some(event) = self.pending.pop() {
+            return Some(event);
+        }
+        let event = self.parser.next()?;
+        if self.shared.failed() {
+            return None;
+        }
+        let Some(highlighter) = self.highlighter else {
+            return Some(event);
+        };
+        let pulldown_cmark::Event::Start(pulldown_cmark::Tag::CodeBlock(kind)) =
+            &event
+        else {
+            return Some(event);
+        };
+        let mut code = String::new();
+        for inner in self.parser.by_ref() {
+            if let pulldown_cmark::Event::Text(text) = inner {
+                code.push_str(&text);
+            } else if matches!(inner, pulldown_cmark::Event::End(_)) {
+                break;
+            }
+        }
+        let language = match kind {
+            pulldown_cmark::CodeBlockKind::Indented => None,
+            pulldown_cmark::CodeBlockKind::Fenced(info) => {
+                info.split_whitespace().next()
+            }
+        };
+        if let Some(mut html) =
+            highlighter.highlight(language, &code, self.shared)
+        {
+            // Keep whatever follows the block off its last line.
+            if !html.ends_with('\n') {
+                html.push('\n');
+            }
+            return Some(pulldown_cmark::Event::Html(html.into()));
+        }
+        if self.shared.failed() {
+            return None;
+        }
+        self.pending.push(pulldown_cmark::Event::End(
+            pulldown_cmark::TagEnd::CodeBlock,
+        ));
+        self.pending.push(pulldown_cmark::Event::Text(code.into()));
+        Some(event)
+    }
+}
+
+/// Runs `sink` over the rendered events with the interpreter detached, then
+/// raises whatever a callback raised.
 fn render<'input, R, S>(
     py: Python<'_>,
     markdown: &'input str,
     options: pulldown_cmark::Options,
     broken_link_callback: Option<&Bound<'_, PyAny>>,
+    highlighter: Option<&crate::highlight::Highlighter>,
     sink: S,
 ) -> PyResult<R>
 where
@@ -173,8 +237,12 @@ where
 {
     let shared = Shared::new(broken_link_callback);
     let output = py.detach(|| {
-        let mut events =
-            parser(markdown, options, &shared).take_while(|_| !shared.failed());
+        let mut events = Render {
+            parser: parser(markdown, options, &shared),
+            shared: &shared,
+            highlighter,
+            pending: Vec::new(),
+        };
         sink(&mut events, &shared)
     });
     Shared::into_error(shared).map_or(Ok(output), Err)
@@ -185,13 +253,19 @@ pub fn html(
     markdown: &str,
     options: pulldown_cmark::Options,
     broken_link_callback: Option<&Bound<'_, PyAny>>,
+    highlighter: Option<&crate::highlight::Highlighter>,
 ) -> PyResult<String> {
     let mut output = String::with_capacity(
         markdown.len().saturating_add(markdown.len().div_euclid(4)),
     );
-    render(py, markdown, options, broken_link_callback, |events, _| {
-        pulldown_cmark::html::push_html(&mut output, events);
-    })?;
+    render(
+        py,
+        markdown,
+        options,
+        broken_link_callback,
+        highlighter,
+        |events, _| pulldown_cmark::html::push_html(&mut output, events),
+    )?;
     Ok(output)
 }
 
@@ -241,16 +315,24 @@ pub fn write_html(
     file: &Bound<'_, PyAny>,
     options: pulldown_cmark::Options,
     broken_link_callback: Option<&Bound<'_, PyAny>>,
+    highlighter: Option<&crate::highlight::Highlighter>,
 ) -> PyResult<()> {
     let file = file.as_unbound();
-    render(py, markdown, options, broken_link_callback, |events, shared| {
-        let mut writer = std::io::BufWriter::with_capacity(
-            WRITE_BUFFER_CAPACITY,
-            PyWriter { file, shared },
-        );
-        pulldown_cmark::html::write_html_io(&mut writer, events)?;
-        std::io::Write::flush(&mut writer)
-    })?
+    render(
+        py,
+        markdown,
+        options,
+        broken_link_callback,
+        highlighter,
+        |events, shared| {
+            let mut writer = std::io::BufWriter::with_capacity(
+                WRITE_BUFFER_CAPACITY,
+                PyWriter { file, shared },
+            );
+            pulldown_cmark::html::write_html_io(&mut writer, events)?;
+            std::io::Write::flush(&mut writer)
+        },
+    )?
     .map_err(Into::into)
 }
 

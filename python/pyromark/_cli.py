@@ -9,6 +9,11 @@ from pathlib import Path
 
 import pyromark
 
+_THEMES = {
+    name.lower().replace("_", "-"): theme
+    for name, theme in pyromark.Theme.__members__.items()
+}
+
 
 def _parse_args(args: Sequence[str] | None, /) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -19,6 +24,12 @@ def _parse_args(args: Sequence[str] | None, /) -> argparse.Namespace:
     )
     parser.add_argument(
         "-o", "--output", help="output file path, default is stdout"
+    )
+    parser.add_argument(
+        "--highlight",
+        choices=_THEMES,
+        metavar="THEME",
+        help="highlight code blocks with THEME: %(choices)s",
     )
     extensions = parser.add_argument_group(
         "markdown extensions",
@@ -48,13 +59,18 @@ def _render(parsed_args: argparse.Namespace, /) -> None:
     for opt_name, opt in pyromark.Options.__members__.items():
         if getattr(parsed_args, opt_name.lower()):
             options |= opt
+    highlight = _THEMES.get(parsed_args.highlight)
 
     if parsed_args.output is not None:
         with Path(parsed_args.output).open("wb") as file:
-            pyromark.write_html(content, file, options=options)
+            pyromark.write_html(
+                content, file, options=options, highlight=highlight
+            )
         return
     try:
-        pyromark.write_html(content, sys.stdout.buffer, options=options)
+        pyromark.write_html(
+            content, sys.stdout.buffer, options=options, highlight=highlight
+        )
         sys.stdout.buffer.flush()
     except OSError as exc:
         # Windows reports a reader that quit before reading as EINVAL.
