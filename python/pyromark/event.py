@@ -273,6 +273,15 @@ class Range(TypedDict):
 
 
 @final
+class LinkDef(TypedDict):
+    """A link reference definition, as in `[label]: /url "title"`."""
+
+    dest: str
+    title: str | None
+    span: Range
+
+
+@final
 class BrokenLink(TypedDict):
     """A link reference the document does not define."""
 
@@ -288,4 +297,10 @@ Returns `(destination_url, title)`, or `None` to leave the reference as
 text. If it raises, the call it was passed to stops and raises it.
 """
 
-__all__: Final = ("BrokenLink", "BrokenLinkCallback", "Event", "Range")
+__all__: Final = (
+    "BrokenLink",
+    "BrokenLinkCallback",
+    "Event",
+    "LinkDef",
+    "Range",
+)

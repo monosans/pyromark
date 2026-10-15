@@ -362,3 +362,26 @@ pub fn event_with_range<'py>(
     Ok(pyo3::types::PyTuple::new(py, [event(py, parsed)?, range(py, span)?])?
         .into_any())
 }
+
+pub fn reference_definitions<'py>(
+    py: Python<'py>,
+    definitions: &pulldown_cmark::RefDefs<'_>,
+) -> PyResult<Bound<'py, pyo3::types::PyDict>> {
+    let mut definitions = definitions.iter().collect::<Vec<_>>();
+    definitions.sort_unstable_by_key(|(_, definition)| definition.span.start);
+    let dict = pyo3::types::PyDict::new(py);
+    for (label, definition) in definitions {
+        let value = pyo3::types::PyDict::new(py);
+        value.set_item(pyo3::intern!(py, "dest"), &*definition.dest)?;
+        value.set_item(
+            pyo3::intern!(py, "title"),
+            definition.title.as_deref(),
+        )?;
+        value.set_item(
+            pyo3::intern!(py, "span"),
+            range(py, &definition.span)?,
+        )?;
+        dict.set_item(label, value)?;
+    }
+    Ok(dict)
+}

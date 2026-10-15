@@ -125,3 +125,30 @@ pub fn html(
         broken_link_callback,
     )
 }
+
+/// Return the document's link reference definitions, keyed by label.
+///
+/// They come in document order. Labels match case-insensitively, and the
+/// first definition wins. Only the block level pass runs, so this is cheaper
+/// than `events`.
+///
+/// Examples:
+///     ```python
+///     definitions = pyromark.reference_definitions("[foo]: /a 'A'")
+///     assert definitions == {
+///         "foo": {"dest": "/a", "title": "A", "span": {"start": 0, "end": 13}}
+///     }
+///     ```
+#[pyfunction]
+#[pyo3(signature = (markdown, /, *, options = 0))]
+pub fn reference_definitions<'py>(
+    py: Python<'py>,
+    markdown: &str,
+    options: u32,
+) -> PyResult<Bound<'py, pyo3::types::PyDict>> {
+    crate::common::reference_definitions(
+        py,
+        markdown,
+        crate::common::build_options(options)?,
+    )
+}

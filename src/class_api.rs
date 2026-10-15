@@ -96,4 +96,14 @@ impl Markdown {
             broken_link_callback(self, py),
         )
     }
+
+    /// Same as [`pyromark.reference_definitions`][], with these settings.
+    #[pyo3(signature = (markdown, /))]
+    fn reference_definitions<'py>(
+        &self,
+        py: Python<'py>,
+        markdown: &str,
+    ) -> PyResult<Bound<'py, pyo3::types::PyDict>> {
+        crate::common::reference_definitions(py, markdown, self.options)
+    }
 }

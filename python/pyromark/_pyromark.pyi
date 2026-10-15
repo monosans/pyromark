@@ -2,7 +2,7 @@ from collections.abc import Iterator
 from typing import Final, final
 
 from pyromark._options import Options
-from pyromark.event import BrokenLinkCallback, Event, Range
+from pyromark.event import BrokenLinkCallback, Event, LinkDef, Range
 
 __version__: Final[str]
 
@@ -29,6 +29,12 @@ def html(
     options: Options = Options(0),  # noqa: B008, PYI011
     broken_link_callback: BrokenLinkCallback | None = None,
 ) -> str: ...
+def reference_definitions(
+    markdown: str,
+    /,
+    *,
+    options: Options = Options(0),  # noqa: B008, PYI011
+) -> dict[str, LinkDef]: ...
 
 @final
 class Markdown:
@@ -45,3 +51,4 @@ class Markdown:
         self, markdown: str, /, *, merge_text: bool = False
     ) -> Iterator[tuple[Event, Range]]: ...
     def html(self, markdown: str, /) -> str: ...
+    def reference_definitions(self, markdown: str, /) -> dict[str, LinkDef]: ...
