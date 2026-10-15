@@ -74,7 +74,7 @@ def html(
 ) -> str:
     r"""Render Markdown to HTML.
 
-    The output is not sanitized: raw HTML passes through, as `CommonMark`
+    The output is not sanitized: raw HTML passes through, as CommonMark
     requires.
 
     Examples:
@@ -110,9 +110,9 @@ def reference_definitions(
 ) -> dict[str, LinkDef]:
     """Return the document's link reference definitions, keyed by label.
 
-    They come in document order. Labels match case-insensitively, and the
-    first definition wins. Only the block level pass runs, so this is cheaper
-    than `events`.
+    They come in document order. Labels match case-insensitively: of
+    `[Foo]: /a` and `[FOO]: /b`, only the first is kept, under `"Foo"`. Only
+    the block level pass runs, so this is cheaper than `events`.
 
     Examples:
         ```python

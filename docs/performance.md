@@ -1,5 +1,7 @@
 # Performance
 
+Rendering [Rust's INSTALL.md](https://raw.githubusercontent.com/rust-lang/rust/refs/tags/1.82.0/INSTALL.md) to HTML 1000 times:
+
 | Library     | Version | Seconds | n times slower than pyromark |
 | ----------- | ------- | ------- | ---------------------------- |
 | markdown2   | 2.5.3   | 4.005   | 160                          |
