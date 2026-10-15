@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/monosans/pyromark/main/docs/assets/logo.svg" alt="" width="40" align="top"> pyromark
+# <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/monosans/pyromark/main/docs/assets/lockup-dark.svg"><img src="https://raw.githubusercontent.com/monosans/pyromark/main/docs/assets/lockup-light.svg" alt="pyromark" width="265"></picture>
 
 [![Downloads](https://static.pepy.tech/badge/pyromark)](https://pepy.tech/project/pyromark)
 
