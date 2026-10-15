@@ -34,7 +34,7 @@ def _parse_args(args: Sequence[str] | None, /) -> argparse.Namespace:
     extensions = parser.add_argument_group(
         "markdown extensions",
         "off by default; see "
-        "https://monosans.github.io/pyromark/api/#pyromark.Options",
+        "https://monosans.github.io/pyromark/guide/#enable-extensions",
     )
     for opt_name in pyromark.Options.__members__:
         extensions.add_argument(

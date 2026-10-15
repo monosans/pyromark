@@ -255,8 +255,9 @@ Event: TypeAlias = (
 )
 """One element of the document.
 
-Match on it to pick out the elements you care about; see the
-[`events`][pyromark.events] example.
+Match on it to pick out the elements you care about. Every kind and its
+payload is listed in the
+[events table](https://monosans.github.io/pyromark/events/#all-events).
 """
 
 
