@@ -1,15 +1,13 @@
 use pyo3::prelude::*;
 
-type Parser<'input> = pulldown_cmark::Parser<'input>;
-
-type OffsetIter<'input> = pulldown_cmark::OffsetIter<
-    'input,
-    pulldown_cmark::DefaultBrokenLinkCallback,
->;
+type OffsetIter<'input> =
+    pulldown_cmark::OffsetIter<'input, crate::common::BrokenLinkCallback>;
 
 enum Stream<'input> {
-    Events(Parser<'input>),
-    MergedEvents(pulldown_cmark::TextMergeStream<'input, Parser<'input>>),
+    Events(crate::common::Parser<'input>),
+    MergedEvents(
+        pulldown_cmark::TextMergeStream<'input, crate::common::Parser<'input>>,
+    ),
     EventsWithRange(OffsetIter<'input>),
     MergedEventsWithRange(
         pulldown_cmark::TextMergeWithOffset<'input, OffsetIter<'input>>,
@@ -55,11 +53,17 @@ mod cell {
     );
 }
 
+struct Inner {
+    cell: cell::Cell,
+    shared: std::sync::Arc<crate::common::Shared>,
+}
+
 /// Iterator returned by `events` and `events_with_range`.
 ///
-/// The parser is dropped as soon as iteration ends.
+/// Iteration ends at the first exception, and the parser is dropped as soon
+/// as iteration ends.
 #[pyclass(module = "pyromark._pyromark")]
-pub struct Events(Option<cell::Cell>);
+pub struct Events(Option<Inner>);
 
 pub fn new(
     py: Python<'_>,
@@ -67,11 +71,13 @@ pub fn new(
     options: pulldown_cmark::Options,
     merge_text: bool,
     with_range: bool,
+    broken_link_callback: Option<&Bound<'_, PyAny>>,
 ) -> Events {
+    let shared = crate::common::Shared::new(broken_link_callback);
     // Creating the parser runs the block level pass over the whole document.
     let cell = py.detach(|| {
         cell::Cell::new(markdown, |markdown| {
-            let parser = Parser::new_ext(markdown, options);
+            let parser = crate::common::parser(markdown, options, &shared);
             match (with_range, merge_text) {
                 (false, false) => Stream::Events(parser),
                 (false, true) => Stream::MergedEvents(
@@ -88,7 +94,7 @@ pub fn new(
             }
         })
     });
-    Events(Some(cell))
+    Events(Some(Inner { cell, shared }))
 }
 
 #[pymethods]
@@ -101,26 +107,32 @@ impl Events {
         &mut self,
         py: Python<'py>,
     ) -> PyResult<Option<Bound<'py, PyAny>>> {
-        let Some(cell) = &mut self.0 else {
+        let Some(inner) = &mut self.0 else {
             return Ok(None);
         };
-        match cell.with_dependent_mut(|_, stream| stream.next(py)) {
-            Some(Ok(event)) => Ok(Some(event)),
-            next => {
-                self.0 = None;
-                next.transpose()
-            }
-        }
+        let next =
+            match inner.cell.with_dependent_mut(|_, stream| stream.next(py)) {
+                Some(Ok(event)) if !inner.shared.failed() => {
+                    return Ok(Some(event));
+                }
+                next => next.transpose(),
+            };
+        let Some(Inner { cell, shared }) = self.0.take() else {
+            return next;
+        };
+        drop(cell);
+        crate::common::Shared::into_error(shared).map_or(next, Err)
     }
 
     fn __traverse__(
         &self,
         visit: pyo3::pyclass::PyVisit<'_>,
     ) -> Result<(), pyo3::pyclass::PyTraverseError> {
-        let Some(cell) = &self.0 else {
+        let Some(inner) = &self.0 else {
             return Ok(());
         };
-        visit.call(cell.borrow_owner().as_py_str())
+        visit.call(inner.cell.borrow_owner().as_py_str())?;
+        inner.shared.traverse(visit)
     }
 
     fn __clear__(&mut self) {

@@ -15,6 +15,9 @@ TABLE = """\
 """
 
 
+BROKEN_LINKS = "[a][b] and [c][] and [d] and ![e]"
+
+
 ALL_OPTIONS = functools.reduce(
     operator.or_, pyromark.Options.__members__.values()
 )

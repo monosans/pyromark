@@ -17,19 +17,29 @@ use pyo3::prelude::*;
 ///                 print(f"{level} heading ended")
 ///     ```
 #[pyfunction]
-#[pyo3(signature = (markdown, /, *, options = 0, merge_text = true))]
+#[pyo3(signature = (
+    markdown,
+    /,
+    *,
+    options = 0,
+    merge_text = true,
+    broken_link_callback = None
+))]
 pub fn events(
     py: Python<'_>,
     markdown: pyo3::pybacked::PyBackedStr,
     options: u32,
     merge_text: bool,
+    broken_link_callback: Option<&Bound<'_, PyAny>>,
 ) -> PyResult<crate::lazy_api::Events> {
+    crate::common::check_broken_link_callback(broken_link_callback)?;
     Ok(crate::lazy_api::new(
         py,
         markdown,
         crate::common::build_options(options)?,
         merge_text,
         false,
+        broken_link_callback,
     ))
 }
 
@@ -47,37 +57,71 @@ pub fn events(
 ///         print(event, source.decode())
 ///     ```
 #[pyfunction]
-#[pyo3(signature = (markdown, /, *, options = 0, merge_text = false))]
+#[pyo3(signature = (
+    markdown,
+    /,
+    *,
+    options = 0,
+    merge_text = false,
+    broken_link_callback = None
+))]
 pub fn events_with_range(
     py: Python<'_>,
     markdown: pyo3::pybacked::PyBackedStr,
     options: u32,
     merge_text: bool,
+    broken_link_callback: Option<&Bound<'_, PyAny>>,
 ) -> PyResult<crate::lazy_api::Events> {
+    crate::common::check_broken_link_callback(broken_link_callback)?;
     Ok(crate::lazy_api::new(
         py,
         markdown,
         crate::common::build_options(options)?,
         merge_text,
         true,
+        broken_link_callback,
     ))
 }
 
+/// Render Markdown to HTML.
+///
+/// The output is not sanitized: raw HTML passes through, as `CommonMark`
+/// requires.
+///
 /// Examples:
 ///     ```python
-///     html = pyromark.html(
-///         "# Hello world",
-///         options=(
-///             pyromark.Options.ENABLE_TABLES
-///             | pyromark.Options.ENABLE_MATH
-///             | pyromark.Options.ENABLE_GFM
-///         )
-///     )
+///     html = pyromark.html("# Hello world")
 ///     assert html == "<h1>Hello world</h1>\n"
 ///     ```
+///
+///     Resolve references the document does not define:
+///
+///     ```python
+///     html = pyromark.html(
+///         "[Hello]",
+///         broken_link_callback=lambda link: (f"/{link['reference']}", ""),
+///     )
+///     assert html == '<p><a href="/Hello">Hello</a></p>\n'
+///     ```
 #[pyfunction]
-#[pyo3(signature = (markdown, /, *, options = 0))]
-pub fn html(py: Python<'_>, markdown: &str, options: u32) -> PyResult<String> {
-    let options = crate::common::build_options(options)?;
-    Ok(py.detach(move || crate::common::html(markdown, options)))
+#[pyo3(signature = (
+    markdown,
+    /,
+    *,
+    options = 0,
+    broken_link_callback = None
+))]
+pub fn html(
+    py: Python<'_>,
+    markdown: &str,
+    options: u32,
+    broken_link_callback: Option<&Bound<'_, PyAny>>,
+) -> PyResult<String> {
+    crate::common::check_broken_link_callback(broken_link_callback)?;
+    crate::common::html(
+        py,
+        markdown,
+        crate::common::build_options(options)?,
+        broken_link_callback,
+    )
 }
