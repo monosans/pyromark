@@ -39,7 +39,7 @@ classifiers = [
 urls.documentation = "https://monosans.github.io/pyromark"
 urls.repository = "https://github.com/monosans/pyromark"
 scripts.pyromark = "pyromark._cli:main"
-dependencies = ["typing-extensions>=3.7.4"]
+dependencies = ["typing-extensions>=4.4.0"]
 
 [dependency-groups]
 dev = [
