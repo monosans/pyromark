@@ -11,80 +11,26 @@ impl Markdown {
         Self(crate::common::build_options(options))
     }
 
-    /// Examples:
-    ///     ```python
-    ///     for event in md.events(
-    ///         "# Hello world",
-    ///         options=(
-    ///             pyromark.Options.ENABLE_TABLES
-    ///             | pyromark.Options.ENABLE_MATH
-    ///             | pyromark.Options.ENABLE_GFM
-    ///         )
-    ///     ):
-    ///         # All event types are fully type annotated
-    ///         # so you will get static type checking
-    ///         # and Tab completions in your IDE!
-    ///         match event:
-    ///             case {"Start": {"Heading": {"level": heading_level}}}:
-    ///                 print(f"Heading with {heading_level} level started")
-    ///             case {"Text": text}:
-    ///                 print(f"Got {text!r} text")
-    ///             case {"End": {"Heading": heading_level}}:
-    ///                 print(f"Heading with {heading_level} level ended")
-    ///             case other_event:
-    ///                 print(f"Got {other_event!r}")
-    ///     ```
+    /// Same as [`pyromark.events`][], with these settings.
     #[pyo3(signature = (markdown, /, *, merge_text = true))]
-    fn events<'py>(
+    fn events(
         &self,
-        py: Python<'py>,
-        markdown: &str,
+        py: Python<'_>,
+        markdown: pyo3::pybacked::PyBackedStr,
         merge_text: bool,
-    ) -> pythonize::Result<Bound<'py, PyAny>> {
-        let v = py.detach(move || {
-            crate::common::events(markdown, self.0, merge_text)
-        });
-        pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
+    ) -> crate::lazy_api::Events {
+        crate::lazy_api::new(py, markdown, self.0, merge_text, false)
     }
 
-    /// Examples:
-    ///     ```python
-    ///     for event, range_ in md.events_with_range(
-    ///         "# Hello world",
-    ///         options=(
-    ///             pyromark.Options.ENABLE_TABLES
-    ///             | pyromark.Options.ENABLE_MATH
-    ///             | pyromark.Options.ENABLE_GFM
-    ///         )
-    ///     ):
-    ///         # All event types are fully type annotated
-    ///         # so you will get static type checking
-    ///         # and Tab completions in your IDE!
-    ///         match event:
-    ///             case {"Start": {"Heading": {"level": heading_level}}}:
-    ///                 print(
-    ///                     f"Heading with {heading_level} level started, "
-    ///                     f"{range_=}"
-    ///                 )
-    ///             case {"Text": text}:
-    ///                 print(f"Got {text!r} text, {range_=}")
-    ///             case {"End": {"Heading": heading_level}}:
-    ///                 print(
-    ///                     f"Heading with {heading_level} level ended, "
-    ///                     f"{range_=}"
-    ///                 )
-    ///             case other_event:
-    ///                 print(f"Got {other_event!r}, {range_=}")
-    ///     ```
-    #[pyo3(signature = (markdown, /))]
-    fn events_with_range<'py>(
+    /// Same as [`pyromark.events_with_range`][], with these settings.
+    #[pyo3(signature = (markdown, /, *, merge_text = false))]
+    fn events_with_range(
         &self,
-        py: Python<'py>,
-        markdown: &str,
-    ) -> pythonize::Result<Bound<'py, PyAny>> {
-        let v = py
-            .detach(move || crate::common::events_with_range(markdown, self.0));
-        pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
+        py: Python<'_>,
+        markdown: pyo3::pybacked::PyBackedStr,
+        merge_text: bool,
+    ) -> crate::lazy_api::Events {
+        crate::lazy_api::new(py, markdown, self.0, merge_text, true)
     }
 
     /// Examples:

@@ -2,6 +2,13 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+- **Breaking:** `events`, `events_with_range` and the matching `Markdown` methods return lazy iterators instead of tuples. Wrap the call in `tuple()` if you need a sequence.
+- Add `merge_text` to `events_with_range`.
+- Speed up `events` and `events_with_range`.
+- Fix the type of wikilink `link_type` in `pyromark.event`.
+
 ## [0.9.14] - 2026-10-02
 
 - Add support for Python 3.15 and free-threaded Python 3.15.
