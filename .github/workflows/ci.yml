@@ -13,6 +13,8 @@ permissions:
   contents: read
 jobs:
   build:
+    needs:
+      - licenses
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
@@ -201,6 +203,9 @@ jobs:
         run: |
           uv python install ${PYTHON_VERSIONS}
           uv python dir --bin >> "${GITHUB_PATH}"
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: third-party-licenses
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         env:
           PYO3_USE_RAW_DYLIB: ${{ matrix.pyo3-use-raw-dylib || '1' }}
@@ -287,7 +292,6 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
   licenses:
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -301,11 +305,14 @@ jobs:
         with:
           tool: cargo-about@0.9.2
           fallback: none
-      # The commands at the top of LICENSE-THIRD-PARTY.
+      # Every build ships the licenses of the code it compiles in.
       - run: |
           cargo +beta about generate --fail --locked about.hbs | tr -d '\r' > LICENSE-THIRD-PARTY
           cargo +beta run --locked --quiet --example syntax_licenses >> LICENSE-THIRD-PARTY
-      - run: git diff --exit-code LICENSE-THIRD-PARTY
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: third-party-licenses
+          path: LICENSE-THIRD-PARTY
   pre-commit:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-26.04
@@ -381,11 +388,16 @@ jobs:
           cache: false
       - run: cargo +nightly fmt --check
   sdist:
+    needs:
+      - licenses
     runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: third-party-licenses
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
           command: sdist
