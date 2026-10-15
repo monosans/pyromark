@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/monosans/pyromark/main/docs/assets/logo.svg" alt="" width="96" align="right">
+
 # pyromark
 
 [![Downloads](https://static.pepy.tech/badge/pyromark)](https://pepy.tech/project/pyromark)
