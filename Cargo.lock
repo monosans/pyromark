@@ -128,6 +128,7 @@ version = "0.9.14"
 dependencies = [
  "pulldown-cmark",
  "pyo3",
+ "self_cell",
 ]
 
 [[package]]
@@ -138,6 +139,12 @@ checksum = "1fbf4db142a473a8d80c26bbf18454ed458bf8d26c8219c331daecfdbd079001"
 dependencies = [
  "proc-macro2",
 ]
+
+[[package]]
+name = "self_cell"
+version = "1.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2ab42ca02749e120097e328d91d415325bdf43b1c72c4c8badf37375fe40a813"
 
 [[package]]
 name = "syn"

@@ -1,87 +1,66 @@
 use pyo3::prelude::*;
 
+/// Iterate over the document's events.
+///
+/// Returns a lazy iterator: wrap it in `tuple()` if you need a sequence.
+/// Adjacent text events are merged unless `merge_text=False`.
+///
 /// Examples:
 ///     ```python
-///     for event in pyromark.events(
-///         "# Hello world",
-///         options=(
-///             pyromark.Options.ENABLE_TABLES
-///             | pyromark.Options.ENABLE_MATH
-///             | pyromark.Options.ENABLE_GFM
-///         )
-///     ):
-///         # All event types are fully type annotated
-///         # so you will get static type checking
-///         # and Tab completions in your IDE!
+///     for event in pyromark.events("# Hello world"):
 ///         match event:
-///             case {"Start": {"Heading": {"level": heading_level}}}:
-///                 print(f"Heading with {heading_level} level started")
+///             case {"Start": {"Heading": {"level": level}}}:
+///                 print(f"{level} heading started")
 ///             case {"Text": text}:
-///                 print(f"Got {text!r} text")
-///             case {"End": {"Heading": heading_level}}:
-///                 print(f"Heading with {heading_level} level ended")
-///             case other_event:
-///                 print(f"Got {other_event!r}")
+///                 print(f"Got {text!r}")
+///             case {"End": {"Heading": level}}:
+///                 print(f"{level} heading ended")
 ///     ```
 #[pyfunction]
 #[pyo3(signature = (markdown, /, *, options = 0, merge_text = true))]
-pub fn events<'py>(
-    py: Python<'py>,
-    markdown: &str,
+pub fn events(
+    py: Python<'_>,
+    markdown: pyo3::pybacked::PyBackedStr,
     options: u32,
     merge_text: bool,
-) -> PyResult<Bound<'py, PyAny>> {
-    let v = py.detach(move || {
-        crate::common::events(
-            markdown,
-            crate::common::build_options(options),
-            merge_text,
-        )
-    });
-    crate::convert::tuple(py, &v, crate::convert::event)
+) -> crate::lazy_api::Events {
+    crate::lazy_api::new(
+        py,
+        markdown,
+        crate::common::build_options(options),
+        merge_text,
+        false,
+    )
 }
 
+/// Like `events`, but yields `(event, range)` pairs.
+///
+/// Ranges are UTF-8 byte offsets: slice `markdown.encode()`, not
+/// `markdown`. Text is not merged by default, because each piece has its
+/// own range.
+///
 /// Examples:
 ///     ```python
-///     for event, range_ in pyromark.events_with_range(
-///         "# Hello world",
-///         options=(
-///             pyromark.Options.ENABLE_TABLES
-///             | pyromark.Options.ENABLE_MATH
-///             | pyromark.Options.ENABLE_GFM
-///         )
-///     ):
-///         # All event types are fully type annotated
-///         # so you will get static type checking
-///         # and Tab completions in your IDE!
-///         match event:
-///             case {"Start": {"Heading": {"level": heading_level}}}:
-///                 print(
-///                     f"Heading with {heading_level} level started, {range_=}"
-///                 )
-///             case {"Text": text}:
-///                 print(f"Got {text!r} text, {range_=}")
-///             case {"End": {"Heading": heading_level}}:
-///                 print(
-///                     f"Heading with {heading_level} level ended, {range_=}"
-///                 )
-///             case other_event:
-///                 print(f"Got {other_event!r}, {range_=}")
+///     markdown = "# Hello world"
+///     for event, range_ in pyromark.events_with_range(markdown):
+///         source = markdown.encode()[range_["start"] : range_["end"]]
+///         print(event, source.decode())
 ///     ```
 #[pyfunction]
-#[pyo3(signature = (markdown, /, *, options = 0))]
-pub fn events_with_range<'py>(
-    py: Python<'py>,
-    markdown: &str,
+#[pyo3(signature = (markdown, /, *, options = 0, merge_text = false))]
+pub fn events_with_range(
+    py: Python<'_>,
+    markdown: pyo3::pybacked::PyBackedStr,
     options: u32,
-) -> PyResult<Bound<'py, PyAny>> {
-    let v = py.detach(move || {
-        crate::common::events_with_range(
-            markdown,
-            crate::common::build_options(options),
-        )
-    });
-    crate::convert::tuple(py, &v, crate::convert::event_with_range)
+    merge_text: bool,
+) -> crate::lazy_api::Events {
+    crate::lazy_api::new(
+        py,
+        markdown,
+        crate::common::build_options(options),
+        merge_text,
+        true,
+    )
 }
 
 /// Examples:
