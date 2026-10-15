@@ -7,6 +7,8 @@ pyromark (stands for Python Rust Optimized Markdown) is a blazingly fast CommonM
 ## Installation
 
 ```bash
+uv add pyromark
+# or
 pip install -U pyromark
 ```
 
