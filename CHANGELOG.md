@@ -11,6 +11,8 @@
 - Add `reference_definitions`, which returns the document's link reference definitions.
 - Add `merge_text` to `events_with_range`.
 - Speed up `events` and `events_with_range`.
+- Fix reading from stdin with `pyromark -`, broken since 0.9.4.
+- Fix the CLI to read and write UTF-8 regardless of the locale, keep `\r\n` intact, skip a byte order mark and report file errors without a traceback.
 - Fix the type of wikilink `link_type` in `pyromark.event`.
 
 ## [0.9.14] - 2026-10-02
