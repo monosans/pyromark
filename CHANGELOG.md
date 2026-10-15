@@ -8,7 +8,6 @@
 - **Breaking:** `Options` with bits pulldown-cmark does not define raise `ValueError` instead of being ignored.
 - Drop support for Python 3.10.
 - Add wheels for PyPy 3.12 on Windows x64 and `manylinux_2_39` wheels for RISC-V Linux.
-- Build PyPy wheels only for glibc Linux on x86_64, i686 and aarch64, macOS and Windows x64. There are no more PyPy wheels for musl Linux, ARMv7, PowerPC, s390x and RISC-V.
 - Add syntax highlighting of code blocks: pass `highlight=pyromark.Theme.INSPIRED_GITHUB` (or another bundled theme, or your own callable) to `html`, `write_html` or `Markdown`, or `--highlight` to the CLI.
 - Add `broken_link_callback` to resolve link references the document does not define.
 - Add `write_html`, which writes HTML into a binary file in chunks.
