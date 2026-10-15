@@ -77,6 +77,7 @@ plugins:
             parameter_headings: false
             separate_signature: true
             show_if_no_docstring: true
+            show_labels: false
             show_signature_annotations: true
             show_source: false
             show_root_full_path: false

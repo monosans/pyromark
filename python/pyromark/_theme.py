@@ -8,7 +8,7 @@ class Theme(StrEnum):
 
     Themes emit inline styles, so no stylesheet is needed, but the
     background is fixed and ignores `prefers-color-scheme`. Pass a callable
-    instead to emit your own classes or to use Pygments. The ~220 languages
+    instead to emit your own classes or to use Pygments. The ~190 languages
     of [bat](https://github.com/sharkdp/bat) are recognized by name or file
     extension; blocks in other languages are left unhighlighted.
 

@@ -295,7 +295,8 @@ BrokenLinkCallback: TypeAlias = Callable[[BrokenLink], tuple[str, str] | None]
 """Resolves a link reference that has no definition.
 
 Returns `(destination_url, title)`, or `None` to leave the reference as
-text. If it raises, the call it was passed to stops and raises it.
+text. If it raises, rendering or iteration stops and the exception
+propagates.
 """
 
 HighlightCallback: TypeAlias = Callable[[str | None, str], str | None]
@@ -303,7 +304,7 @@ HighlightCallback: TypeAlias = Callable[[str | None, str], str | None]
 
 The language is the first word of the opening fence, or `None`. Returns the
 block's HTML, which is inserted verbatim, or `None` to render the block as
-usual. If it raises, the call it was passed to stops and raises it.
+usual. If it raises, rendering stops and the exception propagates.
 """
 
 __all__: Final = (

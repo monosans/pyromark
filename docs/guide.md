@@ -1,7 +1,5 @@
 # Guide
 
-Every example runs as is.
-
 ## Render HTML
 
 ```python
@@ -79,7 +77,7 @@ html = pyromark.html(
 assert html.startswith('<pre style="background-color:#ffffff;">')
 ````
 
-Or pass a function that gets the language and the code and returns HTML, or `None` to leave the block as is. Here with [Pygments](https://pygments.org), installed with `uv add pygments`:
+Or pass a [function][pyromark.event.HighlightCallback] that gets the language and the code and returns HTML, or `None` to leave the block as is. Here with [Pygments](https://pygments.org), installed with `uv add pygments`:
 
 ````python
 import pyromark
@@ -104,7 +102,7 @@ css = HtmlFormatter().get_style_defs(".highlight")
 
 ## Resolve unknown links
 
-[`broken_link_callback`][pyromark.html] turns `[label]` references that have no definition into links. Return `(url, title)`, or `None` to keep the text:
+[`broken_link_callback`][pyromark.event.BrokenLinkCallback] turns `[label]` references that have no definition into links. Return `(url, title)`, or `None` to keep the text:
 
 ```python
 import pyromark
@@ -142,7 +140,7 @@ second = md.html("# Two")
 
 ## Render in parallel
 
-[`html`][pyromark.html] and [`write_html`][pyromark.write_html] release the GIL, so threads render on all cores. A `Markdown` can be shared between them:
+[`html`][pyromark.html] and [`write_html`][pyromark.write_html] release the GIL, so threads render in parallel. A `Markdown` can be shared between them:
 
 ```python
 from concurrent.futures import ThreadPoolExecutor

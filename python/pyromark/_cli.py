@@ -4,8 +4,11 @@ import argparse
 import errno
 import os
 import sys
+import textwrap
 from collections.abc import Sequence
 from pathlib import Path
+
+from typing_extensions import override
 
 import pyromark
 
@@ -15,9 +18,31 @@ _THEMES = {
 }
 
 
+class _HelpFormatter(argparse.HelpFormatter):
+    """Wraps help at spaces only, so URLs and theme names stay whole."""
+
+    @override
+    def _split_lines(self, text: str, width: int) -> list[str]:
+        return textwrap.wrap(
+            " ".join(text.split()),
+            width,
+            break_long_words=False,
+            break_on_hyphens=False,
+        )
+
+    @override
+    def _fill_text(self, text: str, width: int, indent: str) -> str:
+        return "\n".join(
+            indent + line
+            for line in self._split_lines(text, width - len(indent))
+        )
+
+
 def _parse_args(args: Sequence[str] | None, /) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        pyromark.__name__, description=pyromark.__doc__
+        pyromark.__name__,
+        description=pyromark.__doc__,
+        formatter_class=_HelpFormatter,
     )
     parser.add_argument(
         "-v", "--version", action="version", version=pyromark.__version__
