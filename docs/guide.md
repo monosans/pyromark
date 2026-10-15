@@ -79,7 +79,7 @@ html = pyromark.html(
 assert html.startswith('<pre style="background-color:#ffffff;">')
 ````
 
-Or pass a function that gets the language and the code and returns HTML, or `None` to leave the block as is. Here with [Pygments](https://pygments.org):
+Or pass a function that gets the language and the code and returns HTML, or `None` to leave the block as is. Here with [Pygments](https://pygments.org), installed with `uv add pygments`:
 
 ````python
 import pyromark
