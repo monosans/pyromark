@@ -3,18 +3,14 @@ from __future__ import annotations
 
 import functools
 import operator
-from collections.abc import Sequence
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 
 import pyromark
 import pytest
 from pyromark._cli import main as pyromark_cli  # noqa: PLC2701
 
-TABLE = """\
-| foo | bar |
-| --- | --- |
-| baz | bim |\
-"""
+from tests.shared import ALL_OPTIONS, TABLE
 
 FOOTNOTE = """\
 [^1]: In new syntax, this is two footnote definitions.
@@ -30,12 +26,15 @@ In new syntax, this undefined footnote definition renders as
 literal text [^4]. In old syntax, it creates a dangling link.\
 """
 
+
 STRIKETHROUGH = "~~Hi~~ Hello, ~there~ world!"
+
 
 TASKLIST = """\
 - [ ] foo
 - [x] bar\
 """
+
 
 SMART_PUNCTUATION = """\
 'This here a real "quote"'
@@ -45,7 +44,9 @@ And -- if you're interested -- some em-dashes. Wait --- she actually said that?
 Wow... Becky is so 'mean'!\
 """
 
+
 HEADING_ATTRIBUTES = "# text { #id .class1 .class2 myattr, other_attr=myvalue }"
+
 
 YAML_STYLE_METADATA_BLOCKS = """\
 ---
@@ -53,11 +54,13 @@ title: Metadata
 ---\
 """
 
+
 PLUSES_DELIMITED_METADATA_BLOCKS = """\
 +++
 title: Metadata
 +++\
 """
+
 
 DEFINITION_LIST = """\
 title 1
@@ -66,9 +69,46 @@ title 2
   : definition 2\
 """
 
-BAD_BITS = 2 << 1
+
+BAD_BITS = (1 << 0) | (1 << 16)
+
 
 TESTDATA = [
+    (
+        "$x^2$ and $$y$$",
+        pyromark.Options.ENABLE_MATH,
+        ("--enable-math",),
+        "<p>$x^2$ and $$y$$</p>\n",
+        '<p><span class="math math-inline">x^2</span> and <span class="math math-display">y</span></p>\n',
+    ),
+    (
+        "> [!NOTE]\n> note text",
+        pyromark.Options.ENABLE_GFM,
+        ("--enable-gfm",),
+        "<blockquote>\n<p>[!NOTE]\nnote text</p>\n</blockquote>\n",
+        '<blockquote class="markdown-alert-note">\n<p>note text</p>\n</blockquote>\n',
+    ),
+    (
+        "x ^sup^ y",
+        pyromark.Options.ENABLE_SUPERSCRIPT,
+        ("--enable-superscript",),
+        "<p>x ^sup^ y</p>\n",
+        "<p>x <sup>sup</sup> y</p>\n",
+    ),
+    (
+        "x ~sub~ y",
+        pyromark.Options.ENABLE_SUBSCRIPT,
+        ("--enable-subscript",),
+        "<p>x ~sub~ y</p>\n",
+        "<p>x <sub>sub</sub> y</p>\n",
+    ),
+    (
+        "[[foo|bar]] and [[baz]]",
+        pyromark.Options.ENABLE_WIKILINKS,
+        ("--enable-wikilinks",),
+        "<p>[[foo|bar]] and [[baz]]</p>\n",
+        '<p><a href="foo">bar</a> and <a href="baz">baz</a></p>\n',
+    ),
     (
         TABLE,
         pyromark.Options.ENABLE_TABLES,
@@ -364,7 +404,6 @@ def test_pyromark(
         == result_without_options
     )
 
-    options |= BAD_BITS
     pyromark_cli((*cli_options, str(file)))
     capture = capsys.readouterr()
     assert not capture.err
@@ -376,9 +415,44 @@ def test_pyromark(
     )
 
 
-def test_cli_version(capsys: pytest.CaptureFixture[str]) -> None:
-    with pytest.raises(SystemExit, match=""):
-        pyromark_cli(("--version",))
-    capture = capsys.readouterr()
-    assert not capture.err
-    assert capture.out == f"{pyromark.__version__}\n"
+@pytest.mark.parametrize("value", [1 << 32, 1 << 40, 2**64], ids=str)
+def test_options_wider_than_32_bits_are_rejected(value: int) -> None:
+    wide = pyromark.Options(value)
+    with pytest.raises(OverflowError):
+        pyromark.html(TABLE, options=wide)
+    with pytest.raises(OverflowError):
+        pyromark.Markdown(options=wide)
+
+
+UNKNOWN_BIT_ENTRY_POINTS: Mapping[str, Callable[[pyromark.Options], object]] = {
+    "html": lambda options: pyromark.html(TABLE, options=options),
+    "events": lambda options: pyromark.events(TABLE, options=options),
+    "events_with_range": lambda options: pyromark.events_with_range(
+        TABLE, options=options
+    ),
+    "Markdown": lambda options: pyromark.Markdown(options=options),
+}
+
+
+@pytest.mark.parametrize(
+    "call", UNKNOWN_BIT_ENTRY_POINTS.values(), ids=UNKNOWN_BIT_ENTRY_POINTS
+)
+@pytest.mark.parametrize(
+    "options",
+    [pyromark.Options(BAD_BITS), pyromark.Options(BAD_BITS) | ALL_OPTIONS],
+    ids=["alone", "with-valid-bits"],
+)
+def test_options_unknown_bits_are_rejected(
+    call: Callable[[pyromark.Options], object], options: pyromark.Options
+) -> None:
+    with pytest.raises(
+        ValueError,
+        match=r"^options has bits pulldown-cmark does not define: 0x10001$",
+    ):
+        call(options)
+
+
+def test_options_old_footnotes_is_composite() -> None:
+    old = pyromark.Options.ENABLE_OLD_FOOTNOTES
+    assert pyromark.Options.ENABLE_FOOTNOTES in old
+    assert int(old) == (1 << 9) | (1 << 2)

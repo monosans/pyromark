@@ -23,14 +23,14 @@ pub fn events(
     markdown: pyo3::pybacked::PyBackedStr,
     options: u32,
     merge_text: bool,
-) -> crate::lazy_api::Events {
-    crate::lazy_api::new(
+) -> PyResult<crate::lazy_api::Events> {
+    Ok(crate::lazy_api::new(
         py,
         markdown,
-        crate::common::build_options(options),
+        crate::common::build_options(options)?,
         merge_text,
         false,
-    )
+    ))
 }
 
 /// Like `events`, but yields `(event, range)` pairs.
@@ -53,14 +53,14 @@ pub fn events_with_range(
     markdown: pyo3::pybacked::PyBackedStr,
     options: u32,
     merge_text: bool,
-) -> crate::lazy_api::Events {
-    crate::lazy_api::new(
+) -> PyResult<crate::lazy_api::Events> {
+    Ok(crate::lazy_api::new(
         py,
         markdown,
-        crate::common::build_options(options),
+        crate::common::build_options(options)?,
         merge_text,
         true,
-    )
+    ))
 }
 
 /// Examples:
@@ -77,8 +77,7 @@ pub fn events_with_range(
 ///     ```
 #[pyfunction]
 #[pyo3(signature = (markdown, /, *, options = 0))]
-pub fn html(py: Python<'_>, markdown: &str, options: u32) -> String {
-    py.detach(move || {
-        crate::common::html(markdown, crate::common::build_options(options))
-    })
+pub fn html(py: Python<'_>, markdown: &str, options: u32) -> PyResult<String> {
+    let options = crate::common::build_options(options)?;
+    Ok(py.detach(move || crate::common::html(markdown, options)))
 }
