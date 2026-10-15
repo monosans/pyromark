@@ -306,7 +306,8 @@ jobs:
           tool: cargo-about@0.9.2
           fallback: none
       # Every build ships the licenses of the code it compiles in.
-      - run: |
+      - shell: bash
+        run: |
           cargo +beta about generate --fail --locked about.hbs | tr -d '\r' > LICENSE-THIRD-PARTY
           cargo +beta run --locked --quiet --example syntax_licenses >> LICENSE-THIRD-PARTY
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
