@@ -342,6 +342,9 @@ jobs:
         with:
           python-version: "3.14"
           enable-cache: false
+      - uses: astral-sh/attest-action@f589a42a7efb6fe400b4f400de60b4bc90390027 # v0.0.6
+        with:
+          paths: wheels-*/*
       - run: uv publish --trusted-publishing always --no-cache 'wheels-*/*'
   rustfmt:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
