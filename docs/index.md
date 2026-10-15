@@ -2,7 +2,7 @@
 
 A CommonMark-compliant Markdown parser for Python, built on the [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) Rust crate.
 
-- 75 to 160 times faster than pure Python parsers ([benchmark](performance.md)).
+- 2.6 times faster than cmarkgfm and comrak, and 86 to 367 times faster than pure Python parsers ([benchmark](performance.md)).
 - Supports tables, footnotes, task lists, math, GitHub alerts and [other extensions](guide.md#enable-extensions).
 - Highlights code in about 190 languages with bundled themes, so you don't need Pygments.
 - Every event is typed, so your editor knows its shape.
