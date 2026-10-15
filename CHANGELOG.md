@@ -6,12 +6,17 @@
 
 - **Breaking:** `events`, `events_with_range` and the matching `Markdown` methods return lazy iterators instead of tuples. Wrap the call in `tuple()` if you need a sequence.
 - **Breaking:** `Options` with bits pulldown-cmark does not define raise `ValueError` instead of being ignored.
+- Drop support for Python 3.10.
+- Add wheels for PyPy 3.12 on Windows x64 and `manylinux_2_39` wheels for RISC-V Linux.
+- Build PyPy wheels only for glibc Linux on x86_64, i686 and aarch64, macOS and Windows x64. There are no more PyPy wheels for musl Linux, ARMv7, PowerPC, s390x and RISC-V.
 - Add syntax highlighting of code blocks: pass `highlight=pyromark.Theme.INSPIRED_GITHUB` (or another bundled theme, or your own callable) to `html`, `write_html` or `Markdown`, or `--highlight` to the CLI.
 - Add `broken_link_callback` to resolve link references the document does not define.
 - Add `write_html`, which writes HTML into a binary file in chunks.
 - Add `reference_definitions`, which returns the document's link reference definitions.
 - Add `merge_text` to `events_with_range`.
 - Ship the licenses of the bundled third-party code in `LICENSE-THIRD-PARTY`.
+- Upload [PEP 740](https://peps.python.org/pep-0740/) attestations to PyPI, so you can verify that the distributions were published from the GitHub Actions workflow of this repository.
+- Rewrite the [docs](https://monosans.github.io/pyromark): a guide with an example for each task, an events page that lists every event and its payload, and an API reference that starts with the functions.
 - Speed up `events` and `events_with_range`.
 - Fix reading from stdin with `pyromark -`, broken since 0.9.4.
 - Fix the CLI to read and write UTF-8 regardless of the locale, keep `\r\n` intact, skip a byte order mark and report file errors without a traceback.
