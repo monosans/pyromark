@@ -7,6 +7,7 @@
 - **Breaking:** `events`, `events_with_range` and the matching `Markdown` methods return lazy iterators instead of tuples. Wrap the call in `tuple()` if you need a sequence.
 - **Breaking:** `Options` with bits pulldown-cmark does not define raise `ValueError` instead of being ignored.
 - Drop support for Python 3.10.
+- Require typing-extensions 4.4 or newer.
 - Add wheels for PyPy 3.12 on Windows x64 and `manylinux_2_39` wheels for RISC-V Linux.
 - Add syntax highlighting of code blocks: pass `highlight=pyromark.Theme.INSPIRED_GITHUB` (or another bundled theme, or your own callable) to `html`, `write_html` or `Markdown`, or `--highlight` to the CLI.
 - Add `broken_link_callback` to resolve link references the document does not define.
