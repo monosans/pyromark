@@ -2,6 +2,12 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.10.1] - 2026-10-16
+
+- Speed up `highlight` callbacks: rendering 200 code blocks with a callback that does little work is 25% faster.
+- Speed up `broken_link_callback`: resolving 500 links is 10% faster.
+- Speed up `write_html` on short documents: a one-line document is 17% faster.
+
 ## [0.10.0] - 2026-10-15
 
 - **Breaking:** `events`, `events_with_range` and the matching `Markdown` methods return lazy iterators instead of tuples. Wrap the call in `tuple()` if you need a sequence.
