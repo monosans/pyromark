@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.10.2] - 2026-10-21
+
+- Bump pulldown-cmark to v0.13.5.
+
 ## [0.10.1] - 2026-10-16
 
 - Speed up `highlight` callbacks: rendering 200 code blocks with a callback that does little work is 25% faster.
