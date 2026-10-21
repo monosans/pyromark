@@ -7,7 +7,7 @@ class Options(IntFlag):
     """Markdown extensions to enable, combined with `|`. All are off by default.
 
     Passing bits pulldown-cmark does not define raises `ValueError`. See
-    [pulldown-cmark](https://docs.rs/pulldown-cmark/0.13.4/pulldown_cmark/struct.Options.html)
+    [pulldown-cmark](https://docs.rs/pulldown-cmark/0.13.5/pulldown_cmark/struct.Options.html)
     for the details of each extension.
 
     Examples:
