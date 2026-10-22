@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+- Add back the `manylinux_2_17` PyPy 3.12 wheels, now tagged for PyPy 8.
+
 ## [0.10.3] - 2026-10-22
 
 - Add Linux wheels for PyPy 3.11 on PyPy 8. The Linux PyPy 3.11 wheels were built for PyPy 7.3 only, which PyPy 8 cannot install.
