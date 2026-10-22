@@ -1,6 +1,6 @@
 [project]
 name = "pyromark"
-version = "0.10.2"
+version = "0.10.3"
 description = "Blazingly fast CommonMark-compliant Markdown pull parser"
 readme = "README.md"
 requires-python = ">=3.11"
