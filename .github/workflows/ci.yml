@@ -22,11 +22,11 @@ jobs:
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_17"
-            pypy: true
+            pypy: pypy3.11
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_28"
-            pypy: true
+            pypy: /opt/python/pp311-pypy311_pp80/bin/python pypy3.12
           # - target: x86_64-unknown-linux-gnu
           #   runner: ubuntu-26.04
           #   manylinux: "2_34"
@@ -36,14 +36,14 @@ jobs:
           - target: i686-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_17"
-            pypy: true
+            pypy: pypy3.11
             # Docker's seccomp profile on ubuntu-26.04 breaks name resolution
             # in the 32-bit manylinux images.
             docker-options: --security-opt seccomp=unconfined
           - target: i686-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_28"
-            pypy: true
+            pypy: /opt/python/pp311-pypy311_pp80/bin/python pypy3.12
             # Docker's seccomp profile on ubuntu-26.04 breaks name resolution
             # in the 32-bit manylinux images.
             docker-options: --security-opt seccomp=unconfined
@@ -53,11 +53,11 @@ jobs:
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-26.04-arm
             manylinux: "2_17"
-            pypy: true
+            pypy: pypy3.11
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-26.04-arm
             manylinux: "2_28"
-            pypy: true
+            pypy: /opt/python/pp311-pypy311_pp80/bin/python pypy3.12
           # - target: aarch64-unknown-linux-gnu
           #   runner: ubuntu-26.04-arm
           #   manylinux: "2_34"
@@ -114,7 +114,7 @@ jobs:
           #   manylinux: musllinux_1_2
           - target: x86_64-apple-darwin
             runner: macos-26-intel
-            pypy: true
+            pypy: pypy3.11 pypy3.12
             python-versions: |
               3.11
               3.12
@@ -127,7 +127,7 @@ jobs:
               3.14
           - target: aarch64-apple-darwin
             runner: macos-26
-            pypy: true
+            pypy: pypy3.11 pypy3.12
             python-versions: |
               3.11
               3.12
@@ -199,7 +199,13 @@ jobs:
           name: third-party-licenses
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
-          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || format('3.11 3.12 3.13 3.14 3.14t 3.15 3.15t{0}', matrix.pypy && ' pypy3.11 pypy3.12' || '') }}' --out dist --release
+          # matrix.pypy lists the PyPy interpreters to build for.
+          # - manylinux 2_17: the images have no PyPy 3.12. maturin would build
+          #   against its bundled sysconfig and tag the wheel pp73, which no
+          #   PyPy 3.12 release can install.
+          # - manylinux 2_28: pypy3.11 is PyPy 7.3 (pp73), already built in 2_17,
+          #   so PyPy 3.11 8.0 (pp80) is passed by path.
+          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || format('3.11 3.12 3.13 3.14 3.14t 3.15 3.15t{0}', matrix.pypy && format(' {0}', matrix.pypy) || '') }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           container: ${{ matrix.container }}
