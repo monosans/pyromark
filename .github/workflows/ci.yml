@@ -140,6 +140,7 @@ jobs:
               3.14
           - target: x86_64-pc-windows-msvc
             runner: windows-2025
+            pypy: pypy3.11 pypy3.12
             python-versions: |
               3.11
               3.12
@@ -150,10 +151,6 @@ jobs:
               3.15t
               pypy3.11
               pypy3.12
-            # Without the .exe, maturin does not find PyPy on PATH and falls
-            # back to its bundled sysconfig, which tags the wheels pp73, so
-            # PyPy 8 (pp80) cannot install them.
-            build-python-versions: 3.11 3.12 3.13 3.14 3.14t 3.15 3.15t pypy3.11.exe pypy3.12.exe
           - target: i686-pc-windows-msvc
             runner: windows-2025
             python-arch: x86
@@ -205,7 +202,7 @@ jobs:
           #   PyPy 3.12 release can install.
           # - manylinux 2_28: pypy3.11 is PyPy 7.3 (pp73), already built in 2_17,
           #   so PyPy 3.11 8.0 (pp80) is passed by path.
-          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || format('3.11 3.12 3.13 3.14 3.14t 3.15 3.15t{0}', matrix.pypy && format(' {0}', matrix.pypy) || '') }}' --out dist --release
+          args: --compatibility pypi --interpreter '${{ format('3.11 3.12 3.13 3.14 3.14t 3.15 3.15t{0}', matrix.pypy && format(' {0}', matrix.pypy) || '') }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           container: ${{ matrix.container }}
