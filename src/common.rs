@@ -93,6 +93,15 @@ pub fn parser<'input>(
     Parser::new_with_broken_link_callback(markdown, options, callback)
 }
 
+/// Copies `value`: inline if it is short enough, else into one allocation of
+/// the exact size.
+pub fn cow_str(value: &str) -> pulldown_cmark::CowStr<'static> {
+    pulldown_cmark::InlineStr::try_from(value).map_or_else(
+        move |_| pulldown_cmark::CowStr::Boxed(value.into()),
+        pulldown_cmark::CowStr::Inlined,
+    )
+}
+
 /// Re-raises `err` with `expected` prepended to its message.
 pub fn callback_error(py: Python<'_>, expected: &str, err: PyErr) -> PyErr {
     let error = PyErr::from_type(
@@ -122,7 +131,10 @@ fn call_broken_link_callback<'input>(
     broken_link.set_item(pyo3::intern!(py, "reference"), &*link.reference)?;
     let resolved = callback
         .call1((broken_link,))?
-        .extract::<Option<(String, String)>>()
+        .extract::<Option<(
+            pyo3::pybacked::PyBackedStr,
+            pyo3::pybacked::PyBackedStr,
+        )>>()
         .map_err(move |err| {
             callback_error(
                 py,
@@ -131,7 +143,7 @@ fn call_broken_link_callback<'input>(
                 err,
             )
         })?;
-    Ok(resolved.map(|(dest_url, title)| (dest_url.into(), title.into())))
+    Ok(resolved.map(|(dest_url, title)| (cow_str(&dest_url), cow_str(&title))))
 }
 
 pub fn build_options(options: u32) -> PyResult<pulldown_cmark::Options> {
@@ -161,6 +173,9 @@ struct Render<'a, 'input> {
     shared: &'a Shared,
     highlighter: Option<&'a crate::highlight::Highlighter>,
     pending: Vec<pulldown_cmark::Event<'input>>,
+    /// The text of the code block being highlighted, kept between blocks to
+    /// reuse its allocation.
+    code: String,
 }
 
 #[expect(clippy::missing_trait_methods)]
@@ -183,10 +198,10 @@ impl<'input> Iterator for Render<'_, 'input> {
         else {
             return Some(event);
         };
-        let mut code = String::new();
+        self.code.clear();
         for inner in self.parser.by_ref() {
             if let pulldown_cmark::Event::Text(text) = inner {
-                code.push_str(&text);
+                self.code.push_str(&text);
             } else if matches!(inner, pulldown_cmark::Event::End(_)) {
                 break;
             }
@@ -197,14 +212,10 @@ impl<'input> Iterator for Render<'_, 'input> {
                 info.split_whitespace().next()
             }
         };
-        if let Some(mut html) =
-            highlighter.highlight(language, &code, self.shared)
+        if let Some(html) =
+            highlighter.highlight(language, &self.code, self.shared)
         {
-            // Keep whatever follows the block off its last line.
-            if !html.ends_with('\n') {
-                html.push('\n');
-            }
-            return Some(pulldown_cmark::Event::Html(html.into()));
+            return Some(pulldown_cmark::Event::Html(html));
         }
         if self.shared.failed() {
             return None;
@@ -212,7 +223,9 @@ impl<'input> Iterator for Render<'_, 'input> {
         self.pending.push(pulldown_cmark::Event::End(
             pulldown_cmark::TagEnd::CodeBlock,
         ));
-        self.pending.push(pulldown_cmark::Event::Text(code.into()));
+        self.pending.push(pulldown_cmark::Event::Text(
+            core::mem::take(&mut self.code).into(),
+        ));
         Some(event)
     }
 }
@@ -242,10 +255,20 @@ where
             shared: &shared,
             highlighter,
             pending: Vec::new(),
+            code: String::new(),
         };
         sink(&mut events, &shared)
     });
     Shared::into_error(shared).map_or(Ok(output), Err)
+}
+
+/// Room for the HTML of `markdown`. Over thousands of READMEs and their
+/// paragraphs, it fits the HTML of 99% of them.
+const fn html_capacity(markdown: &str) -> usize {
+    markdown
+        .len()
+        .saturating_add(markdown.len().div_euclid(2))
+        .saturating_add(32)
 }
 
 pub fn html(
@@ -255,9 +278,7 @@ pub fn html(
     broken_link_callback: Option<&Bound<'_, PyAny>>,
     highlighter: Option<&crate::highlight::Highlighter>,
 ) -> PyResult<String> {
-    let mut output = String::with_capacity(
-        markdown.len().saturating_add(markdown.len().div_euclid(4)),
-    );
+    let mut output = String::with_capacity(html_capacity(markdown));
     render(
         py,
         markdown,
@@ -325,8 +346,9 @@ pub fn write_html(
         broken_link_callback,
         highlighter,
         |events, shared| {
+            // Small documents need no more than their HTML.
             let mut writer = std::io::BufWriter::with_capacity(
-                WRITE_BUFFER_CAPACITY,
+                html_capacity(markdown).min(WRITE_BUFFER_CAPACITY),
                 PyWriter { file, shared },
             );
             pulldown_cmark::html::write_html_io(&mut writer, events)?;

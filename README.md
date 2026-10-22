@@ -1,4 +1,4 @@
-# pyromark
+# <img src="https://raw.githubusercontent.com/monosans/pyromark/main/docs/assets/logo.svg" alt="" width="40" align="top"> pyromark
 
 [![Downloads](https://static.pepy.tech/badge/pyromark)](https://pepy.tech/project/pyromark)
 
@@ -7,6 +7,8 @@ pyromark (stands for Python Rust Optimized Markdown) is a blazingly fast CommonM
 ## Installation
 
 ```bash
+uv add pyromark
+# or
 pip install -U pyromark
 ```
 
@@ -66,11 +68,14 @@ pyromark README.md --enable-tables --highlight inspired-github -o out.html
 
 ## Performance
 
-160x faster than [markdown2](https://pypi.org/project/markdown2/),
-130x faster than [Markdown](https://pypi.org/project/Markdown/),
-119x faster than [mistletoe](https://pypi.org/project/mistletoe/),
-103x faster than [markdown-it-py](https://pypi.org/project/markdown-it-py/),
-75x faster than [mistune](https://pypi.org/project/mistune/).
+2.6x faster than [cmarkgfm](https://pypi.org/project/cmarkgfm/) (C) and [comrak](https://pypi.org/project/comrak/) (Rust).
+86x to 367x faster than pure Python parsers:
+[mistune](https://pypi.org/project/mistune/),
+[markdown-it-py](https://pypi.org/project/markdown-it-py/),
+[Markdown](https://pypi.org/project/Markdown/),
+[mistletoe](https://pypi.org/project/mistletoe/),
+[markdown2](https://pypi.org/project/markdown2/) and
+[marko](https://pypi.org/project/marko/).
 
 `html` and `write_html` release the [GIL](https://docs.python.org/3/glossary.html#term-global-interpreter-lock), so threads render in parallel.
 

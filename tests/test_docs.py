@@ -4,16 +4,20 @@ import ast
 import inspect
 import re
 import textwrap
+import typing
 from collections.abc import Callable, Iterator
 from pathlib import Path
-from typing import TypeAlias
+from typing import Literal, TypeAlias
 
 import pyromark
 import pyromark._options
 import pyromark.event
 import pytest
 
-README = Path(__file__).parent.parent / "README.md"
+ROOT = Path(__file__).parent.parent
+
+# performance.md is left out: its benchmark needs the other parsers.
+PAGES = ("README.md", "docs/index.md", "docs/guide.md", "docs/events.md")
 
 
 def _python_blocks(source: str) -> list[str]:
@@ -35,15 +39,53 @@ def _python_blocks(source: str) -> list[str]:
     return blocks
 
 
-def test_readme_examples_run(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+@pytest.mark.parametrize("page", PAGES)
+def test_page_examples_run(
+    page: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    blocks = _python_blocks(README.read_text("utf-8"))
+    path = ROOT / page
+    blocks = _python_blocks(path.read_text("utf-8"))
     assert blocks
     monkeypatch.chdir(tmp_path)
 
     for block in blocks:
-        exec(compile(block, str(README), "exec"), {})  # noqa: S102
+        exec(compile(block, str(path), "exec"), {})  # noqa: S102
+
+
+def test_guide_lists_every_option() -> None:
+    guide = (ROOT / "docs/guide.md").read_text("utf-8")
+
+    missing = {
+        name
+        for name in pyromark.Options.__members__
+        if f"| `{name}`" not in guide
+    }
+
+    assert not missing
+
+
+def _variant_names(alias: object, /) -> set[str]:
+    """The names of an event union: its literals and its dicts' keys."""
+    names: set[str] = set()
+    for variant in typing.get_args(alias):
+        if typing.get_origin(variant) is Literal:
+            names.update(typing.get_args(variant))
+        else:
+            names.update(typing.get_type_hints(variant))
+    return names
+
+
+def test_events_page_lists_every_event() -> None:
+    page = (ROOT / "docs/events.md").read_text("utf-8")
+    names = (
+        _variant_names(pyromark.event.Event)
+        | _variant_names(pyromark.event._Tag)  # noqa: SLF001
+        | _variant_names(pyromark.event._TagEnd)  # noqa: SLF001
+    ) - {"Start", "End"}
+
+    missing = {name for name in names if f'"{name}"' not in page}
+
+    assert not missing
 
 
 _PYTHON_BLOCK = re.compile(r"```python\n(.*?)```", re.DOTALL)
@@ -113,9 +155,6 @@ def test_stub_declares_exactly_what_the_extension_exposes() -> None:
     }
 
     assert exposed == _stub_names()
-
-
-ROOT = Path(__file__).parent.parent
 
 
 def _search(pattern: str, path: str, /) -> str:

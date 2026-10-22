@@ -43,30 +43,44 @@ impl Highlighter {
         }
     }
 
-    /// Returns the block's HTML, or `None` to render it unhighlighted. A
-    /// callback that raises records the error in `shared`.
+    /// Returns the block's HTML ending with a newline, which keeps whatever
+    /// follows off its last line, or `None` to render the block
+    /// unhighlighted. A callback that raises records the error in `shared`.
     pub fn highlight(
         &self,
         language: Option<&str>,
         code: &str,
         shared: &crate::common::Shared,
-    ) -> Option<String> {
+    ) -> Option<pulldown_cmark::CowStr<'static>> {
         match self {
             Self::Theme(theme) => {
                 let syntax = language
                     .and_then(find_syntax)
                     .unwrap_or_else(|| SYNTAXES.find_syntax_plain_text());
-                syntect::html::highlighted_html_for_string(
+                let mut html = syntect::html::highlighted_html_for_string(
                     code, &SYNTAXES, syntax, theme,
                 )
-                .ok()
+                .ok()?;
+                if !html.ends_with('\n') {
+                    html.push('\n');
+                }
+                Some(html.into())
             }
             Self::Callback(callback) => Python::attach(move |py| {
-                call_highlight_callback(callback.bind(py), language, code)
-                    .unwrap_or_else(move |err| {
-                        shared.fail(py, err);
-                        None
-                    })
+                let html =
+                    call_highlight_callback(callback.bind(py), language, code)
+                        .unwrap_or_else(move |err| {
+                            shared.fail(py, err);
+                            None
+                        })?;
+                if html.ends_with('\n') {
+                    return Some(crate::common::cow_str(&html));
+                }
+                let mut owned =
+                    String::with_capacity(html.len().saturating_add(1));
+                owned.push_str(&html);
+                owned.push('\n');
+                Some(owned.into())
             }),
         }
     }
@@ -101,15 +115,13 @@ fn call_highlight_callback(
     callback: &Bound<'_, PyAny>,
     language: Option<&str>,
     code: &str,
-) -> PyResult<Option<String>> {
-    callback.call1((language, code))?.extract::<Option<String>>().map_err(
-        move |err| {
-            crate::common::callback_error(
-                callback.py(),
-                "highlight callback must return the block's HTML as str, or \
-                 None to leave the block alone",
-                err,
-            )
-        },
-    )
+) -> PyResult<Option<pyo3::pybacked::PyBackedStr>> {
+    callback.call1((language, code))?.extract().map_err(move |err| {
+        crate::common::callback_error(
+            callback.py(),
+            "highlight callback must return the block's HTML as str, or None \
+             to leave the block alone",
+            err,
+        )
+    })
 }

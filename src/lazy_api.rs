@@ -14,6 +14,11 @@ enum Stream<'input> {
     ),
 }
 
+/// The parser is `Send` but not `Sync`, which a pyclass must be. The mutex
+/// makes it `Sync` yet is never locked: `__next__` holds `&mut self`, so
+/// `get_mut` reaches the stream without synchronization.
+type SyncStream<'input> = std::sync::Mutex<Stream<'input>>;
+
 impl Stream<'_> {
     fn next<'py>(
         &mut self,
@@ -42,13 +47,13 @@ impl Stream<'_> {
     clippy::inline_modules
 )]
 mod cell {
-    use super::Stream;
+    use super::SyncStream;
 
     self_cell::self_cell!(
         pub struct Cell {
             owner: pyo3::pybacked::PyBackedStr,
             #[not_covariant]
-            dependent: Stream,
+            dependent: SyncStream,
         }
     );
 }
@@ -78,7 +83,7 @@ pub fn new(
     let cell = py.detach(|| {
         cell::Cell::new(markdown, |markdown| {
             let parser = crate::common::parser(markdown, options, &shared);
-            match (with_range, merge_text) {
+            SyncStream::new(match (with_range, merge_text) {
                 (false, false) => Stream::Events(parser),
                 (false, true) => Stream::MergedEvents(
                     pulldown_cmark::TextMergeStream::new(parser),
@@ -91,7 +96,7 @@ pub fn new(
                         parser.into_offset_iter(),
                     ),
                 ),
-            }
+            })
         })
     });
     Events(Some(Inner { cell, shared }))
@@ -110,13 +115,17 @@ impl Events {
         let Some(inner) = &mut self.0 else {
             return Ok(None);
         };
-        let next =
-            match inner.cell.with_dependent_mut(|_, stream| stream.next(py)) {
-                Some(Ok(event)) if !inner.shared.failed() => {
-                    return Ok(Some(event));
-                }
-                next => next.transpose(),
-            };
+        let next = match inner.cell.with_dependent_mut(|_, stream| {
+            stream
+                .get_mut()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .next(py)
+        }) {
+            Some(Ok(event)) if !inner.shared.failed() => {
+                return Ok(Some(event));
+            }
+            next => next.transpose(),
+        };
         let Some(Inner { cell, shared }) = self.0.take() else {
             return next;
         };
