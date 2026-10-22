@@ -1,0 +1,45 @@
+# The targets CI builds wheels for.
+targets = [
+  "aarch64-apple-darwin",
+  "aarch64-pc-windows-msvc",
+  "aarch64-unknown-linux-gnu",
+  "aarch64-unknown-linux-musl",
+  "armv7-unknown-linux-gnueabihf",
+  "armv7-unknown-linux-musleabihf",
+  "i686-pc-windows-msvc",
+  "i686-unknown-linux-gnu",
+  "i686-unknown-linux-musl",
+  "powerpc64-unknown-linux-gnu",
+  "powerpc64le-unknown-linux-gnu",
+  "powerpc64le-unknown-linux-musl",
+  "riscv64gc-unknown-linux-gnu",
+  "riscv64gc-unknown-linux-musl",
+  "s390x-unknown-linux-gnu",
+  "x86_64-apple-darwin",
+  "x86_64-pc-windows-msvc",
+  "x86_64-unknown-linux-gnu",
+  "x86_64-unknown-linux-musl",
+]
+private = { ignore = true }
+ignore-build-dependencies = true
+ignore-dev-dependencies = true
+accepted = [
+  "Apache-2.0",
+  "BSD-2-Clause",
+  "MIT",
+  "Unicode-3.0",
+]
+
+# onig_sys bundles the Oniguruma C library, which has a license of its own.
+[onig_sys.clarify]
+license = "MIT AND BSD-2-Clause"
+
+[[onig_sys.clarify.files]]
+path = "LICENSE.md"
+license = "MIT"
+checksum = "71f321038b088358004bee991635ac09e4c703bec467d3c30c06992c0595f189"
+
+[[onig_sys.clarify.files]]
+path = "oniguruma/COPYING"
+license = "BSD-2-Clause"
+checksum = "70ba5469ea0bab6e18a32d7009068f996503168d27be57747e08da34337ff26f"
