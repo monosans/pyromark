@@ -50,7 +50,7 @@ dev = [
 ]
 docs = [
   "mkdocstrings==1.0.8",
-  "mkdocstrings-python==2.0.9",
+  "mkdocstrings-python==2.0.10",
   "ruff==0.17.1",
   "zensical==0.0.71",
 ]
