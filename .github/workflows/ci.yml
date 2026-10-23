@@ -199,6 +199,9 @@ jobs:
           name: third-party-licenses
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
+          # Without a pin maturin-action takes the newest maturin that
+          # build-system.requires allows, bypassing Renovate's cooldown.
+          maturin-version: 1.15.0
           # matrix.pypy lists the PyPy interpreters to build for.
           # - manylinux 2_17: the images have no PyPy 3.12. maturin would build
           #   against its bundled sysconfig and tag the wheel pp73, which no
@@ -298,7 +301,7 @@ jobs:
           cache-save-if: ${{ github.ref == 'refs/heads/main' }}
       - uses: taiki-e/install-action@8cca0918f8471c33515202b73f56ab27f2bed283 # v2.87.29
         with:
-          tool: cargo-about@0.9.2
+          tool: cargo-about
           fallback: none
       # Every build ships the licenses of the code it compiles in.
       - shell: bash
@@ -320,9 +323,13 @@ jobs:
         with:
           python-version: "3.14"
           enable-cache: false
+      # uvx and the hook environments prek installs read neither pyproject.toml
+      # nor .npmrc, so their dependency cooldown is set here.
       - run: uvx --no-cache prek run --all-files --show-diff-on-failure
         env:
+          NPM_CONFIG_MIN_RELEASE_AGE: "3" # days
           RUFF_OUTPUT_FORMAT: github
+          UV_EXCLUDE_NEWER: 3 days
   pytest:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     needs:
@@ -407,6 +414,7 @@ jobs:
           name: third-party-licenses
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
+          maturin-version: 1.15.0
           command: sdist
           args: --out dist
           rust-toolchain: beta
