@@ -10,6 +10,7 @@ import pytest
 
 from tests.shared import (
     CODE_BLOCKS,
+    CPYTHON_ONLY,
     RENDERS_PER_THREAD,
     THREADS,
     render_on_threads,
@@ -176,6 +177,7 @@ def test_highlight_callback_bad_return_type() -> None:
     assert type(exc.value.__cause__) is TypeError
 
 
+@CPYTHON_ONLY
 def test_markdown_highlight_callback_is_collectable() -> None:
     class Holder:
         def __init__(self) -> None:

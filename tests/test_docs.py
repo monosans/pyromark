@@ -14,6 +14,8 @@ import pyromark._options
 import pyromark.event
 import pytest
 
+from tests.shared import CPYTHON_ONLY
+
 ROOT = Path(__file__).parent.parent
 
 # performance.md is left out: its benchmark needs the other parsers.
@@ -253,6 +255,7 @@ def _stub_callables() -> Iterator[tuple[str, Callable[..., object], _Params]]:
 _STUB_CALLABLES = list(_stub_callables())
 
 
+@CPYTHON_ONLY
 @pytest.mark.parametrize(
     ("obj", "declared"),
     [(obj, declared) for _, obj, declared in _STUB_CALLABLES],

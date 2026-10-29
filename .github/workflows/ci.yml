@@ -335,6 +335,11 @@ jobs:
           - "3.11"
           - "3.15"
           - "3.15t"
+        include:
+          # The manylinux 2_17 images have no PyPy 3.12, so maturin builds
+          # this wheel from its bundled sysconfig instead of an interpreter.
+          - python-version: pypy3.12
+            manylinux: "2_17"
       fail-fast: false
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -342,7 +347,7 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
-          name: wheels-x86_64-unknown-linux-gnu-2_28
+          name: wheels-x86_64-unknown-linux-gnu-${{ matrix.manylinux || '2_28' }}
           path: dist
       - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
@@ -350,7 +355,9 @@ jobs:
           enable-cache: true
           prune-cache: true
           save-cache: ${{ github.ref == 'refs/heads/main' }}
-      - run: uv sync --no-install-project --locked
+      # pytest does not need mypy, and its ast-serialize dependency has no
+      # PyPy wheels, so it would be built from source.
+      - run: uv sync --no-install-project --no-install-package mypy --no-install-package ast-serialize --locked
       - run: uv pip install --no-index --find-links dist pyromark
       - run: uv run --no-sync pytest
   release:

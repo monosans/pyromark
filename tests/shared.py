@@ -3,11 +3,19 @@ from __future__ import annotations
 
 import functools
 import operator
+import sys
 import threading
 from collections.abc import Mapping
 
 import pyromark
+import pytest
 from pyromark.event import Event
+
+# PyPy does not collect reference cycles through extension objects, has no
+# gc.is_tracked, and gives no signature for an extension type's __new__.
+CPYTHON_ONLY = pytest.mark.skipif(
+    sys.implementation.name != "cpython", reason="relies on CPython internals"
+)
 
 TABLE = """\
 | foo | bar |
