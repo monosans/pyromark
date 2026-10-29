@@ -1,105 +1,210 @@
 use pyo3::prelude::*;
 
+/// Iterate over the document's events.
+///
+/// Returns a lazy iterator: wrap it in `tuple()` if you need a sequence.
+/// Adjacent text events are merged unless `merge_text=False`.
+///
 /// Examples:
 ///     ```python
-///     for event in pyromark.events(
-///         "# Hello world",
-///         options=(
-///             pyromark.Options.ENABLE_TABLES
-///             | pyromark.Options.ENABLE_MATH
-///             | pyromark.Options.ENABLE_GFM
-///         )
-///     ):
-///         # All event types are fully type annotated
-///         # so you will get static type checking
-///         # and Tab completions in your IDE!
+///     for event in pyromark.events("# Hello world"):
 ///         match event:
-///             case {"Start": {"Heading": {"level": heading_level}}}:
-///                 print(f"Heading with {heading_level} level started")
+///             case {"Start": {"Heading": {"level": level}}}:
+///                 print(f"{level} heading started")
 ///             case {"Text": text}:
-///                 print(f"Got {text!r} text")
-///             case {"End": {"Heading": heading_level}}:
-///                 print(f"Heading with {heading_level} level ended")
-///             case other_event:
-///                 print(f"Got {other_event!r}")
+///                 print(f"Got {text!r}")
+///             case {"End": {"Heading": level}}:
+///                 print(f"{level} heading ended")
 ///     ```
 #[pyfunction]
-#[pyo3(signature = (markdown, /, *, options = 0, merge_text = true))]
-pub fn events<'py>(
-    py: Python<'py>,
-    markdown: &str,
+#[pyo3(signature = (
+    markdown,
+    /,
+    *,
+    options = 0,
+    merge_text = true,
+    broken_link_callback = None
+))]
+pub fn events(
+    py: Python<'_>,
+    markdown: pyo3::pybacked::PyBackedStr,
     options: u32,
     merge_text: bool,
-) -> pythonize::Result<Bound<'py, PyAny>> {
-    let v = py.detach(move || {
-        crate::common::events(
-            markdown,
-            crate::common::build_options(options),
-            merge_text,
-        )
-    });
-    pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
+    broken_link_callback: Option<&Bound<'_, PyAny>>,
+) -> PyResult<crate::lazy_api::Events> {
+    crate::common::check_broken_link_callback(broken_link_callback)?;
+    Ok(crate::lazy_api::new(
+        py,
+        markdown,
+        crate::common::build_options(options)?,
+        merge_text,
+        false,
+        broken_link_callback,
+    ))
 }
 
+/// Like `events`, but yields `(event, range)` pairs.
+///
+/// Ranges are UTF-8 byte offsets: slice `markdown.encode()`, not
+/// `markdown`. Text is not merged by default, because each piece has its
+/// own range.
+///
 /// Examples:
 ///     ```python
-///     for event, range_ in pyromark.events_with_range(
-///         "# Hello world",
-///         options=(
-///             pyromark.Options.ENABLE_TABLES
-///             | pyromark.Options.ENABLE_MATH
-///             | pyromark.Options.ENABLE_GFM
-///         )
-///     ):
-///         # All event types are fully type annotated
-///         # so you will get static type checking
-///         # and Tab completions in your IDE!
-///         match event:
-///             case {"Start": {"Heading": {"level": heading_level}}}:
-///                 print(
-///                     f"Heading with {heading_level} level started, {range_=}"
-///                 )
-///             case {"Text": text}:
-///                 print(f"Got {text!r} text, {range_=}")
-///             case {"End": {"Heading": heading_level}}:
-///                 print(
-///                     f"Heading with {heading_level} level ended, {range_=}"
-///                 )
-///             case other_event:
-///                 print(f"Got {other_event!r}, {range_=}")
+///     markdown = "# Hello world"
+///     for event, range_ in pyromark.events_with_range(markdown):
+///         source = markdown.encode()[range_["start"] : range_["end"]]
+///         print(event, source.decode())
+///     ```
+#[pyfunction]
+#[pyo3(signature = (
+    markdown,
+    /,
+    *,
+    options = 0,
+    merge_text = false,
+    broken_link_callback = None
+))]
+pub fn events_with_range(
+    py: Python<'_>,
+    markdown: pyo3::pybacked::PyBackedStr,
+    options: u32,
+    merge_text: bool,
+    broken_link_callback: Option<&Bound<'_, PyAny>>,
+) -> PyResult<crate::lazy_api::Events> {
+    crate::common::check_broken_link_callback(broken_link_callback)?;
+    Ok(crate::lazy_api::new(
+        py,
+        markdown,
+        crate::common::build_options(options)?,
+        merge_text,
+        true,
+        broken_link_callback,
+    ))
+}
+
+/// Render Markdown to HTML.
+///
+/// The output is not sanitized: raw HTML passes through, as CommonMark
+/// requires.
+///
+/// Examples:
+///     ```python
+///     html = pyromark.html("# Hello world")
+///     assert html == "<h1>Hello world</h1>\n"
+///     ```
+///
+///     Resolve references the document does not define:
+///
+///     ```python
+///     html = pyromark.html(
+///         "[Hello]",
+///         broken_link_callback=lambda link: (f"/{link['reference']}", ""),
+///     )
+///     assert html == '<p><a href="/Hello">Hello</a></p>\n'
+///     ```
+///
+///     Highlight code blocks:
+///
+///     ```python
+///     html = pyromark.html(
+///         "~~~python\nx = 1\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB
+///     )
+///     ```
+#[pyfunction]
+#[pyo3(signature = (
+    markdown,
+    /,
+    *,
+    options = 0,
+    broken_link_callback = None,
+    highlight = None
+))]
+pub fn html(
+    py: Python<'_>,
+    markdown: &str,
+    options: u32,
+    broken_link_callback: Option<&Bound<'_, PyAny>>,
+    highlight: Option<&Bound<'_, PyAny>>,
+) -> PyResult<String> {
+    crate::common::check_broken_link_callback(broken_link_callback)?;
+    let highlighter = crate::highlight::build_highlighter(highlight)?;
+    crate::common::html(
+        py,
+        markdown,
+        crate::common::build_options(options)?,
+        broken_link_callback,
+        highlighter.as_ref(),
+    )
+}
+
+/// Like `html`, but writes UTF-8 into a binary file.
+///
+/// The output goes to `file.write()` in 64 KiB chunks instead of being
+/// returned as one `str`.
+///
+/// Examples:
+///     ```python
+///     import io
+///
+///     file = io.BytesIO()
+///     pyromark.write_html("# Hello world", file)
+///     assert file.getvalue() == b"<h1>Hello world</h1>\n"
+///     ```
+#[expect(clippy::doc_markdown, reason = "a blank line in an example")]
+#[pyfunction]
+#[pyo3(signature = (
+    markdown,
+    file,
+    /,
+    *,
+    options = 0,
+    broken_link_callback = None,
+    highlight = None
+))]
+pub fn write_html(
+    py: Python<'_>,
+    markdown: &str,
+    file: &Bound<'_, PyAny>,
+    options: u32,
+    broken_link_callback: Option<&Bound<'_, PyAny>>,
+    highlight: Option<&Bound<'_, PyAny>>,
+) -> PyResult<()> {
+    crate::common::check_broken_link_callback(broken_link_callback)?;
+    let highlighter = crate::highlight::build_highlighter(highlight)?;
+    crate::common::write_html(
+        py,
+        markdown,
+        file,
+        crate::common::build_options(options)?,
+        broken_link_callback,
+        highlighter.as_ref(),
+    )
+}
+
+/// Return the document's link reference definitions, keyed by label.
+///
+/// They come in document order. Labels match case-insensitively: of
+/// `[Foo]: /a` and `[FOO]: /b`, only the first is kept, under `"Foo"`. Only
+/// the block level pass runs, so this is cheaper than `events`.
+///
+/// Examples:
+///     ```python
+///     definitions = pyromark.reference_definitions("[foo]: /a 'A'")
+///     assert definitions == {
+///         "foo": {"dest": "/a", "title": "A", "span": {"start": 0, "end": 13}}
+///     }
 ///     ```
 #[pyfunction]
 #[pyo3(signature = (markdown, /, *, options = 0))]
-pub fn events_with_range<'py>(
+pub fn reference_definitions<'py>(
     py: Python<'py>,
     markdown: &str,
     options: u32,
-) -> pythonize::Result<Bound<'py, PyAny>> {
-    let v = py.detach(move || {
-        crate::common::events_with_range(
-            markdown,
-            crate::common::build_options(options),
-        )
-    });
-    pythonize::pythonize_custom::<crate::common::PythonizeCustom, _>(py, &v)
-}
-
-/// Examples:
-///     ```python
-///     html = pyromark.html(
-///         "# Hello world",
-///         options=(
-///             pyromark.Options.ENABLE_TABLES
-///             | pyromark.Options.ENABLE_MATH
-///             | pyromark.Options.ENABLE_GFM
-///         )
-///     )
-///     assert html == "<h1>Hello world</h1>\n"
-///     ```
-#[pyfunction]
-#[pyo3(signature = (markdown, /, *, options = 0))]
-pub fn html(py: Python<'_>, markdown: &str, options: u32) -> String {
-    py.detach(move || {
-        crate::common::html(markdown, crate::common::build_options(options))
-    })
+) -> PyResult<Bound<'py, pyo3::types::PyDict>> {
+    crate::common::reference_definitions(
+        py,
+        markdown,
+        crate::common::build_options(options)?,
+    )
 }

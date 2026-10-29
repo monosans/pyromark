@@ -1,15 +1,18 @@
 [package]
 name = "pyromark"
-version = "0.9.14"
+version = "0.10.3"
 edition = "2024"
 license = "MIT"
 include = [
   "/Cargo.lock",
   "/Cargo.toml",
   "/LICENSE",
+  "/LICENSE-THIRD-PARTY",
   "/README.md",
   "/pyproject.toml",
-  "/python",
+  "/python/**/*.py",
+  "/python/**/*.pyi",
+  "/python/**/py.typed",
   "/src",
 ]
 publish = false
@@ -19,13 +22,18 @@ crate-type = ["cdylib"]
 name = "_pyromark"
 
 [dependencies]
-pulldown-cmark = { version = "=0.13.4", default-features = false, features = [
+pulldown-cmark = { version = "=0.13.5", default-features = false, features = [
   "html",
-  "serde",
   "simd",
 ] }
-pyo3 = "=0.29.3"
-pythonize = "=0.29.0"
+pyo3 = "=0.30.1"
+self_cell = "=1.3.0"
+syntect = { version = "=5.3.0", default-features = false, features = [
+  "default-themes",
+  "html",
+  "regex-onig",
+] }
+two-face = "=0.5.2"
 
 [profile.release]
 strip = true
