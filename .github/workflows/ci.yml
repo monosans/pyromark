@@ -356,7 +356,7 @@ jobs:
           enable-cache: true
           prune-cache: true
           save-cache: ${{ github.ref == 'refs/heads/main' }}
-      - run: uv sync --group test --no-group dev --no-install-project --locked
+      - run: uv sync --group test-ci --no-group dev --no-install-project --locked
       - run: uv pip install --no-index --find-links dist pyromark
       - run: uv run --no-sync pytest
   release:
