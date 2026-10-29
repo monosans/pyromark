@@ -293,7 +293,7 @@ jobs:
         with:
           toolchain: beta
           cache-save-if: ${{ github.ref == 'refs/heads/main' }}
-      - uses: taiki-e/install-action@1e29709c0ec63babbe8f266397a465f29a825f91 # v2.87.31
+      - uses: taiki-e/install-action@5488ac5a951645ce95062214902ac4b6bc1a1037 # v2.87.32
         with:
           tool: cargo-about
           fallback: none
@@ -355,9 +355,7 @@ jobs:
           enable-cache: true
           prune-cache: true
           save-cache: ${{ github.ref == 'refs/heads/main' }}
-      # pytest does not need mypy, and its ast-serialize dependency has no
-      # PyPy wheels, so it would be built from source.
-      - run: uv sync --no-install-project --no-install-package mypy --no-install-package ast-serialize --locked
+      - run: uv sync --group test --no-group dev --no-install-project --locked
       - run: uv pip install --no-index --find-links dist pyromark
       - run: uv run --no-sync pytest
   release:
@@ -434,7 +432,7 @@ jobs:
         with:
           toolchain: nightly
           cache: false
-      - uses: taiki-e/install-action@1e29709c0ec63babbe8f266397a465f29a825f91 # v2.87.31
+      - uses: taiki-e/install-action@5488ac5a951645ce95062214902ac4b6bc1a1037 # v2.87.32
         with:
           tool: cargo-udeps
           fallback: none
