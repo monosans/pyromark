@@ -198,7 +198,7 @@ jobs:
         with:
           # Without a pin maturin-action takes the newest maturin that
           # build-system.requires allows, bypassing Renovate's cooldown.
-          maturin-version: 1.15.0
+          maturin-version: 1.16.0
           # matrix.pypy lists the PyPy interpreters to build for. In the
           # manylinux 2_28 images, pypy3.11 is PyPy 7.3 (pp73), already built in
           # 2_17, so PyPy 3.11 8.0 (pp80) is passed by path.
@@ -408,7 +408,7 @@ jobs:
           name: third-party-licenses
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
-          maturin-version: 1.15.0
+          maturin-version: 1.16.0
           command: sdist
           args: --out dist
           rust-toolchain: beta
