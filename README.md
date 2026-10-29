@@ -1,14 +1,14 @@
-# pyromark
+# <img src="https://raw.githubusercontent.com/monosans/pyromark/main/docs/assets/logo.svg" alt="" width="40" align="top"> pyromark
 
 [![Downloads](https://static.pepy.tech/badge/pyromark)](https://pepy.tech/project/pyromark)
 
-pyromark (stands for Python Rust Optimized Markdown) is a blazingly fast CommonMark-compliant Markdown parser for Python.
-
-Uses [pulldown-cmark](https://github.com/raphlinus/pulldown-cmark) Rust crate under the hood.
+pyromark (stands for Python Rust Optimized Markdown) is a blazingly fast CommonMark-compliant Markdown parser for Python, built on the [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) Rust crate.
 
 ## Installation
 
 ```bash
+uv add pyromark
+# or
 pip install -U pyromark
 ```
 
@@ -16,9 +16,7 @@ pip install -U pyromark
 
 <https://monosans.github.io/pyromark>
 
-## Basic examples
-
-See documentation for more comprehensive examples.
+## Examples
 
 ### Convert Markdown to HTML
 
@@ -29,15 +27,14 @@ html = pyromark.html("# Hello world")
 assert html == "<h1>Hello world</h1>\n"
 ```
 
-### Iterating over Markdown elements
+The output is not sanitized, so sanitize it before serving Markdown you did not write.
+
+### Iterate over Markdown elements
 
 ```python
 import pyromark
 
 for event in pyromark.events("# Hello world"):
-    # All event types are fully type annotated
-    # so you will get static type checking
-    # and Tab completions in your IDE!
     match event:
         case {"Start": {"Heading": {"level": heading_level}}}:
             print(f"Heading with {heading_level} level started")
@@ -49,15 +46,38 @@ for event in pyromark.events("# Hello world"):
             print(f"Got {other_event!r}")
 ```
 
+Events are fully type annotated, so your editor knows the shape of each one.
+
+### Enable extensions and highlight code
+
+```python
+import pyromark
+
+html = pyromark.html(
+    "| a | b |\n| - | - |\n| 1 | 2 |",
+    options=pyromark.Options.ENABLE_TABLES,
+    highlight=pyromark.Theme.INSPIRED_GITHUB,
+)
+```
+
+### Command line
+
+```bash
+pyromark README.md --enable-tables --highlight inspired-github -o out.html
+```
+
 ## Performance
 
-160x faster than [markdown2](https://pypi.org/project/markdown2/),
-130x faster than [Markdown](https://pypi.org/project/Markdown/),
-119x faster than [mistletoe](https://pypi.org/project/markdown-it-py/),
-103x faster than [markdown-it-py](https://pypi.org/project/markdown-it-py/),
-75x faster than [mistune](https://pypi.org/project/mistune/).
+2.6x faster than [cmarkgfm](https://pypi.org/project/cmarkgfm/) (C) and [comrak](https://pypi.org/project/comrak/) (Rust).
+86x to 367x faster than pure Python parsers:
+[mistune](https://pypi.org/project/mistune/),
+[markdown-it-py](https://pypi.org/project/markdown-it-py/),
+[Markdown](https://pypi.org/project/Markdown/),
+[mistletoe](https://pypi.org/project/mistletoe/),
+[markdown2](https://pypi.org/project/markdown2/) and
+[marko](https://pypi.org/project/marko/).
 
-If you use threading, the difference with other libraries will be even more enormous, since pyromark releases the [GIL](https://docs.python.org/3/glossary.html#term-global-interpreter-lock).
+`html` and `write_html` release the [GIL](https://docs.python.org/3/glossary.html#term-global-interpreter-lock), so threads render in parallel.
 
 See [benchmark](https://monosans.github.io/pyromark/performance/).
 
