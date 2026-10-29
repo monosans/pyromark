@@ -37,16 +37,10 @@ jobs:
             runner: ubuntu-26.04
             manylinux: "2_17"
             pypy: pypy3.11
-            # Docker's seccomp profile on ubuntu-26.04 breaks name resolution
-            # in the 32-bit manylinux images.
-            docker-options: --security-opt seccomp=unconfined
           - target: i686-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_28"
             pypy: /opt/python/pp311-pypy311_pp80/bin/python pypy3.12
-            # Docker's seccomp profile on ubuntu-26.04 breaks name resolution
-            # in the 32-bit manylinux images.
-            docker-options: --security-opt seccomp=unconfined
           - target: i686-unknown-linux-musl
             runner: ubuntu-26.04
             manylinux: musllinux_1_2
@@ -212,7 +206,6 @@ jobs:
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           container: ${{ matrix.container }}
-          docker-options: ${{ matrix.docker-options }}
           rust-toolchain: beta
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
