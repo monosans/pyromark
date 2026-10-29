@@ -2,6 +2,15 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.10.3] - 2026-10-22
+
+- Add Linux wheels for PyPy 3.11 on PyPy 8. The Linux PyPy 3.11 wheels were built for PyPy 7.3 only, which PyPy 8 cannot install.
+- Drop the `manylinux_2_17` PyPy 3.12 wheels. They were tagged for PyPy 7.3, so no PyPy 3.12 could install them. The `manylinux_2_28` PyPy 3.12 wheels remain.
+
+## [0.10.2] - 2026-10-21
+
+- Bump pulldown-cmark to v0.13.5.
+
 ## [0.10.1] - 2026-10-16
 
 - Speed up `highlight` callbacks: rendering 200 code blocks with a callback that does little work is 25% faster.

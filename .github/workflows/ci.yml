@@ -22,11 +22,11 @@ jobs:
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_17"
-            pypy: true
+            pypy: pypy3.11
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_28"
-            pypy: true
+            pypy: /opt/python/pp311-pypy311_pp80/bin/python pypy3.12
           # - target: x86_64-unknown-linux-gnu
           #   runner: ubuntu-26.04
           #   manylinux: "2_34"
@@ -36,14 +36,14 @@ jobs:
           - target: i686-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_17"
-            pypy: true
+            pypy: pypy3.11
             # Docker's seccomp profile on ubuntu-26.04 breaks name resolution
             # in the 32-bit manylinux images.
             docker-options: --security-opt seccomp=unconfined
           - target: i686-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_28"
-            pypy: true
+            pypy: /opt/python/pp311-pypy311_pp80/bin/python pypy3.12
             # Docker's seccomp profile on ubuntu-26.04 breaks name resolution
             # in the 32-bit manylinux images.
             docker-options: --security-opt seccomp=unconfined
@@ -53,11 +53,11 @@ jobs:
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-26.04-arm
             manylinux: "2_17"
-            pypy: true
+            pypy: pypy3.11
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-26.04-arm
             manylinux: "2_28"
-            pypy: true
+            pypy: /opt/python/pp311-pypy311_pp80/bin/python pypy3.12
           # - target: aarch64-unknown-linux-gnu
           #   runner: ubuntu-26.04-arm
           #   manylinux: "2_34"
@@ -114,7 +114,7 @@ jobs:
           #   manylinux: musllinux_1_2
           - target: x86_64-apple-darwin
             runner: macos-26-intel
-            pypy: true
+            pypy: pypy3.11 pypy3.12
             python-versions: |
               3.11
               3.12
@@ -127,7 +127,7 @@ jobs:
               3.14
           - target: aarch64-apple-darwin
             runner: macos-26
-            pypy: true
+            pypy: pypy3.11 pypy3.12
             python-versions: |
               3.11
               3.12
@@ -183,7 +183,7 @@ jobs:
       # uv installs standalone builds in seconds, setup-python needs minutes per
       # version on macOS. maturin finds them as python3.X / pypy3.X on PATH.
       - if: ${{ matrix.python-versions }}
-        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           enable-cache: false
           python-arch: ${{ matrix.python-arch }}
@@ -199,7 +199,16 @@ jobs:
           name: third-party-licenses
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
-          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || format('3.11 3.12 3.13 3.14 3.14t 3.15 3.15t{0}', matrix.pypy && ' pypy3.11 pypy3.12' || '') }}' --out dist --release
+          # Without a pin maturin-action takes the newest maturin that
+          # build-system.requires allows, bypassing Renovate's cooldown.
+          maturin-version: 1.15.0
+          # matrix.pypy lists the PyPy interpreters to build for.
+          # - manylinux 2_17: the images have no PyPy 3.12. maturin would build
+          #   against its bundled sysconfig and tag the wheel pp73, which no
+          #   PyPy 3.12 release can install.
+          # - manylinux 2_28: pypy3.11 is PyPy 7.3 (pp73), already built in 2_17,
+          #   so PyPy 3.11 8.0 (pp80) is passed by path.
+          args: --compatibility pypi --interpreter '${{ matrix.build-python-versions || format('3.11 3.12 3.13 3.14 3.14t 3.15 3.15t{0}', matrix.pypy && format(' {0}', matrix.pypy) || '') }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
           container: ${{ matrix.container }}
@@ -249,7 +258,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           python-version: "3.14"
           enable-cache: false
@@ -290,9 +299,9 @@ jobs:
         with:
           toolchain: beta
           cache-save-if: ${{ github.ref == 'refs/heads/main' }}
-      - uses: taiki-e/install-action@1168f6810a3cb30a3514bf5756a3b7f0422c6df8 # v2.87.28
+      - uses: taiki-e/install-action@1e29709c0ec63babbe8f266397a465f29a825f91 # v2.87.31
         with:
-          tool: cargo-about@0.9.2
+          tool: cargo-about
           fallback: none
       # Every build ships the licenses of the code it compiles in.
       - shell: bash
@@ -310,13 +319,17 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           python-version: "3.14"
           enable-cache: false
+      # uvx and the hook environments prek installs read neither pyproject.toml
+      # nor .npmrc, so their dependency cooldown is set here.
       - run: uvx --no-cache prek run --all-files --show-diff-on-failure
         env:
+          NPM_CONFIG_MIN_RELEASE_AGE: "3" # days
           RUFF_OUTPUT_FORMAT: github
+          UV_EXCLUDE_NEWER: 3 days
   pytest:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     needs:
@@ -337,7 +350,7 @@ jobs:
         with:
           name: wheels-x86_64-unknown-linux-gnu-2_28
           path: dist
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
@@ -356,11 +369,11 @@ jobs:
       id-token: write
     steps:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           python-version: "3.14"
           enable-cache: false
-      - uses: astral-sh/attest-action@f589a42a7efb6fe400b4f400de60b4bc90390027 # v0.0.6
+      - uses: astral-sh/attest-action@39b6ce43875c196a579e31635b11aa2a2036384a # v0.0.7
         with:
           paths: wheels-*/*
       - run: uv publish --trusted-publishing always --no-cache 'wheels-*/*'
@@ -390,6 +403,7 @@ jobs:
           name: third-party-licenses
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
+          maturin-version: 1.15.0
           command: sdist
           args: --out dist
           rust-toolchain: beta
@@ -408,7 +422,7 @@ jobs:
         with:
           toolchain: nightly
           cache: false
-      - uses: taiki-e/install-action@1168f6810a3cb30a3514bf5756a3b7f0422c6df8 # v2.87.28
+      - uses: taiki-e/install-action@1e29709c0ec63babbe8f266397a465f29a825f91 # v2.87.31
         with:
           tool: cargo-udeps
           fallback: none

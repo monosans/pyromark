@@ -1,6 +1,6 @@
 [project]
 name = "pyromark"
-version = "0.10.1"
+version = "0.10.3"
 description = "Blazingly fast CommonMark-compliant Markdown pull parser"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -46,17 +46,17 @@ dev = [
   "mypy==2.4.0",
   "pytest==9.1.1",
   "pytest-github-actions-annotate-failures==0.4.2",
-  "ruff==0.17.0",
+  "ruff==0.17.2",
 ]
 docs = [
-  "mkdocstrings==1.0.7",
-  "mkdocstrings-python==2.0.9",
-  "ruff==0.17.0",
-  "zensical==0.0.70",
+  "mkdocstrings==1.0.8",
+  "mkdocstrings-python==2.0.10",
+  "ruff==0.17.2",
+  "zensical==0.0.73",
 ]
 
 [build-system]
-requires = ["maturin>=1,<2"]
+requires = ["maturin>=1.9.4,<2"]
 build-backend = "maturin"
 
 [tool.maturin]
