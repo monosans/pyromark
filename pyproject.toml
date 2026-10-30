@@ -44,13 +44,13 @@ dependencies = ["typing-extensions>=4.4.0"]
 [dependency-groups]
 dev = [
   "mypy==2.4.0",
-  "ruff==0.17.2",
+  "ruff==0.17.3",
   { include-group = "test" },
 ]
 docs = [
   "mkdocstrings==1.0.8",
   "mkdocstrings-python==2.0.10",
-  "ruff==0.17.2",
+  "ruff==0.17.3",
   "zensical==0.0.73",
 ]
 test = ["pytest==9.1.1"]
