@@ -625,12 +625,9 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "mkdocstrings" },
-    { name = "mkdocstrings-python" },
     { name = "mypy" },
     { name = "pytest" },
     { name = "ruff" },
-    { name = "zensical" },
 ]
 docs = [
     { name = "mkdocstrings" },
@@ -651,12 +648,9 @@ requires-dist = [{ name = "typing-extensions", specifier = ">=4.4.0" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "mkdocstrings", specifier = "==1.0.8" },
-    { name = "mkdocstrings-python", specifier = "==2.0.10" },
     { name = "mypy", specifier = "==2.4.0" },
     { name = "pytest", specifier = "==9.1.1" },
     { name = "ruff", specifier = "==0.17.2" },
-    { name = "zensical", specifier = "==0.0.73" },
 ]
 docs = [
     { name = "mkdocstrings", specifier = "==1.0.8" },
