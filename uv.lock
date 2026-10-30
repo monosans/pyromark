@@ -637,6 +637,9 @@ docs = [
 ]
 test = [
     { name = "pytest" },
+]
+test-ci = [
+    { name = "pytest" },
     { name = "pytest-github-actions-annotate-failures" },
 ]
 
@@ -655,7 +658,8 @@ docs = [
     { name = "ruff", specifier = "==0.17.2" },
     { name = "zensical", specifier = "==0.0.73" },
 ]
-test = [
+test = [{ name = "pytest", specifier = "==9.1.1" }]
+test-ci = [
     { name = "pytest", specifier = "==9.1.1" },
     { name = "pytest-github-actions-annotate-failures", specifier = "==0.4.2" },
 ]
