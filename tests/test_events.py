@@ -14,7 +14,12 @@ import pytest
 from pyromark.event import BrokenLink, Event, Range
 from typing_extensions import is_typeddict
 
-from tests.shared import ALL_OPTIONS, EVENTS_TESTDATA, NON_ASCII_DOC
+from tests.shared import (
+    ALL_OPTIONS,
+    CPYTHON_ONLY,
+    EVENTS_TESTDATA,
+    NON_ASCII_DOC,
+)
 
 UNKNOWN_LINK_TYPES = """\
 [ref][lbl]
@@ -228,6 +233,7 @@ SOURCE_CYCLE_FACTORIES: Mapping[str, Callable[[str], Iterator[object]]] = {
 }
 
 
+@CPYTHON_ONLY
 @pytest.mark.parametrize(
     "factory",
     SOURCE_CYCLE_FACTORIES.values(),

@@ -10,7 +10,7 @@ import pyromark
 import pytest
 from pyromark.event import BrokenLink, BrokenLinkCallback, Event
 
-from tests.shared import BROKEN_LINKS
+from tests.shared import BROKEN_LINKS, CPYTHON_ONLY
 
 _Runner: TypeAlias = Callable[[str, BrokenLinkCallback | None], object]
 
@@ -267,6 +267,7 @@ def test_broken_link_callback_must_be_callable(value: object) -> None:
             call()
 
 
+@CPYTHON_ONLY
 def test_markdown_broken_link_callback_is_collectable() -> None:
     class Holder:
         def __init__(self) -> None:
@@ -401,6 +402,7 @@ CYCLE_FACTORIES: Mapping[str, Callable[[BrokenLinkCallback], object]] = {
 }
 
 
+@CPYTHON_ONLY
 @pytest.mark.parametrize(
     "factory", CYCLE_FACTORIES.values(), ids=CYCLE_FACTORIES.keys()
 )
