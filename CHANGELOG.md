@@ -2,8 +2,9 @@
 
 [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [0.10.4] - 2026-10-31
 
+- Bump pulldown-cmark to v0.13.6.
 - Add back the `manylinux_2_17` PyPy 3.12 wheels, now tagged for PyPy 8.
 
 ## [0.10.3] - 2026-10-22
