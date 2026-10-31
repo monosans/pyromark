@@ -12,6 +12,53 @@
       ],
       "datasourceTemplate": "crate",
       "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep CI on the newest Python: the version the tools run on and the last one the tests run on. The first test version is the oldest supported one, so it stays",
+      "managerFilePatterns": ["/^\\.github/workflows/.+\\.yml$/"],
+      "matchStrings": [
+        "python-version: \"(?<currentValue>\\d+\\.\\d+)\"",
+        "python-version:\\n +- \"\\d+\\.\\d+\"\\n +- \"(?<currentValue>\\d+\\.\\d+)\"",
+        "- \"(?<currentValue>\\d+\\.\\d+)t\""
+      ],
+      "depNameTemplate": "docker.io/python",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Build wheels for each new Python version on the runners that get their interpreters from uv, free-threaded included",
+      "managerFilePatterns": ["/^\\.github/workflows/ci\\.yml$/"],
+      "matchStrings": [
+        "python-versions: \\|\\n(?: +[\\w.]+\\n)* +\\d+\\.\\d+t\\n",
+        "(?<indentation> +)(?<currentValue>\\d+\\.\\d+)t\\n$"
+      ],
+      "matchStringsStrategy": "recursive",
+      "depNameTemplate": "docker.io/python",
+      "datasourceTemplate": "docker",
+      "autoReplaceStringTemplate": "{{{indentation}}}{{{currentValue}}}t\n{{{indentation}}}{{{newValue}}}\n{{{indentation}}}{{{newValue}}}t\n"
+    },
+    {
+      "customType": "regex",
+      "description": "Same as above, for the interpreters passed to maturin",
+      "managerFilePatterns": ["/^\\.github/workflows/ci\\.yml$/"],
+      "matchStrings": ["(?<currentValue>\\d+\\.\\d+)t\\{0\\}'"],
+      "depNameTemplate": "docker.io/python",
+      "datasourceTemplate": "docker",
+      "autoReplaceStringTemplate": "{{{currentValue}}}t {{{newValue}}} {{{newValue}}}t{0}'"
+    },
+    {
+      "customType": "regex",
+      "description": "Add a classifier after the last one for each new Python version. The first match stops at the last classifier, the second takes the version out of it",
+      "managerFilePatterns": ["/^pyproject\\.toml$/"],
+      "matchStrings": [
+        "classifiers = \\[[^\\]]*\"Programming Language :: Python :: \\d+\\.\\d+\",",
+        "\"Programming Language :: Python :: (?<currentValue>\\d+\\.\\d+)\",$"
+      ],
+      "matchStringsStrategy": "recursive",
+      "depNameTemplate": "docker.io/python",
+      "datasourceTemplate": "docker",
+      "autoReplaceStringTemplate": "\"Programming Language :: Python :: {{{currentValue}}}\",\n  \"Programming Language :: Python :: {{{newValue}}}\","
     }
   ],
   "dependencyDashboard": false,
@@ -56,6 +103,14 @@
       "description": "Cargo has no cooldown for the transitive dependencies it resolves, so one on the direct dependencies would only delay updates. The docs link must not wait for one either, or it would drop out of the PR that bumps Cargo.toml",
       "matchManagers": ["cargo", "custom.regex"],
       "minimumReleaseAge": null
+    },
+    {
+      "description": "A new Python is reviewed by hand. A cooldown would count from the last rebuild of an image tag, which keeps part of the update out of the PR. A classifier can name a Python that is not out yet, which is not a reason to roll it back",
+      "matchPackageNames": ["python", "docker.io/python"],
+      "groupName": "python",
+      "automerge": false,
+      "minimumReleaseAge": null,
+      "rollbackPrs": false
     }
   ],
   "pre-commit": { "enabled": true },
