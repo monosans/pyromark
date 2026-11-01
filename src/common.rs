@@ -238,7 +238,7 @@ pub fn html(
 ) -> PyResult<String> {
     let mut output = String::with_capacity(html_capacity(markdown));
     render(py, markdown, options, broken_link_callback, highlighter, |events, _| {
-        pulldown_cmark::html::push_html(&mut output, events)
+        pulldown_cmark::html::push_html(&mut output, events);
     })?;
     Ok(output)
 }
