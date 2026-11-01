@@ -98,8 +98,7 @@ pub fn events_with_range(
 ///
 ///     ```python
 ///     html = pyromark.html(
-///         "[Hello]",
-///         broken_link_callback=lambda link: (f"/{link['reference']}", ""),
+///         "[Hello]", broken_link_callback=lambda link: (f"/{link['reference']}", "")
 ///     )
 ///     assert html == '<p><a href="/Hello">Hello</a></p>\n'
 ///     ```
@@ -107,9 +106,7 @@ pub fn events_with_range(
 ///     Highlight code blocks:
 ///
 ///     ```python
-///     html = pyromark.html(
-///         "~~~python\nx = 1\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB
-///     )
+///     html = pyromark.html("~~~python\nx = 1\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB)
 ///     ```
 #[pyfunction]
 #[pyo3(signature = (
@@ -191,9 +188,7 @@ pub fn write_html(
 /// Examples:
 ///     ```python
 ///     definitions = pyromark.reference_definitions("[foo]: /a 'A'")
-///     assert definitions == {
-///         "foo": {"dest": "/a", "title": "A", "span": {"start": 0, "end": 13}}
-///     }
+///     assert definitions == {"foo": {"dest": "/a", "title": "A", "span": {"start": 0, "end": 13}}}
 ///     ```
 #[pyfunction]
 #[pyo3(signature = (markdown, /, *, options = 0))]
