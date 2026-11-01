@@ -65,8 +65,6 @@ mod _pyromark {
     #[pymodule_export]
     use {
         crate::class_api::Markdown,
-        crate::function_api::{
-            events, events_with_range, html, reference_definitions, write_html,
-        },
+        crate::function_api::{events, events_with_range, html, reference_definitions, write_html},
     };
 }

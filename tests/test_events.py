@@ -14,12 +14,7 @@ import pytest
 from pyromark.event import BrokenLink, Event, Range
 from typing_extensions import is_typeddict
 
-from tests.shared import (
-    ALL_OPTIONS,
-    CPYTHON_ONLY,
-    EVENTS_TESTDATA,
-    NON_ASCII_DOC,
-)
+from tests.shared import ALL_OPTIONS, CPYTHON_ONLY, EVENTS_TESTDATA, NON_ASCII_DOC
 
 UNKNOWN_LINK_TYPES = """\
 [ref][lbl]
@@ -34,12 +29,7 @@ UNKNOWN_LINK_TYPES_EVENTS: tuple[Event, ...] = (
     {"Start": "Paragraph"},
     {
         "Start": {
-            "Link": {
-                "link_type": "ReferenceUnknown",
-                "dest_url": "/u",
-                "title": "t",
-                "id": "lbl",
-            }
+            "Link": {"link_type": "ReferenceUnknown", "dest_url": "/u", "title": "t", "id": "lbl"}
         }
     },
     {"Text": "ref"},
@@ -48,12 +38,7 @@ UNKNOWN_LINK_TYPES_EVENTS: tuple[Event, ...] = (
     {"Start": "Paragraph"},
     {
         "Start": {
-            "Link": {
-                "link_type": "CollapsedUnknown",
-                "dest_url": "/u",
-                "title": "t",
-                "id": "lbl2",
-            }
+            "Link": {"link_type": "CollapsedUnknown", "dest_url": "/u", "title": "t", "id": "lbl2"}
         }
     },
     {"Text": "lbl2"},
@@ -62,12 +47,7 @@ UNKNOWN_LINK_TYPES_EVENTS: tuple[Event, ...] = (
     {"Start": "Paragraph"},
     {
         "Start": {
-            "Link": {
-                "link_type": "ShortcutUnknown",
-                "dest_url": "/u",
-                "title": "t",
-                "id": "lbl3",
-            }
+            "Link": {"link_type": "ShortcutUnknown", "dest_url": "/u", "title": "t", "id": "lbl3"}
         }
     },
     {"Text": "lbl3"},
@@ -77,9 +57,7 @@ UNKNOWN_LINK_TYPES_EVENTS: tuple[Event, ...] = (
 
 
 @pytest.mark.parametrize(
-    ("markdown", "expected"),
-    EVENTS_TESTDATA.values(),
-    ids=EVENTS_TESTDATA.keys(),
+    ("markdown", "expected"), EVENTS_TESTDATA.values(), ids=EVENTS_TESTDATA.keys()
 )
 def test_events(markdown: str, expected: tuple[Event, ...]) -> None:
     md = pyromark.Markdown(options=ALL_OPTIONS)
@@ -100,17 +78,11 @@ def test_events_with_range(markdown: str) -> None:
     md = pyromark.Markdown(options=ALL_OPTIONS)
     for merge_text in (False, True):
         events_with_range = tuple(
-            pyromark.events_with_range(
-                markdown, options=ALL_OPTIONS, merge_text=merge_text
-            )
+            pyromark.events_with_range(markdown, options=ALL_OPTIONS, merge_text=merge_text)
         )
-        assert events_with_range == tuple(
-            md.events_with_range(markdown, merge_text=merge_text)
-        )
+        assert events_with_range == tuple(md.events_with_range(markdown, merge_text=merge_text))
         assert tuple(event for event, _range in events_with_range) == tuple(
-            pyromark.events(
-                markdown, options=ALL_OPTIONS, merge_text=merge_text
-            )
+            pyromark.events(markdown, options=ALL_OPTIONS, merge_text=merge_text)
         )
         source_length = len(markdown.encode())
         for _event, range_ in events_with_range:
@@ -122,25 +94,15 @@ def test_events_unknown_link_types() -> None:
         return "/u", "t"
 
     assert (
-        tuple(
-            pyromark.events(UNKNOWN_LINK_TYPES, broken_link_callback=callback)
-        )
-        == tuple(
-            pyromark.Markdown(broken_link_callback=callback).events(
-                UNKNOWN_LINK_TYPES
-            )
-        )
+        tuple(pyromark.events(UNKNOWN_LINK_TYPES, broken_link_callback=callback))
+        == tuple(pyromark.Markdown(broken_link_callback=callback).events(UNKNOWN_LINK_TYPES))
         == UNKNOWN_LINK_TYPES_EVENTS
     )
 
 
 def test_merge_text() -> None:
     markdown = r"a&amp;b\!c"
-    merged: tuple[Event, ...] = (
-        {"Start": "Paragraph"},
-        {"Text": "a&b!c"},
-        {"End": "Paragraph"},
-    )
+    merged: tuple[Event, ...] = ({"Start": "Paragraph"}, {"Text": "a&b!c"}, {"End": "Paragraph"})
     unmerged: tuple[Event, ...] = (
         {"Start": "Paragraph"},
         {"Text": "a"},
@@ -197,9 +159,7 @@ def test_events_is_an_iterator() -> None:
     events = pyromark.events("# Hello world")
     assert iter(events) is events
     assert next(events) == {
-        "Start": {
-            "Heading": {"level": "H1", "id": None, "classes": (), "attrs": ()}
-        }
+        "Start": {"Heading": {"level": "H1", "id": None, "classes": (), "attrs": ()}}
     }
     assert list(events) == [{"Text": "Hello world"}, {"End": {"Heading": "H1"}}]
     with pytest.raises(StopIteration):
@@ -218,30 +178,22 @@ def test_events_outlive_their_input() -> None:
     del markdown
     gc.collect()
     assert tuple(events) == tuple(pyromark.events("# Hello world"))
-    assert tuple(events_with_range) == tuple(
-        pyromark.events_with_range("# Hello world")
-    )
+    assert tuple(events_with_range) == tuple(pyromark.events_with_range("# Hello world"))
 
 
 SOURCE_CYCLE_FACTORIES: Mapping[str, Callable[[str], Iterator[object]]] = {
     "events": pyromark.events,
     "events_with_range": pyromark.events_with_range,
     "Markdown.events": lambda markdown: pyromark.Markdown().events(markdown),
-    "Markdown.events_with_range": lambda markdown: (
-        pyromark.Markdown().events_with_range(markdown)
-    ),
+    "Markdown.events_with_range": lambda markdown: pyromark.Markdown().events_with_range(markdown),
 }
 
 
 @CPYTHON_ONLY
 @pytest.mark.parametrize(
-    "factory",
-    SOURCE_CYCLE_FACTORIES.values(),
-    ids=SOURCE_CYCLE_FACTORIES.keys(),
+    "factory", SOURCE_CYCLE_FACTORIES.values(), ids=SOURCE_CYCLE_FACTORIES.keys()
 )
-def test_source_cycle_is_collectable(
-    factory: Callable[[str], Iterator[object]],
-) -> None:
+def test_source_cycle_is_collectable(factory: Callable[[str], Iterator[object]]) -> None:
     class Source(str):  # noqa: FURB189
         __slots__ = ("__weakref__", "iterator")
         iterator: Iterator[object]
@@ -263,9 +215,7 @@ def test_iterator_outlives_the_markdown_that_made_it() -> None:
     events = md.events("[a]")
     del md
     gc.collect()
-    assert tuple(events) == tuple(
-        pyromark.events("[a]", broken_link_callback=callback)
-    )
+    assert tuple(events) == tuple(pyromark.events("[a]", broken_link_callback=callback))
 
 
 def test_event_ranges_are_utf8_byte_offsets() -> None:
@@ -273,14 +223,8 @@ def test_event_ranges_are_utf8_byte_offsets() -> None:
     for event, range_ in pyromark.events_with_range(NON_ASCII_DOC):
         assert 0 <= range_["start"] <= range_["end"] <= len(source)
         if event == {"Text": "é日本\U0001f600 text"}:
-            assert (
-                source[range_["start"] : range_["end"]].decode()
-                == "é日本\U0001f600 text"
-            )
-            assert (
-                NON_ASCII_DOC[range_["start"] : range_["end"]]
-                != "é日本\U0001f600 text"
-            )
+            assert source[range_["start"] : range_["end"]].decode() == "é日本\U0001f600 text"
+            assert NON_ASCII_DOC[range_["start"] : range_["end"]] != "é日本\U0001f600 text"
             break
     else:  # pragma: no cover
         pytest.fail("no Text event covering the non-ASCII run")
@@ -345,10 +289,7 @@ def test_racing_one_iterator_loses_nothing() -> None:
         finally:
             consumed[slot] = seen
 
-    threads = [
-        threading.Thread(target=drain, args=(index,))
-        for index in range(workers)
-    ]
+    threads = [threading.Thread(target=drain, args=(index,)) for index in range(workers)]
     for thread in threads:
         thread.start()
     for thread in threads:
@@ -385,14 +326,8 @@ def _declared_names(annotation: object) -> set[str]:
         return {str(arg) for arg in typing.get_args(annotation)}
     if is_typeddict(annotation):
         hints = typing.get_type_hints(annotation, globalns=vars(pyromark.event))
-        return set(hints) | {
-            name for hint in hints.values() for name in _declared_names(hint)
-        }
-    return {
-        name
-        for arg in typing.get_args(annotation)
-        for name in _declared_names(arg)
-    }
+        return set(hints) | {name for hint in hints.values() for name in _declared_names(hint)}
+    return {name for arg in typing.get_args(annotation) for name in _declared_names(arg)}
 
 
 def _matches(value: object, annotation: object) -> bool:
@@ -432,9 +367,7 @@ def _observed_names(event: object) -> set[str]:
     if isinstance(event, str):
         return {event}
     if isinstance(event, dict):
-        return set(event) | {
-            n for v in event.values() for n in _observed_names(v)
-        }
+        return set(event) | {n for v in event.values() for n in _observed_names(v)}
     if isinstance(event, tuple):
         return {n for v in event for n in _observed_names(v)}
     return {"None"} if event is None else set()

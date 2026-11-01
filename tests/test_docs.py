@@ -42,9 +42,7 @@ def _python_blocks(source: str) -> list[str]:
 
 
 @pytest.mark.parametrize("page", PAGES)
-def test_page_examples_run(
-    page: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_page_examples_run(page: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     path = ROOT / page
     blocks = _python_blocks(path.read_text("utf-8"))
     assert blocks
@@ -57,11 +55,7 @@ def test_page_examples_run(
 def test_guide_lists_every_option() -> None:
     guide = (ROOT / "docs/guide.md").read_text("utf-8")
 
-    missing = {
-        name
-        for name in pyromark.Options.__members__
-        if f"| `{name}`" not in guide
-    }
+    missing = {name for name in pyromark.Options.__members__ if f"| `{name}`" not in guide}
 
     assert not missing
 
@@ -121,9 +115,7 @@ def test_every_public_object_documents_an_example() -> None:
     assert documented >= set(pyromark.__all__)
 
 
-@pytest.mark.parametrize(
-    "code", _DOCUMENTED_EXAMPLES.values(), ids=_DOCUMENTED_EXAMPLES
-)
+@pytest.mark.parametrize("code", _DOCUMENTED_EXAMPLES.values(), ids=_DOCUMENTED_EXAMPLES)
 def test_documented_examples_run(code: str) -> None:
     namespace = {
         "pyromark": pyromark,
@@ -142,9 +134,7 @@ def _stub_names() -> set[str]:
     for node in ast.parse(STUB.read_text("utf-8")).body:
         if isinstance(node, (ast.FunctionDef, ast.ClassDef)):
             names.add(node.name)
-        elif isinstance(node, ast.AnnAssign) and isinstance(
-            node.target, ast.Name
-        ):
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
             names.add(node.target.id)
     return names
 
@@ -196,32 +186,20 @@ def _stub_params(function: ast.FunctionDef) -> _Params:
     arguments = function.args
     positional = arguments.posonlyargs + arguments.args
     missing = len(positional) - len(arguments.defaults)
-    defaults = [inspect.Parameter.empty] * missing + [
-        value(node) for node in arguments.defaults
-    ]
+    defaults = [inspect.Parameter.empty] * missing + [value(node) for node in arguments.defaults]
     params: _Params = [
         (arg.arg, "POSITIONAL_ONLY", default)
         for arg, default in zip(
-            arguments.posonlyargs,
-            defaults[: len(arguments.posonlyargs)],
-            strict=True,
+            arguments.posonlyargs, defaults[: len(arguments.posonlyargs)], strict=True
         )
     ]
     params += [
         (arg.arg, "POSITIONAL_OR_KEYWORD", default)
-        for arg, default in zip(
-            arguments.args, defaults[len(arguments.posonlyargs) :], strict=True
-        )
+        for arg, default in zip(arguments.args, defaults[len(arguments.posonlyargs) :], strict=True)
     ]
     params += [
-        (
-            arg.arg,
-            "KEYWORD_ONLY",
-            inspect.Parameter.empty if node is None else value(node),
-        )
-        for arg, node in zip(
-            arguments.kwonlyargs, arguments.kw_defaults, strict=True
-        )
+        (arg.arg, "KEYWORD_ONLY", inspect.Parameter.empty if node is None else value(node))
+        for arg, node in zip(arguments.kwonlyargs, arguments.kw_defaults, strict=True)
     ]
     return params
 
@@ -261,28 +239,19 @@ _STUB_CALLABLES = list(_stub_callables())
     [(obj, declared) for _, obj, declared in _STUB_CALLABLES],
     ids=[name for name, _, _ in _STUB_CALLABLES],
 )
-def test_stub_signatures_match_the_extension(
-    obj: Callable[..., object], declared: _Params
-) -> None:
+def test_stub_signatures_match_the_extension(obj: Callable[..., object], declared: _Params) -> None:
     assert _runtime_params(obj) == declared
 
 
 def _stub_docstrings() -> Iterator[tuple[str, object, str | None]]:
     for node in ast.parse(STUB.read_text("utf-8")).body:
         if isinstance(node, ast.FunctionDef):
-            yield (
-                node.name,
-                getattr(pyromark, node.name),
-                ast.get_docstring(node),
-            )
+            yield (node.name, getattr(pyromark, node.name), ast.get_docstring(node))
         elif isinstance(node, ast.ClassDef):
             cls = getattr(pyromark, node.name)
             yield node.name, cls, ast.get_docstring(node)
             for method in node.body:
-                if (
-                    isinstance(method, ast.FunctionDef)
-                    and method.name != "__init__"
-                ):
+                if isinstance(method, ast.FunctionDef) and method.name != "__init__":
                     yield (
                         f"{node.name}.{method.name}",
                         getattr(cls, method.name),
@@ -298,9 +267,7 @@ _STUB_DOCSTRINGS = list(_stub_docstrings())
     [(obj, declared) for _, obj, declared in _STUB_DOCSTRINGS],
     ids=[name for name, _, _ in _STUB_DOCSTRINGS],
 )
-def test_stub_docstrings_match_the_extension(
-    obj: object, declared: str | None
-) -> None:
+def test_stub_docstrings_match_the_extension(obj: object, declared: str | None) -> None:
     assert declared is not None
     assert obj.__doc__ is not None
     assert inspect.cleandoc(obj.__doc__) == declared

@@ -202,9 +202,5 @@ pub fn reference_definitions<'py>(
     markdown: &str,
     options: u32,
 ) -> PyResult<Bound<'py, pyo3::types::PyDict>> {
-    crate::common::reference_definitions(
-        py,
-        markdown,
-        crate::common::build_options(options)?,
-    )
+    crate::common::reference_definitions(py, markdown, crate::common::build_options(options)?)
 }

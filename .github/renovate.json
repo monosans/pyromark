@@ -7,9 +7,7 @@
       "customType": "regex",
       "description": "The option docs link to the pulldown-cmark version pinned in Cargo.toml, and the same branch topic puts both in one PR",
       "managerFilePatterns": ["/^python/pyromark/_options\\.py$/"],
-      "matchStrings": [
-        "docs\\.rs/(?<depName>pulldown-cmark)/(?<currentValue>[^/]+)/"
-      ],
+      "matchStrings": ["docs\\.rs/(?<depName>pulldown-cmark)/(?<currentValue>[^/]+)/"],
       "datasourceTemplate": "crate",
       "versioningTemplate": "semver"
     },
@@ -71,33 +69,16 @@
   "lockFileMaintenance": { "enabled": true, "schedule": ["at any time"] },
   "minimumReleaseAge": "3 days",
   "packageRules": [
-    {
-      "matchPackageNames": ["mypy", "pre-commit/mirrors-mypy"],
-      "groupName": "mypy"
-    },
-    {
-      "matchPackageNames": ["ruff", "charliermarsh/ruff-pre-commit"],
-      "groupName": "ruff"
-    },
+    { "matchPackageNames": ["mypy", "pre-commit/mirrors-mypy"], "groupName": "mypy" },
+    { "matchPackageNames": ["ruff", "charliermarsh/ruff-pre-commit"], "groupName": "ruff" },
     {
       "description": "Bump the maturin-action pin together with the build-system.requires cap, so a new major does not reach CI alone through automerge",
       "matchPackageNames": ["maturin"],
       "groupName": "maturin"
     },
-    {
-      "matchCurrentVersion": "!/^0/",
-      "matchUpdateTypes": ["minor"],
-      "automerge": true
-    },
-    {
-      "matchUpdateTypes": ["lockFileMaintenance", "patch", "replacement"],
-      "automerge": true
-    },
-    {
-      "matchDepTypes": ["dependency-groups"],
-      "matchManagers": ["pep621"],
-      "automerge": true
-    },
+    { "matchCurrentVersion": "!/^0/", "matchUpdateTypes": ["minor"], "automerge": true },
+    { "matchUpdateTypes": ["lockFileMaintenance", "patch", "replacement"], "automerge": true },
+    { "matchDepTypes": ["dependency-groups"], "matchManagers": ["pep621"], "automerge": true },
     { "matchManagers": ["github-actions", "pre-commit"], "automerge": true },
     {
       "description": "Cargo has no cooldown for the transitive dependencies it resolves, so one on the direct dependencies would only delay updates. The docs link must not wait for one either, or it would drop out of the PR that bumps Cargo.toml",

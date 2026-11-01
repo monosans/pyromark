@@ -20,9 +20,7 @@ const ALIASES: [(&str, &str); 9] = [
     ("shell", "bash"),
 ];
 
-fn find_syntax(
-    language: &str,
-) -> Option<&'static syntect::parsing::SyntaxReference> {
+fn find_syntax(language: &str) -> Option<&'static syntect::parsing::SyntaxReference> {
     let token = ALIASES
         .iter()
         .find(|(alias, _)| alias.eq_ignore_ascii_case(language))
@@ -57,27 +55,24 @@ impl Highlighter {
                 let syntax = language
                     .and_then(find_syntax)
                     .unwrap_or_else(|| SYNTAXES.find_syntax_plain_text());
-                let mut html = syntect::html::highlighted_html_for_string(
-                    code, &SYNTAXES, syntax, theme,
-                )
-                .ok()?;
+                let mut html =
+                    syntect::html::highlighted_html_for_string(code, &SYNTAXES, syntax, theme)
+                        .ok()?;
                 if !html.ends_with('\n') {
                     html.push('\n');
                 }
                 Some(html.into())
             }
             Self::Callback(callback) => Python::attach(move |py| {
-                let html =
-                    call_highlight_callback(callback.bind(py), language, code)
-                        .unwrap_or_else(move |err| {
-                            shared.fail(py, err);
-                            None
-                        })?;
+                let html = call_highlight_callback(callback.bind(py), language, code)
+                    .unwrap_or_else(move |err| {
+                        shared.fail(py, err);
+                        None
+                    })?;
                 if html.ends_with('\n') {
                     return Some(crate::common::cow_str(&html));
                 }
-                let mut owned =
-                    String::with_capacity(html.len().saturating_add(1));
+                let mut owned = String::with_capacity(html.len().saturating_add(1));
                 owned.push_str(&html);
                 owned.push('\n');
                 Some(owned.into())
@@ -86,9 +81,7 @@ impl Highlighter {
     }
 }
 
-pub fn build_highlighter(
-    highlight: Option<&Bound<'_, PyAny>>,
-) -> PyResult<Option<Highlighter>> {
+pub fn build_highlighter(highlight: Option<&Bound<'_, PyAny>>) -> PyResult<Option<Highlighter>> {
     let Some(highlight) = highlight else {
         return Ok(None);
     };
@@ -106,9 +99,7 @@ pub fn build_highlighter(
     if highlight.is_callable() {
         return Ok(Some(Highlighter::Callback(highlight.clone().unbind())));
     }
-    Err(pyo3::exceptions::PyTypeError::new_err(
-        "highlight must be a pyromark.Theme or a callable",
-    ))
+    Err(pyo3::exceptions::PyTypeError::new_err("highlight must be a pyromark.Theme or a callable"))
 }
 
 fn call_highlight_callback(
@@ -119,8 +110,8 @@ fn call_highlight_callback(
     callback.call1((language, code))?.extract().map_err(move |err| {
         crate::common::callback_error(
             callback.py(),
-            "highlight callback must return the block's HTML as str, or None \
-             to leave the block alone",
+            "highlight callback must return the block's HTML as str, or None to leave the block \
+             alone",
             err,
         )
     })
