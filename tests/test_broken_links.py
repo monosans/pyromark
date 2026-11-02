@@ -26,26 +26,10 @@ BROKEN_LINKS_RESULT = (
 
 
 BROKEN_LINKS_CALLS: list[BrokenLink] = [
-    {
-        "span": {"start": 0, "end": 6},
-        "link_type": "Reference",
-        "reference": "b",
-    },
-    {
-        "span": {"start": 11, "end": 14},
-        "link_type": "Collapsed",
-        "reference": "c",
-    },
-    {
-        "span": {"start": 21, "end": 24},
-        "link_type": "Shortcut",
-        "reference": "d",
-    },
-    {
-        "span": {"start": 29, "end": 33},
-        "link_type": "Shortcut",
-        "reference": "e",
-    },
+    {"span": {"start": 0, "end": 6}, "link_type": "Reference", "reference": "b"},
+    {"span": {"start": 11, "end": 14}, "link_type": "Collapsed", "reference": "c"},
+    {"span": {"start": 21, "end": 24}, "link_type": "Shortcut", "reference": "d"},
+    {"span": {"start": 29, "end": 33}, "link_type": "Shortcut", "reference": "e"},
 ]
 
 
@@ -55,25 +39,19 @@ def _write_html(markdown: str, callback: BrokenLinkCallback | None, /) -> bytes:
     return file.getvalue()
 
 
-def _markdown_write_html(
-    markdown: str, callback: BrokenLinkCallback | None, /
-) -> bytes:
+def _markdown_write_html(markdown: str, callback: BrokenLinkCallback | None, /) -> bytes:
     file = io.BytesIO()
     pyromark.Markdown(broken_link_callback=callback).write_html(markdown, file)
     return file.getvalue()
 
 
 RUNNERS: Mapping[str, _Runner] = {
-    "html": lambda markdown, callback: pyromark.html(
-        markdown, broken_link_callback=callback
-    ),
+    "html": lambda markdown, callback: pyromark.html(markdown, broken_link_callback=callback),
     "events": lambda markdown, callback: tuple(
         pyromark.events(markdown, broken_link_callback=callback)
     ),
     "events_unmerged": lambda markdown, callback: tuple(
-        pyromark.events(
-            markdown, merge_text=False, broken_link_callback=callback
-        )
+        pyromark.events(markdown, merge_text=False, broken_link_callback=callback)
     ),
     "events_with_range": lambda markdown, callback: tuple(
         pyromark.events_with_range(markdown, broken_link_callback=callback)
@@ -85,18 +63,14 @@ RUNNERS: Mapping[str, _Runner] = {
         pyromark.Markdown(broken_link_callback=callback).events(markdown)
     ),
     "Markdown.events_with_range": lambda markdown, callback: tuple(
-        pyromark.Markdown(broken_link_callback=callback).events_with_range(
-            markdown
-        )
+        pyromark.Markdown(broken_link_callback=callback).events_with_range(markdown)
     ),
     "write_html": _write_html,
     "Markdown.write_html": _markdown_write_html,
 }
 
 
-def _resolving_callback(
-    calls: list[BrokenLink],
-) -> Callable[[BrokenLink], tuple[str, str]]:
+def _resolving_callback(calls: list[BrokenLink]) -> Callable[[BrokenLink], tuple[str, str]]:
     def callback(broken_link: BrokenLink) -> tuple[str, str]:
         calls.append(broken_link)
         return f"https://example.com/{broken_link['reference']}", "Example"
@@ -107,12 +81,8 @@ def _resolving_callback(
 def test_broken_link_callback_html() -> None:
     calls: list[BrokenLink] = []
     assert (
-        pyromark.html(
-            BROKEN_LINKS, broken_link_callback=_resolving_callback(calls)
-        )
-        == pyromark.Markdown(
-            broken_link_callback=_resolving_callback(calls)
-        ).html(BROKEN_LINKS)
+        pyromark.html(BROKEN_LINKS, broken_link_callback=_resolving_callback(calls))
+        == pyromark.Markdown(broken_link_callback=_resolving_callback(calls)).html(BROKEN_LINKS)
         == BROKEN_LINKS_RESULT
     )
     assert calls == BROKEN_LINKS_CALLS * 2
@@ -121,11 +91,7 @@ def test_broken_link_callback_html() -> None:
 def test_broken_link_callback_events() -> None:
     calls: list[BrokenLink] = []
     expected_calls: list[BrokenLink] = [
-        {
-            "span": {"start": 0, "end": 5},
-            "link_type": "Shortcut",
-            "reference": "foo",
-        }
+        {"span": {"start": 0, "end": 5}, "link_type": "Shortcut", "reference": "foo"}
     ] * 3
     expected: tuple[Event, ...] = (
         {"Start": "Paragraph"},
@@ -144,16 +110,8 @@ def test_broken_link_callback_events() -> None:
         {"End": "Paragraph"},
     )
     assert (
-        tuple(
-            pyromark.events(
-                "[foo]", broken_link_callback=_resolving_callback(calls)
-            )
-        )
-        == tuple(
-            pyromark.Markdown(
-                broken_link_callback=_resolving_callback(calls)
-            ).events("[foo]")
-        )
+        tuple(pyromark.events("[foo]", broken_link_callback=_resolving_callback(calls)))
+        == tuple(pyromark.Markdown(broken_link_callback=_resolving_callback(calls)).events("[foo]"))
         == expected
     )
     assert (
@@ -193,17 +151,11 @@ def test_broken_link_callback_error(runner: _Runner) -> None:
     assert calls == BROKEN_LINKS_CALLS[:1]
 
 
-ITERATOR_RUNNERS = {
-    name: runner for name, runner in RUNNERS.items() if "events" in name
-}
+ITERATOR_RUNNERS = {name: runner for name, runner in RUNNERS.items() if "events" in name}
 
 
-@pytest.mark.parametrize(
-    "runner", ITERATOR_RUNNERS.values(), ids=ITERATOR_RUNNERS.keys()
-)
-def test_broken_link_callback_running_out_of_answers_is_not_silent(
-    runner: _Runner,
-) -> None:
+@pytest.mark.parametrize("runner", ITERATOR_RUNNERS.values(), ids=ITERATOR_RUNNERS.keys())
+def test_broken_link_callback_running_out_of_answers_is_not_silent(runner: _Runner) -> None:
     destinations = iter(["/only-one"])
 
     def callback(_broken_link: BrokenLink) -> tuple[str, str]:
@@ -223,24 +175,13 @@ def test_broken_link_callback_running_out_of_answers_is_not_silent(
         ("https://example.com", TypeError),
         (["a", "b"], TypeError),
     ],
-    ids=[
-        "not-a-tuple",
-        "too-short",
-        "too-long",
-        "not-strings",
-        "a-bare-str",
-        "a-list",
-    ],
+    ids=["not-a-tuple", "too-short", "too-long", "not-strings", "a-bare-str", "a-list"],
 )
-def test_broken_link_callback_bad_return_type(
-    returned: object, expected: type[Exception]
-) -> None:
+def test_broken_link_callback_bad_return_type(returned: object, expected: type[Exception]) -> None:
     def callback(_broken_link: BrokenLink) -> tuple[str, str]:
         return returned  # type: ignore[return-value]
 
-    with pytest.raises(
-        expected, match=r"^broken link callback must return a "
-    ) as exc:
+    with pytest.raises(expected, match=r"^broken link callback must return a ") as exc:
         pyromark.html(BROKEN_LINKS, broken_link_callback=callback)
 
     assert type(exc.value.__cause__) is expected
@@ -263,9 +204,7 @@ def test_broken_link_callback_must_be_callable(value: object) -> None:
         lambda: pyromark.Markdown(broken_link_callback=value),  # type: ignore[arg-type]
     )
     for call in calls:
-        with pytest.raises(
-            TypeError, match=r"^broken_link_callback must be callable$"
-        ):
+        with pytest.raises(TypeError, match=r"^broken_link_callback must be callable$"):
             call()
 
 
@@ -280,9 +219,7 @@ def test_markdown_broken_link_callback_is_collectable() -> None:
             return self.dest_url, ""
 
     holder = Holder()
-    assert holder.md.html("[a]") == (
-        '<p><a href="https://example.com">a</a></p>\n'
-    )
+    assert holder.md.html("[a]") == ('<p><a href="https://example.com">a</a></p>\n')
     ref = weakref.ref(holder)
     del holder
     gc.collect()
@@ -290,13 +227,9 @@ def test_markdown_broken_link_callback_is_collectable() -> None:
 
 
 @pytest.mark.parametrize(
-    "func",
-    [pyromark.events, pyromark.events_with_range],
-    ids=["events", "events_with_range"],
+    "func", [pyromark.events, pyromark.events_with_range], ids=["events", "events_with_range"]
 )
-def test_broken_link_callback_error_mid_iteration(
-    func: Callable[..., Iterable[object]],
-) -> None:
+def test_broken_link_callback_error_mid_iteration(func: Callable[..., Iterable[object]]) -> None:
     calls: list[BrokenLink] = []
 
     def callback(broken_link: BrokenLink) -> tuple[str, str]:
@@ -311,9 +244,7 @@ def test_broken_link_callback_error_mid_iteration(
 
 
 @pytest.mark.parametrize(
-    "func",
-    [pyromark.events, pyromark.events_with_range],
-    ids=["events", "events_with_range"],
+    "func", [pyromark.events, pyromark.events_with_range], ids=["events", "events_with_range"]
 )
 def test_broken_link_callback_error_ends_the_iteration(
     func: Callable[..., Iterator[object]],
@@ -331,9 +262,7 @@ def test_broken_link_callback_error_ends_the_iteration(
 
 
 @pytest.mark.parametrize(
-    "func",
-    [pyromark.events, pyromark.events_with_range],
-    ids=["events", "events_with_range"],
+    "func", [pyromark.events, pyromark.events_with_range], ids=["events", "events_with_range"]
 )
 def test_broken_link_callback_error_reaches_a_caller_that_stops_early(
     func: Callable[..., Iterator[object]],
@@ -355,9 +284,7 @@ def test_broken_link_callback_error_reaches_a_caller_that_stops_early(
 
 
 @pytest.mark.parametrize(
-    "func",
-    [pyromark.events, pyromark.events_with_range],
-    ids=["events", "events_with_range"],
+    "func", [pyromark.events, pyromark.events_with_range], ids=["events", "events_with_range"]
 )
 def test_abandoned_iterator_retains_nothing_after_a_callback_error(
     func: Callable[..., Iterator[object]],
@@ -370,9 +297,7 @@ def test_abandoned_iterator_retains_nothing_after_a_callback_error(
 
     def live() -> int:
         gc.collect()
-        return sum(
-            1 for obj in gc.get_objects() if isinstance(obj, iterator_type)
-        )
+        return sum(1 for obj in gc.get_objects() if isinstance(obj, iterator_type))
 
     before = live()
     for _ in range(20):
@@ -395,25 +320,17 @@ def _resolve_a(parser: Iterator[object] | pyromark.Markdown, /) -> object:
 
 
 CYCLE_FACTORIES: Mapping[str, Callable[[BrokenLinkCallback], object]] = {
-    "events": lambda callback: _resolve_a(
-        pyromark.events("[a]", broken_link_callback=callback)
-    ),
+    "events": lambda callback: _resolve_a(pyromark.events("[a]", broken_link_callback=callback)),
     "events_with_range": lambda callback: _resolve_a(
         pyromark.events_with_range("[a]", broken_link_callback=callback)
     ),
-    "Markdown": lambda callback: _resolve_a(
-        pyromark.Markdown(broken_link_callback=callback)
-    ),
+    "Markdown": lambda callback: _resolve_a(pyromark.Markdown(broken_link_callback=callback)),
 }
 
 
 @CPYTHON_ONLY
-@pytest.mark.parametrize(
-    "factory", CYCLE_FACTORIES.values(), ids=CYCLE_FACTORIES.keys()
-)
-def test_callback_cycle_is_collectable(
-    factory: Callable[[BrokenLinkCallback], object],
-) -> None:
+@pytest.mark.parametrize("factory", CYCLE_FACTORIES.values(), ids=CYCLE_FACTORIES.keys())
+def test_callback_cycle_is_collectable(factory: Callable[[BrokenLinkCallback], object]) -> None:
     class Holder:
         def __init__(self) -> None:
             self.resolved: list[str] = []
@@ -434,13 +351,10 @@ def test_callback_cycle_is_collectable(
 
 @pytest.mark.parametrize("reenter", [iter, next], ids=["iter", "next"])
 @pytest.mark.parametrize(
-    "func",
-    [pyromark.events, pyromark.events_with_range],
-    ids=["events", "events_with_range"],
+    "func", [pyromark.events, pyromark.events_with_range], ids=["events", "events_with_range"]
 )
 def test_callback_cannot_reenter_its_iterator(
-    func: Callable[..., Iterator[object]],
-    reenter: Callable[[Iterator[object]], object],
+    func: Callable[..., Iterator[object]], reenter: Callable[[Iterator[object]], object]
 ) -> None:
     def callback(_broken_link: BrokenLink) -> None:
         reenter(events)
@@ -462,12 +376,8 @@ def _tp_clear(obj: object, /) -> int:
     Which object of a cycle the collector clears depends on the interpreter
     version, so a test that needs the iterator cleared calls it directly.
     """
-    get_slot_type = ctypes.PYFUNCTYPE(
-        ctypes.c_void_p, ctypes.py_object, ctypes.c_int
-    )
-    address = get_slot_type(("PyType_GetSlot", ctypes.pythonapi))(
-        type(obj), _PY_TP_CLEAR
-    )
+    get_slot_type = ctypes.PYFUNCTYPE(ctypes.c_void_p, ctypes.py_object, ctypes.c_int)
+    address = get_slot_type(("PyType_GetSlot", ctypes.pythonapi))(type(obj), _PY_TP_CLEAR)
     assert address, f"{type(obj).__name__} has no tp_clear"
     clear = ctypes.PYFUNCTYPE(ctypes.c_int, ctypes.py_object)(address)
     return int(clear(obj))
@@ -475,9 +385,7 @@ def _tp_clear(obj: object, /) -> int:
 
 @CPYTHON_ONLY
 @pytest.mark.parametrize(
-    "func",
-    [pyromark.events, pyromark.events_with_range],
-    ids=["events", "events_with_range"],
+    "func", [pyromark.events, pyromark.events_with_range], ids=["events", "events_with_range"]
 )
 def test_clearing_an_iterator_drops_its_references_and_ends_it(
     func: Callable[..., Iterator[object]],
@@ -512,9 +420,7 @@ def test_every_entry_point_wraps_a_stop_iteration(runner: _Runner) -> None:
     def callback(_broken_link: BrokenLink) -> tuple[str, str]:
         raise StopIteration
 
-    with pytest.raises(
-        RuntimeError, match=r"^callback raised StopIteration$"
-    ) as exc:
+    with pytest.raises(RuntimeError, match=r"^callback raised StopIteration$") as exc:
         runner(BROKEN_LINKS, callback)
 
     assert isinstance(exc.value.__cause__, StopIteration)

@@ -14,9 +14,7 @@ class Theme(StrEnum):
 
     Examples:
         ```python
-        html = pyromark.html(
-            "~~~python\nx = 1\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB
-        )
+        html = pyromark.html("~~~python\nx = 1\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB)
         assert html.startswith('<pre style="background-color:#ffffff;">')
         ```
     """

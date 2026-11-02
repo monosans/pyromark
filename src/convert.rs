@@ -14,10 +14,7 @@ fn tagged<'py>(
     Ok(dict.into_any())
 }
 
-fn heading_level(
-    py: Python<'_>,
-    level: pulldown_cmark::HeadingLevel,
-) -> Bound<'_, PyAny> {
+fn heading_level(py: Python<'_>, level: pulldown_cmark::HeadingLevel) -> Bound<'_, PyAny> {
     name(match level {
         pulldown_cmark::HeadingLevel::H1 => pyo3::intern!(py, "H1"),
         pulldown_cmark::HeadingLevel::H2 => pyo3::intern!(py, "H2"),
@@ -28,10 +25,7 @@ fn heading_level(
     })
 }
 
-fn block_quote_kind(
-    py: Python<'_>,
-    kind: pulldown_cmark::BlockQuoteKind,
-) -> Bound<'_, PyAny> {
+fn block_quote_kind(py: Python<'_>, kind: pulldown_cmark::BlockQuoteKind) -> Bound<'_, PyAny> {
     name(match kind {
         pulldown_cmark::BlockQuoteKind::Note => pyo3::intern!(py, "Note"),
         pulldown_cmark::BlockQuoteKind::Tip => pyo3::intern!(py, "Tip"),
@@ -57,10 +51,7 @@ fn metadata_block_kind(
     })
 }
 
-fn alignment(
-    py: Python<'_>,
-    alignment: pulldown_cmark::Alignment,
-) -> Bound<'_, PyAny> {
+fn alignment(py: Python<'_>, alignment: pulldown_cmark::Alignment) -> Bound<'_, PyAny> {
     name(match alignment {
         pulldown_cmark::Alignment::None => pyo3::intern!(py, "None"),
         pulldown_cmark::Alignment::Left => pyo3::intern!(py, "Left"),
@@ -74,9 +65,7 @@ fn code_block_kind<'py>(
     kind: &pulldown_cmark::CodeBlockKind<'_>,
 ) -> PyResult<Bound<'py, PyAny>> {
     match kind {
-        pulldown_cmark::CodeBlockKind::Indented => {
-            Ok(name(pyo3::intern!(py, "Indented")))
-        }
+        pulldown_cmark::CodeBlockKind::Indented => Ok(name(pyo3::intern!(py, "Indented"))),
         pulldown_cmark::CodeBlockKind::Fenced(language) => {
             tagged(py, pyo3::intern!(py, "Fenced"), &**language)
         }
@@ -126,27 +115,15 @@ fn link_data<'py>(
     Ok(data)
 }
 
-fn tag<'py>(
-    py: Python<'py>,
-    tag: &pulldown_cmark::Tag<'_>,
-) -> PyResult<Bound<'py, PyAny>> {
+fn tag<'py>(py: Python<'py>, tag: &pulldown_cmark::Tag<'_>) -> PyResult<Bound<'py, PyAny>> {
     match tag {
-        pulldown_cmark::Tag::Paragraph => {
-            Ok(name(pyo3::intern!(py, "Paragraph")))
-        }
+        pulldown_cmark::Tag::Paragraph => Ok(name(pyo3::intern!(py, "Paragraph"))),
         pulldown_cmark::Tag::Heading { level, id, classes, attrs } => {
-            let classes = pyo3::types::PyTuple::new(
-                py,
-                classes.iter().map(|class| &**class),
-            )?;
-            let attrs =
-                attrs.iter().map(|(key, value)| (&**key, value.as_deref()));
+            let classes = pyo3::types::PyTuple::new(py, classes.iter().map(|class| &**class))?;
+            let attrs = attrs.iter().map(|(key, value)| (&**key, value.as_deref()));
             let attrs = pyo3::types::PyTuple::new(py, attrs)?;
             let data = pyo3::types::PyDict::new(py);
-            data.set_item(
-                pyo3::intern!(py, "level"),
-                heading_level(py, *level),
-            )?;
+            data.set_item(pyo3::intern!(py, "level"), heading_level(py, *level))?;
             data.set_item(pyo3::intern!(py, "id"), id.as_deref())?;
             data.set_item(pyo3::intern!(py, "classes"), classes)?;
             data.set_item(pyo3::intern!(py, "attrs"), attrs)?;
@@ -157,14 +134,10 @@ fn tag<'py>(
             pyo3::intern!(py, "BlockQuote"),
             kind.map(move |kind| block_quote_kind(py, kind)),
         ),
-        pulldown_cmark::Tag::CodeBlock(kind) => tagged(
-            py,
-            pyo3::intern!(py, "CodeBlock"),
-            code_block_kind(py, kind)?,
-        ),
-        pulldown_cmark::Tag::HtmlBlock => {
-            Ok(name(pyo3::intern!(py, "HtmlBlock")))
+        pulldown_cmark::Tag::CodeBlock(kind) => {
+            tagged(py, pyo3::intern!(py, "CodeBlock"), code_block_kind(py, kind)?)
         }
+        pulldown_cmark::Tag::HtmlBlock => Ok(name(pyo3::intern!(py, "HtmlBlock"))),
         pulldown_cmark::Tag::List(first_item_number) => {
             tagged(py, pyo3::intern!(py, "List"), *first_item_number)
         }
@@ -172,9 +145,7 @@ fn tag<'py>(
         pulldown_cmark::Tag::FootnoteDefinition(label) => {
             tagged(py, pyo3::intern!(py, "FootnoteDefinition"), &**label)
         }
-        pulldown_cmark::Tag::DefinitionList => {
-            Ok(name(pyo3::intern!(py, "DefinitionList")))
-        }
+        pulldown_cmark::Tag::DefinitionList => Ok(name(pyo3::intern!(py, "DefinitionList"))),
         pulldown_cmark::Tag::DefinitionListTitle => {
             Ok(name(pyo3::intern!(py, "DefinitionListTitle")))
         }
@@ -184,67 +155,33 @@ fn tag<'py>(
         pulldown_cmark::Tag::Table(alignments) => tagged(
             py,
             pyo3::intern!(py, "Table"),
-            pyo3::types::PyTuple::new(
-                py,
-                alignments.iter().map(|&column| alignment(py, column)),
-            )?,
+            pyo3::types::PyTuple::new(py, alignments.iter().map(|&column| alignment(py, column)))?,
         ),
-        pulldown_cmark::Tag::TableHead => {
-            Ok(name(pyo3::intern!(py, "TableHead")))
-        }
-        pulldown_cmark::Tag::TableRow => {
-            Ok(name(pyo3::intern!(py, "TableRow")))
-        }
-        pulldown_cmark::Tag::TableCell => {
-            Ok(name(pyo3::intern!(py, "TableCell")))
-        }
-        pulldown_cmark::Tag::Emphasis => {
-            Ok(name(pyo3::intern!(py, "Emphasis")))
-        }
+        pulldown_cmark::Tag::TableHead => Ok(name(pyo3::intern!(py, "TableHead"))),
+        pulldown_cmark::Tag::TableRow => Ok(name(pyo3::intern!(py, "TableRow"))),
+        pulldown_cmark::Tag::TableCell => Ok(name(pyo3::intern!(py, "TableCell"))),
+        pulldown_cmark::Tag::Emphasis => Ok(name(pyo3::intern!(py, "Emphasis"))),
         pulldown_cmark::Tag::Strong => Ok(name(pyo3::intern!(py, "Strong"))),
-        pulldown_cmark::Tag::Strikethrough => {
-            Ok(name(pyo3::intern!(py, "Strikethrough")))
-        }
-        pulldown_cmark::Tag::Superscript => {
-            Ok(name(pyo3::intern!(py, "Superscript")))
-        }
-        pulldown_cmark::Tag::Subscript => {
-            Ok(name(pyo3::intern!(py, "Subscript")))
-        }
+        pulldown_cmark::Tag::Strikethrough => Ok(name(pyo3::intern!(py, "Strikethrough"))),
+        pulldown_cmark::Tag::Superscript => Ok(name(pyo3::intern!(py, "Superscript"))),
+        pulldown_cmark::Tag::Subscript => Ok(name(pyo3::intern!(py, "Subscript"))),
         pulldown_cmark::Tag::Link { link_type: link, dest_url, title, id } => {
-            tagged(
-                py,
-                pyo3::intern!(py, "Link"),
-                link_data(py, *link, dest_url, title, id)?,
-            )
+            tagged(py, pyo3::intern!(py, "Link"), link_data(py, *link, dest_url, title, id)?)
         }
         pulldown_cmark::Tag::Image { link_type: link, dest_url, title, id } => {
-            tagged(
-                py,
-                pyo3::intern!(py, "Image"),
-                link_data(py, *link, dest_url, title, id)?,
-            )
+            tagged(py, pyo3::intern!(py, "Image"), link_data(py, *link, dest_url, title, id)?)
         }
-        pulldown_cmark::Tag::MetadataBlock(kind) => tagged(
-            py,
-            pyo3::intern!(py, "MetadataBlock"),
-            metadata_block_kind(py, *kind),
-        ),
+        pulldown_cmark::Tag::MetadataBlock(kind) => {
+            tagged(py, pyo3::intern!(py, "MetadataBlock"), metadata_block_kind(py, *kind))
+        }
     }
 }
 
-fn tag_end(
-    py: Python<'_>,
-    tag_end: pulldown_cmark::TagEnd,
-) -> PyResult<Bound<'_, PyAny>> {
+fn tag_end(py: Python<'_>, tag_end: pulldown_cmark::TagEnd) -> PyResult<Bound<'_, PyAny>> {
     Ok(name(match tag_end {
         pulldown_cmark::TagEnd::Paragraph => pyo3::intern!(py, "Paragraph"),
         pulldown_cmark::TagEnd::Heading(level) => {
-            return tagged(
-                py,
-                pyo3::intern!(py, "Heading"),
-                heading_level(py, level),
-            );
+            return tagged(py, pyo3::intern!(py, "Heading"), heading_level(py, level));
         }
         pulldown_cmark::TagEnd::BlockQuote(kind) => {
             return tagged(
@@ -285,11 +222,7 @@ fn tag_end(
         pulldown_cmark::TagEnd::Link => pyo3::intern!(py, "Link"),
         pulldown_cmark::TagEnd::Image => pyo3::intern!(py, "Image"),
         pulldown_cmark::TagEnd::MetadataBlock(kind) => {
-            return tagged(
-                py,
-                pyo3::intern!(py, "MetadataBlock"),
-                metadata_block_kind(py, kind),
-            );
+            return tagged(py, pyo3::intern!(py, "MetadataBlock"), metadata_block_kind(py, kind));
         }
     }))
 }
@@ -302,36 +235,24 @@ pub fn event<'py>(
         pulldown_cmark::Event::Start(start) => {
             tagged(py, pyo3::intern!(py, "Start"), tag(py, start)?)
         }
-        pulldown_cmark::Event::End(end) => {
-            tagged(py, pyo3::intern!(py, "End"), tag_end(py, *end)?)
-        }
-        pulldown_cmark::Event::Text(text) => {
-            tagged(py, pyo3::intern!(py, "Text"), &**text)
-        }
-        pulldown_cmark::Event::Code(code) => {
-            tagged(py, pyo3::intern!(py, "Code"), &**code)
-        }
+        pulldown_cmark::Event::End(end) => tagged(py, pyo3::intern!(py, "End"), tag_end(py, *end)?),
+        pulldown_cmark::Event::Text(text) => tagged(py, pyo3::intern!(py, "Text"), &**text),
+        pulldown_cmark::Event::Code(code) => tagged(py, pyo3::intern!(py, "Code"), &**code),
         pulldown_cmark::Event::InlineMath(math) => {
             tagged(py, pyo3::intern!(py, "InlineMath"), &**math)
         }
         pulldown_cmark::Event::DisplayMath(math) => {
             tagged(py, pyo3::intern!(py, "DisplayMath"), &**math)
         }
-        pulldown_cmark::Event::Html(html) => {
-            tagged(py, pyo3::intern!(py, "Html"), &**html)
-        }
+        pulldown_cmark::Event::Html(html) => tagged(py, pyo3::intern!(py, "Html"), &**html),
         pulldown_cmark::Event::InlineHtml(html) => {
             tagged(py, pyo3::intern!(py, "InlineHtml"), &**html)
         }
         pulldown_cmark::Event::FootnoteReference(label) => {
             tagged(py, pyo3::intern!(py, "FootnoteReference"), &**label)
         }
-        pulldown_cmark::Event::SoftBreak => {
-            Ok(name(pyo3::intern!(py, "SoftBreak")))
-        }
-        pulldown_cmark::Event::HardBreak => {
-            Ok(name(pyo3::intern!(py, "HardBreak")))
-        }
+        pulldown_cmark::Event::SoftBreak => Ok(name(pyo3::intern!(py, "SoftBreak"))),
+        pulldown_cmark::Event::HardBreak => Ok(name(pyo3::intern!(py, "HardBreak"))),
         pulldown_cmark::Event::Rule => Ok(name(pyo3::intern!(py, "Rule"))),
         pulldown_cmark::Event::TaskListMarker(checked) => {
             tagged(py, pyo3::intern!(py, "TaskListMarker"), *checked)
@@ -339,10 +260,7 @@ pub fn event<'py>(
     }
 }
 
-pub fn range<'py>(
-    py: Python<'py>,
-    range: &core::ops::Range<usize>,
-) -> PyResult<Bound<'py, PyAny>> {
+pub fn range<'py>(py: Python<'py>, range: &core::ops::Range<usize>) -> PyResult<Bound<'py, PyAny>> {
     let dict = pyo3::types::PyDict::new(py);
     dict.set_item(pyo3::intern!(py, "start"), range.start)?;
     dict.set_item(pyo3::intern!(py, "end"), range.end)?;
@@ -354,8 +272,7 @@ pub fn event_with_range<'py>(
     event_with_range: &(pulldown_cmark::Event<'_>, core::ops::Range<usize>),
 ) -> PyResult<Bound<'py, PyAny>> {
     let (parsed, span) = event_with_range;
-    Ok(pyo3::types::PyTuple::new(py, [event(py, parsed)?, range(py, span)?])?
-        .into_any())
+    Ok(pyo3::types::PyTuple::new(py, [event(py, parsed)?, range(py, span)?])?.into_any())
 }
 
 pub fn reference_definitions<'py>(
@@ -368,14 +285,8 @@ pub fn reference_definitions<'py>(
     for (label, definition) in definitions {
         let value = pyo3::types::PyDict::new(py);
         value.set_item(pyo3::intern!(py, "dest"), &*definition.dest)?;
-        value.set_item(
-            pyo3::intern!(py, "title"),
-            definition.title.as_deref(),
-        )?;
-        value.set_item(
-            pyo3::intern!(py, "span"),
-            range(py, &definition.span)?,
-        )?;
+        value.set_item(pyo3::intern!(py, "title"), definition.title.as_deref())?;
+        value.set_item(pyo3::intern!(py, "span"), range(py, &definition.span)?)?;
         dict.set_item(label, value)?;
     }
     Ok(dict)

@@ -13,8 +13,7 @@ from typing_extensions import override
 import pyromark
 
 _THEMES = {
-    name.lower().replace("_", "-"): theme
-    for name, theme in pyromark.Theme.__members__.items()
+    name.lower().replace("_", "-"): theme for name, theme in pyromark.Theme.__members__.items()
 }
 
 
@@ -24,32 +23,20 @@ class _HelpFormatter(argparse.HelpFormatter):
     @override
     def _split_lines(self, text: str, width: int) -> list[str]:
         return textwrap.wrap(
-            " ".join(text.split()),
-            width,
-            break_long_words=False,
-            break_on_hyphens=False,
+            " ".join(text.split()), width, break_long_words=False, break_on_hyphens=False
         )
 
     @override
     def _fill_text(self, text: str, width: int, indent: str) -> str:
-        return "\n".join(
-            indent + line
-            for line in self._split_lines(text, width - len(indent))
-        )
+        return "\n".join(indent + line for line in self._split_lines(text, width - len(indent)))
 
 
 def _parse_args(args: Sequence[str] | None, /) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        pyromark.__name__,
-        description=pyromark.__doc__,
-        formatter_class=_HelpFormatter,
+        pyromark.__name__, description=pyromark.__doc__, formatter_class=_HelpFormatter
     )
-    parser.add_argument(
-        "-v", "--version", action="version", version=pyromark.__version__
-    )
-    parser.add_argument(
-        "-o", "--output", help="output file path, default is stdout"
-    )
+    parser.add_argument("-v", "--version", action="version", version=pyromark.__version__)
+    parser.add_argument("-o", "--output", help="output file path, default is stdout")
     parser.add_argument(
         "--highlight",
         choices=_THEMES,
@@ -58,13 +45,10 @@ def _parse_args(args: Sequence[str] | None, /) -> argparse.Namespace:
     )
     extensions = parser.add_argument_group(
         "markdown extensions",
-        "off by default; see "
-        "https://monosans.github.io/pyromark/guide/#enable-extensions",
+        "off by default; see https://monosans.github.io/pyromark/guide/#enable-extensions",
     )
     for opt_name in pyromark.Options.__members__:
-        extensions.add_argument(
-            "--" + opt_name.lower().replace("_", "-"), action="store_true"
-        )
+        extensions.add_argument("--" + opt_name.lower().replace("_", "-"), action="store_true")
     parser.add_argument("file", help="utf-8 input file path or '-' for stdin")
     return parser.parse_args(args)
 
@@ -88,14 +72,10 @@ def _render(parsed_args: argparse.Namespace, /) -> None:
 
     if parsed_args.output is not None:
         with Path(parsed_args.output).open("wb") as file:
-            pyromark.write_html(
-                content, file, options=options, highlight=highlight
-            )
+            pyromark.write_html(content, file, options=options, highlight=highlight)
         return
     try:
-        pyromark.write_html(
-            content, sys.stdout.buffer, options=options, highlight=highlight
-        )
+        pyromark.write_html(content, sys.stdout.buffer, options=options, highlight=highlight)
         sys.stdout.buffer.flush()
     except OSError as exc:
         # Windows reports a reader that quit before reading as EINVAL.

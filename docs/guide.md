@@ -25,9 +25,7 @@ Everything beyond CommonMark is off by default. Combine [`Options`][pyromark.Opt
 ```python
 import pyromark
 
-html = pyromark.html(
-    "| a | b |\n| - | - |\n| 1 | 2 |", options=pyromark.Options.ENABLE_TABLES
-)
+html = pyromark.html("| a | b |\n| - | - |\n| 1 | 2 |", options=pyromark.Options.ENABLE_TABLES)
 assert html.startswith("<table>")
 ```
 
@@ -71,9 +69,7 @@ Pick a bundled [`Theme`][pyromark.Theme]. It emits inline styles, so no CSS is n
 ````python
 import pyromark
 
-html = pyromark.html(
-    "```python\nprint('hi')\n```", highlight=pyromark.Theme.INSPIRED_GITHUB
-)
+html = pyromark.html("```python\nprint('hi')\n```", highlight=pyromark.Theme.INSPIRED_GITHUB)
 assert html.startswith('<pre style="background-color:#ffffff;">')
 ````
 
@@ -108,8 +104,7 @@ css = HtmlFormatter().get_style_defs(".highlight")
 import pyromark
 
 html = pyromark.html(
-    "See [Python].",
-    broken_link_callback=lambda link: (f"/wiki/{link['reference']}", ""),
+    "See [Python].", broken_link_callback=lambda link: (f"/wiki/{link['reference']}", "")
 )
 assert html == '<p>See <a href="/wiki/Python">Python</a>.</p>\n'
 ```
@@ -131,8 +126,7 @@ assert definitions["home"]["dest"] == "https://example.com"
 import pyromark
 
 md = pyromark.Markdown(
-    options=pyromark.Options.ENABLE_TABLES,
-    highlight=pyromark.Theme.SOLARIZED_DARK,
+    options=pyromark.Options.ENABLE_TABLES, highlight=pyromark.Theme.SOLARIZED_DARK
 )
 first = md.html("# One")
 second = md.html("# Two")

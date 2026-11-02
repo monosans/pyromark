@@ -5,13 +5,7 @@ from _typeshed import SupportsWrite
 
 from pyromark._options import Options
 from pyromark._theme import Theme
-from pyromark.event import (
-    BrokenLinkCallback,
-    Event,
-    HighlightCallback,
-    LinkDef,
-    Range,
-)
+from pyromark.event import BrokenLinkCallback, Event, HighlightCallback, LinkDef, Range
 
 __version__: Final[str]
 
@@ -87,8 +81,7 @@ def html(
 
         ```python
         html = pyromark.html(
-            "[Hello]",
-            broken_link_callback=lambda link: (f"/{link['reference']}", ""),
+            "[Hello]", broken_link_callback=lambda link: (f"/{link['reference']}", "")
         )
         assert html == '<p><a href="/Hello">Hello</a></p>\n'
         ```
@@ -96,9 +89,7 @@ def html(
         Highlight code blocks:
 
         ```python
-        html = pyromark.html(
-            "~~~python\nx = 1\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB
-        )
+        html = pyromark.html("~~~python\nx = 1\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB)
         ```
     """
 
@@ -117,9 +108,7 @@ def reference_definitions(
     Examples:
         ```python
         definitions = pyromark.reference_definitions("[foo]: /a 'A'")
-        assert definitions == {
-            "foo": {"dest": "/a", "title": "A", "span": {"start": 0, "end": 13}}
-        }
+        assert definitions == {"foo": {"dest": "/a", "title": "A", "span": {"start": 0, "end": 13}}}
         ```
     """
 
@@ -168,9 +157,7 @@ class Markdown:
         broken_link_callback: BrokenLinkCallback | None = None,
         highlight: Theme | HighlightCallback | None = None,
     ) -> None: ...
-    def events(
-        self, markdown: str, /, *, merge_text: bool = True
-    ) -> Iterator[Event]:
+    def events(self, markdown: str, /, *, merge_text: bool = True) -> Iterator[Event]:
         """Same as [`pyromark.events`][], with these settings."""
     def events_with_range(
         self, markdown: str, /, *, merge_text: bool = False

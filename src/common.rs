@@ -11,12 +11,9 @@ pub struct Shared {
 }
 
 impl Shared {
-    pub fn new(
-        broken_link_callback: Option<&Bound<'_, PyAny>>,
-    ) -> std::sync::Arc<Self> {
+    pub fn new(broken_link_callback: Option<&Bound<'_, PyAny>>) -> std::sync::Arc<Self> {
         std::sync::Arc::new(Self {
-            broken_link_callback: broken_link_callback
-                .map(|callback| callback.clone().unbind()),
+            broken_link_callback: broken_link_callback.map(|callback| callback.clone().unbind()),
             error: std::sync::OnceLock::new(),
         })
     }
@@ -33,9 +30,8 @@ impl Shared {
             if !error.is_instance_of::<pyo3::exceptions::PyStopIteration>(py) {
                 return error;
             }
-            let wrapped = pyo3::exceptions::PyRuntimeError::new_err(
-                "callback raised StopIteration",
-            );
+            let wrapped =
+                pyo3::exceptions::PyRuntimeError::new_err("callback raised StopIteration");
             wrapped.set_cause(py, Some(error));
             wrapped
         });
@@ -61,20 +57,17 @@ impl<'input> pulldown_cmark::BrokenLinkCallback<'input> for BrokenLinkCallback {
     fn handle_broken_link(
         &mut self,
         link: pulldown_cmark::BrokenLink<'input>,
-    ) -> Option<(pulldown_cmark::CowStr<'input>, pulldown_cmark::CowStr<'input>)>
-    {
+    ) -> Option<(pulldown_cmark::CowStr<'input>, pulldown_cmark::CowStr<'input>)> {
         let shared = &*self.0;
         let callback = shared.broken_link_callback.as_ref()?;
         if shared.failed() {
             return None;
         }
         Python::attach(move |py| {
-            call_broken_link_callback(callback.bind(py), &link).unwrap_or_else(
-                move |err| {
-                    shared.fail(py, err);
-                    None
-                },
-            )
+            call_broken_link_callback(callback.bind(py), &link).unwrap_or_else(move |err| {
+                shared.fail(py, err);
+                None
+            })
         })
     }
 }
@@ -104,10 +97,7 @@ pub fn cow_str(value: &str) -> pulldown_cmark::CowStr<'static> {
 
 /// Re-raises `err` with `expected` prepended to its message.
 pub fn callback_error(py: Python<'_>, expected: &str, err: PyErr) -> PyErr {
-    let error = PyErr::from_type(
-        err.get_type(py),
-        format!("{expected}: {}", err.value(py)),
-    );
+    let error = PyErr::from_type(err.get_type(py), format!("{expected}: {}", err.value(py)));
     error.set_cause(py, Some(err));
     error
 }
@@ -115,19 +105,12 @@ pub fn callback_error(py: Python<'_>, expected: &str, err: PyErr) -> PyErr {
 fn call_broken_link_callback<'input>(
     callback: &Bound<'_, PyAny>,
     link: &pulldown_cmark::BrokenLink<'_>,
-) -> PyResult<
-    Option<(pulldown_cmark::CowStr<'input>, pulldown_cmark::CowStr<'input>)>,
-> {
+) -> PyResult<Option<(pulldown_cmark::CowStr<'input>, pulldown_cmark::CowStr<'input>)>> {
     let py = callback.py();
     let broken_link = pyo3::types::PyDict::new(py);
-    broken_link.set_item(
-        pyo3::intern!(py, "span"),
-        crate::convert::range(py, &link.span)?,
-    )?;
-    broken_link.set_item(
-        pyo3::intern!(py, "link_type"),
-        crate::convert::link_type(py, link.link_type)?,
-    )?;
+    broken_link.set_item(pyo3::intern!(py, "span"), crate::convert::range(py, &link.span)?)?;
+    broken_link
+        .set_item(pyo3::intern!(py, "link_type"), crate::convert::link_type(py, link.link_type)?)?;
     broken_link.set_item(pyo3::intern!(py, "reference"), &*link.reference)?;
     let resolved = callback
         .call1((broken_link,))?
@@ -151,15 +134,11 @@ pub fn build_options(options: u32) -> PyResult<pulldown_cmark::Options> {
     })
 }
 
-pub fn check_broken_link_callback(
-    broken_link_callback: Option<&Bound<'_, PyAny>>,
-) -> PyResult<()> {
+pub fn check_broken_link_callback(broken_link_callback: Option<&Bound<'_, PyAny>>) -> PyResult<()> {
     if broken_link_callback.is_none_or(Bound::is_callable) {
         return Ok(());
     }
-    Err(pyo3::exceptions::PyTypeError::new_err(
-        "broken_link_callback must be callable",
-    ))
+    Err(pyo3::exceptions::PyTypeError::new_err("broken_link_callback must be callable"))
 }
 
 /// The events `html` and `write_html` render: the parser's, with code blocks
@@ -189,9 +168,7 @@ impl<'input> Iterator for Render<'_, 'input> {
         let Some(highlighter) = self.highlighter else {
             return Some(event);
         };
-        let pulldown_cmark::Event::Start(pulldown_cmark::Tag::CodeBlock(kind)) =
-            &event
-        else {
+        let pulldown_cmark::Event::Start(pulldown_cmark::Tag::CodeBlock(kind)) = &event else {
             return Some(event);
         };
         self.code.clear();
@@ -202,24 +179,16 @@ impl<'input> Iterator for Render<'_, 'input> {
         }
         let language = match kind {
             pulldown_cmark::CodeBlockKind::Indented => None,
-            pulldown_cmark::CodeBlockKind::Fenced(info) => {
-                info.split_whitespace().next()
-            }
+            pulldown_cmark::CodeBlockKind::Fenced(info) => info.split_whitespace().next(),
         };
-        if let Some(html) =
-            highlighter.highlight(language, &self.code, self.shared)
-        {
+        if let Some(html) = highlighter.highlight(language, &self.code, self.shared) {
             return Some(pulldown_cmark::Event::Html(html));
         }
         if self.shared.failed() {
             return None;
         }
-        self.pending.push(pulldown_cmark::Event::End(
-            pulldown_cmark::TagEnd::CodeBlock,
-        ));
-        self.pending.push(pulldown_cmark::Event::Text(
-            core::mem::take(&mut self.code).into(),
-        ));
+        self.pending.push(pulldown_cmark::Event::End(pulldown_cmark::TagEnd::CodeBlock));
+        self.pending.push(pulldown_cmark::Event::Text(core::mem::take(&mut self.code).into()));
         Some(event)
     }
 }
@@ -236,11 +205,7 @@ fn render<'input, R, S>(
 ) -> PyResult<R>
 where
     R: Send,
-    S: FnOnce(
-            &mut dyn Iterator<Item = pulldown_cmark::Event<'input>>,
-            &Shared,
-        ) -> R
-        + Send,
+    S: FnOnce(&mut dyn Iterator<Item = pulldown_cmark::Event<'input>>, &Shared) -> R + Send,
 {
     let shared = Shared::new(broken_link_callback);
     let output = py.detach(|| {
@@ -259,10 +224,7 @@ where
 /// Room for the HTML of `markdown`. Over thousands of READMEs and their
 /// paragraphs, it fits the HTML of 99% of them.
 const fn html_capacity(markdown: &str) -> usize {
-    markdown
-        .len()
-        .saturating_add(markdown.len().div_euclid(2))
-        .saturating_add(32)
+    markdown.len().saturating_add(markdown.len().div_euclid(2)).saturating_add(32)
 }
 
 pub fn html(
@@ -273,16 +235,9 @@ pub fn html(
     highlighter: Option<&crate::highlight::Highlighter>,
 ) -> PyResult<String> {
     let mut output = String::with_capacity(html_capacity(markdown));
-    render(
-        py,
-        markdown,
-        options,
-        broken_link_callback,
-        highlighter,
-        |events, _| {
-            pulldown_cmark::html::push_html(&mut output, events);
-        },
-    )?;
+    render(py, markdown, options, broken_link_callback, highlighter, |events, _| {
+        pulldown_cmark::html::push_html(&mut output, events);
+    })?;
     Ok(output)
 }
 
@@ -319,9 +274,7 @@ fn call_write(file: &Bound<'_, PyAny>, buf: &[u8]) -> PyResult<usize> {
         return Ok(buf.len());
     }
     match written.extract::<usize>()? {
-        0 => Err(pyo3::exceptions::PyOSError::new_err(
-            "file.write() wrote nothing",
-        )),
+        0 => Err(pyo3::exceptions::PyOSError::new_err("file.write() wrote nothing")),
         written => Ok(written.min(buf.len())),
     }
 }
@@ -335,22 +288,15 @@ pub fn write_html(
     highlighter: Option<&crate::highlight::Highlighter>,
 ) -> PyResult<()> {
     let file = file.as_unbound();
-    render(
-        py,
-        markdown,
-        options,
-        broken_link_callback,
-        highlighter,
-        |events, shared| {
-            // Small documents need no more than their HTML.
-            let mut writer = std::io::BufWriter::with_capacity(
-                html_capacity(markdown).min(WRITE_BUFFER_CAPACITY),
-                PyWriter { file, shared },
-            );
-            pulldown_cmark::html::write_html_io(&mut writer, events)?;
-            std::io::Write::flush(&mut writer)
-        },
-    )?
+    render(py, markdown, options, broken_link_callback, highlighter, |events, shared| {
+        // Small documents need no more than their HTML.
+        let mut writer = std::io::BufWriter::with_capacity(
+            html_capacity(markdown).min(WRITE_BUFFER_CAPACITY),
+            PyWriter { file, shared },
+        );
+        pulldown_cmark::html::write_html_io(&mut writer, events)?;
+        std::io::Write::flush(&mut writer)
+    })?
     .map_err(Into::into)
 }
 
@@ -359,7 +305,6 @@ pub fn reference_definitions<'py>(
     markdown: &str,
     options: pulldown_cmark::Options,
 ) -> PyResult<Bound<'py, pyo3::types::PyDict>> {
-    let parser =
-        py.detach(move || pulldown_cmark::Parser::new_ext(markdown, options));
+    let parser = py.detach(move || pulldown_cmark::Parser::new_ext(markdown, options));
     crate::convert::reference_definitions(py, parser.reference_definitions())
 }

@@ -29,9 +29,7 @@ class _HeadingStart(TypedDict):
     Heading: _HeadingData
 
 
-_BlockQuoteKind: TypeAlias = Literal[
-    "Note", "Tip", "Important", "Warning", "Caution"
-]
+_BlockQuoteKind: TypeAlias = Literal["Note", "Tip", "Important", "Warning", "Caution"]
 
 
 @final
