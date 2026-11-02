@@ -172,12 +172,10 @@ impl<'input> Iterator for Render<'_, 'input> {
             return Some(event);
         };
         self.code.clear();
-        for inner in self.parser.by_ref() {
-            if let pulldown_cmark::Event::Text(text) = inner {
-                self.code.push_str(&text);
-            } else if matches!(inner, pulldown_cmark::Event::End(_)) {
-                break;
-            }
+        // A code block holds nothing but text, up to its end, which this
+        // consumes.
+        while let Some(pulldown_cmark::Event::Text(text)) = self.parser.next() {
+            self.code.push_str(&text);
         }
         let language = match kind {
             pulldown_cmark::CodeBlockKind::Indented => None,

@@ -119,20 +119,14 @@ fn tag<'py>(py: Python<'py>, tag: &pulldown_cmark::Tag<'_>) -> PyResult<Bound<'p
     match tag {
         pulldown_cmark::Tag::Paragraph => Ok(name(pyo3::intern!(py, "Paragraph"))),
         pulldown_cmark::Tag::Heading { level, id, classes, attrs } => {
+            let classes = pyo3::types::PyTuple::new(py, classes.iter().map(|class| &**class))?;
+            let attrs = attrs.iter().map(|(key, value)| (&**key, value.as_deref()));
+            let attrs = pyo3::types::PyTuple::new(py, attrs)?;
             let data = pyo3::types::PyDict::new(py);
             data.set_item(pyo3::intern!(py, "level"), heading_level(py, *level))?;
             data.set_item(pyo3::intern!(py, "id"), id.as_deref())?;
-            data.set_item(
-                pyo3::intern!(py, "classes"),
-                pyo3::types::PyTuple::new(py, classes.iter().map(|class| &**class))?,
-            )?;
-            data.set_item(
-                pyo3::intern!(py, "attrs"),
-                pyo3::types::PyTuple::new(
-                    py,
-                    attrs.iter().map(|(key, value)| (&**key, value.as_deref())),
-                )?,
-            )?;
+            data.set_item(pyo3::intern!(py, "classes"), classes)?;
+            data.set_item(pyo3::intern!(py, "attrs"), attrs)?;
             tagged(py, pyo3::intern!(py, "Heading"), data)
         }
         pulldown_cmark::Tag::BlockQuote(kind) => tagged(
