@@ -285,7 +285,9 @@ pub fn html(
         options,
         broken_link_callback,
         highlighter,
-        |events, _| pulldown_cmark::html::push_html(&mut output, events),
+        |events, _| {
+            pulldown_cmark::html::push_html(&mut output, events);
+        },
     )?;
     Ok(output)
 }
