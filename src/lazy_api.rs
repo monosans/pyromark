@@ -109,8 +109,8 @@ impl Events {
 
     #[expect(
         clippy::same_name_method,
-        reason = "PyO3 takes the GC hook under this name, and #[pyclass] adds \
-                  a trait method of the same name"
+        reason = "PyO3 takes the GC hook under this name, and #[pyclass] adds a trait method of \
+                  the same name"
     )]
     fn __traverse__(
         &self,
