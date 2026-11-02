@@ -86,7 +86,6 @@ missing_copy_implementations = "deny"
 missing_docs = "deny"
 non_ascii_idents = "deny"
 nonstandard_style = { level = "deny", priority = -1 }
-raw_borrows_via_references = "deny"
 redundant_imports = "deny"
 redundant_lifetimes = "deny"
 refining_impl_trait = { level = "deny", priority = -1 }
