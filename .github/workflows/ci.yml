@@ -218,6 +218,7 @@ jobs:
     needs:
       - build
       - clippy
+      - coverage
       - docs-build
       - licenses
       - pre-commit
@@ -245,6 +246,38 @@ jobs:
           cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           cache-save-if: ${{ github.ref == 'refs/heads/main' }}
       - run: cargo +beta clippy --all-targets --
+  coverage:
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions-rust-lang/setup-rust-toolchain@ecabd13d1c56bd1345c230e542e9144811ad706f # v2
+        with:
+          toolchain: beta
+          components: llvm-tools
+          cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
+          cache-save-if: ${{ github.ref == 'refs/heads/main' }}
+      - uses: taiki-e/install-action@86f7a0ffb25f40114606501a311ebcfaf882ea32 # v2.88.0
+        with:
+          tool: cargo-llvm-cov
+          fallback: none
+      # A cached build of pyromark would not be instrumented.
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          python-version: "3.14"
+          enable-cache: false
+      # Most of the Rust code only runs from Python, so uv builds the extension
+      # instrumented and the profiles of the pytest run make the Rust report.
+      - run: |
+          eval "$(cargo +beta llvm-cov show-env --sh)"
+          cargo +beta llvm-cov clean --workspace
+          uv sync --group test-ci --locked
+          uv run --no-sync pytest --cov
+          cargo +beta llvm-cov report --show-missing-lines --fail-under-lines 100
+        env:
+          MATURIN_PEP517_ARGS: --profile dev
   docs-build:
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     needs:
