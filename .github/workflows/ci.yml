@@ -100,9 +100,6 @@ jobs:
           - target: riscv64gc-unknown-linux-gnu
             runner: ubuntu-26.04
             manylinux: "2_39"
-            # maturin-action defaults to the native riscv64 pypa image here,
-            # which cannot run on an x86_64 runner.
-            container: ghcr.io/rust-cross/manylinux_2_39-cross:riscv64
           - target: riscv64gc-unknown-linux-musl
             runner: ubuntu-26.04
             manylinux: musllinux_1_2
@@ -205,7 +202,6 @@ jobs:
           args: --compatibility pypi --interpreter '${{ format('3.11 3.12 3.13 3.14 3.14t 3.15 3.15t{0}', matrix.pypy && format(' {0}', matrix.pypy) || '') }}' --out dist --release
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
-          container: ${{ matrix.container }}
           docker-options: ${{ matrix.docker-options }}
           rust-toolchain: beta
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
