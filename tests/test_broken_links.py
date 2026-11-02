@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+import ctypes
 import gc
 import io
 import itertools
 import weakref
-from collections import UserList
 from collections.abc import Callable, Iterable, Iterator, Mapping
 from typing import TypeAlias
 
@@ -366,28 +366,39 @@ def test_callback_cannot_reenter_its_iterator(
     assert tuple(events) == ()
 
 
+_PY_TP_CLEAR = 51
+"""`Py_tp_clear` in CPython's `Include/typeslots.h`."""
+
+
+def _tp_clear(obj: object, /) -> int:
+    """Calls the slot through which the collector breaks a cycle at `obj`.
+
+    Which object of a cycle the collector clears depends on the interpreter
+    version, so a test that needs the iterator cleared calls it directly.
+    """
+    get_slot_type = ctypes.PYFUNCTYPE(ctypes.c_void_p, ctypes.py_object, ctypes.c_int)
+    address = get_slot_type(("PyType_GetSlot", ctypes.pythonapi))(type(obj), _PY_TP_CLEAR)
+    assert address, f"{type(obj).__name__} has no tp_clear"
+    clear = ctypes.PYFUNCTYPE(ctypes.c_int, ctypes.py_object)(address)
+    return int(clear(obj))
+
+
 @CPYTHON_ONLY
 @pytest.mark.parametrize(
     "func", [pyromark.events, pyromark.events_with_range], ids=["events", "events_with_range"]
 )
-def test_gc_can_break_a_callback_cycle_at_the_iterator(
+def test_clearing_an_iterator_drops_its_references_and_ends_it(
     func: Callable[..., Iterator[object]],
 ) -> None:
-    box: UserList[object] = UserList()
-    ref = weakref.ref(box)
-    # The collector clears a cycle oldest object first. Freezing sets the
-    # box aside until the iterator has aged, and unfreezing puts it back
-    # behind the iterator, so clearing the iterator has to break the cycle.
-    gc.freeze()
-    try:
-        events = func("[a]", broken_link_callback=box.append)
-        gc.collect()
-    finally:
-        gc.unfreeze()
-    box.append(events)
-    del box, events
-    gc.collect()
-    assert ref() is None
+    calls: list[object] = []
+    events = func("[a]", broken_link_callback=calls.append)
+    assert gc.get_referents(events) == [type(events), "[a]", calls.append]
+
+    assert _tp_clear(events) == 0
+
+    assert gc.get_referents(events) == [type(events)]
+    assert list(events) == []
+    assert not calls
 
 
 def test_broken_link_spans_are_utf8_byte_offsets() -> None:
