@@ -23,7 +23,7 @@ const ALIASES: [(&str, &str); 9] = [
 fn find_syntax(language: &str) -> Option<&'static syntect::parsing::SyntaxReference> {
     let token = ALIASES
         .iter()
-        .find(|(alias, _)| alias.eq_ignore_ascii_case(language))
+        .find(move |(alias, _)| alias.eq_ignore_ascii_case(language))
         .map_or(language, |(_, token)| token);
     SYNTAXES.find_syntax_by_token(token)
 }

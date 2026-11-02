@@ -154,7 +154,7 @@ fn tag<'py>(py: Python<'py>, tag: &pulldown_cmark::Tag<'_>) -> PyResult<Bound<'p
             Ok(name(pyo3::intern!(py, "DefinitionListDefinition")))
         }
         pulldown_cmark::Tag::Table(alignments) => {
-            let columns = alignments.iter().map(|&column| alignment(py, column));
+            let columns = alignments.iter().map(move |&column| alignment(py, column));
             let columns = pyo3::types::PyTuple::new(py, columns)?;
             tagged(py, pyo3::intern!(py, "Table"), columns)
         }
