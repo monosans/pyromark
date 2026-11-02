@@ -429,7 +429,7 @@ RENDERS_PER_THREAD = 20
 
 
 def render_on_threads(md: pyromark.Markdown, markdown: str, /) -> list[str]:
-    """Renders `markdown` on several threads at once, raising what any of them raised."""
+    """Render `markdown` on several threads; raise what any of them raised."""
 
     def work() -> list[str]:
         return [md.html(markdown) for _ in range(RENDERS_PER_THREAD)]

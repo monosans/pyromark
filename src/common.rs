@@ -115,11 +115,15 @@ fn call_broken_link_callback<'input>(
     broken_link.set_item(pyo3::intern!(py, "reference"), &*link.reference)?;
     let resolved = callback
         .call1((broken_link,))?
-        .extract::<Option<(pyo3::pybacked::PyBackedStr, pyo3::pybacked::PyBackedStr)>>()
+        .extract::<Option<(
+            pyo3::pybacked::PyBackedStr,
+            pyo3::pybacked::PyBackedStr,
+        )>>()
         .map_err(move |err| {
             callback_error(
                 py,
-                "broken link callback must return a (destination_url, title) tuple of str, or None",
+                "broken link callback must return a (destination_url, title) \
+                 tuple of str, or None",
                 err,
             )
         })?;
