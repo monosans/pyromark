@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import gc
+import io
 import re
 import weakref
 
@@ -74,6 +75,13 @@ def test_highlight_unknown_theme() -> None:
 def test_highlight_invalid_type(highlight: object) -> None:
     with pytest.raises(TypeError, match=r"^highlight must be"):
         pyromark.html(CODE_BLOCKS, highlight=highlight)  # type: ignore[arg-type]
+    with pytest.raises(TypeError, match=r"^highlight must be"):
+        pyromark.write_html(CODE_BLOCKS, io.BytesIO(), highlight=highlight)  # type: ignore[arg-type]
+
+
+def test_highlight_rejects_a_theme_name_with_a_lone_surrogate() -> None:
+    with pytest.raises(UnicodeEncodeError):
+        pyromark.html(CODE_BLOCKS, highlight="\ud800")  # type: ignore[arg-type]
 
 
 def test_highlight_callback() -> None:
@@ -195,6 +203,19 @@ def test_markdown_highlight_callback_is_collectable() -> None:
     assert ref() is None
 
 
+@CPYTHON_ONLY
+def test_markdown_shows_the_gc_a_highlight_callback_but_not_a_theme() -> None:
+    def highlight(_language: str | None, code: str) -> str:
+        return f"<x>{code.strip()}</x>"
+
+    with_callback = pyromark.Markdown(highlight=highlight)
+    with_theme = pyromark.Markdown(highlight=pyromark.Theme.INSPIRED_GITHUB)
+
+    assert with_callback.html("```\na\n```") == "<x>a</x>\n"
+    assert gc.get_referents(with_callback) == [pyromark.Markdown, highlight]
+    assert gc.get_referents(with_theme) == [pyromark.Markdown]
+
+
 def test_theme_members_all_work() -> None:
     for theme in pyromark.Theme:
         html = pyromark.html(CODE_BLOCKS, highlight=theme)
@@ -229,10 +250,9 @@ def test_a_theme_is_safe_to_share_between_threads() -> None:
     markdown = f"{CODE_BLOCKS}\n" * 5
     expected = md.html(markdown)
 
-    results, errors = render_on_threads(md, markdown)
-
-    assert not errors
-    assert results == [expected] * (THREADS * RENDERS_PER_THREAD)
+    assert render_on_threads(md, markdown) == [expected] * (
+        THREADS * RENDERS_PER_THREAD
+    )
 
 
 INDENTED_BLOCK = "    a = 1\n    b = 2\n    c = 3\n"

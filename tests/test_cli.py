@@ -1,6 +1,6 @@
-# ruff: noqa: E501
 from __future__ import annotations
 
+import dataclasses
 import errno
 import io
 import os
@@ -32,20 +32,16 @@ def test_cli_output(
     assert output_file.read_text(encoding="utf-8") == "<h1>Hello world</h1>\n"
 
 
+@dataclasses.dataclass
 class _Stdin:
-    """A stdin whose text layer is not UTF-8.
+    """A stdin that offers only its binary layer.
 
-    Models a console on a legacy code page, which mangles a UTF-8 document
-    instead of failing on it. Decoding is pinned rather than taken from the
-    locale so that a caller reaching for the text layer is caught on a
-    UTF-8 host too.
+    The text layer of a console on a legacy code page mangles a UTF-8
+    document instead of failing on it, so reading it raises AttributeError
+    here, which catches a caller reaching for it on a UTF-8 host too.
     """
 
-    def __init__(self, buffer: IO[bytes]) -> None:
-        self.buffer = buffer
-
-    def read(self) -> str:
-        return self.buffer.read().decode("latin-1")
+    buffer: IO[bytes]
 
 
 def test_cli_stdin_is_utf8(
@@ -146,24 +142,15 @@ class _Buffer(io.BytesIO):
 
 
 class _Stdout:
-    """A stdout whose text layer cannot represent every document.
+    """A stdout that offers only its binary layer.
 
-    Models a console that is not UTF-8, and holds written text until it is
-    flushed, as the real text layer does.
+    The text layer of a console that is not UTF-8 cannot represent every
+    document, so writing to it, or flushing it instead of the binary layer,
+    raises AttributeError here.
     """
 
     def __init__(self) -> None:
         self.buffer = _Buffer()
-        self._pending: list[str] = []
-
-    def write(self, text: str, /) -> int:
-        self._pending.append(text)
-        return len(text)
-
-    def flush(self) -> None:
-        for text in self._pending:
-            self.buffer.write(text.encode("latin-1", "replace"))
-        self._pending.clear()
 
 
 def test_cli_stdout_bypasses_a_non_utf8_text_layer(
@@ -384,7 +371,7 @@ def test_cli_strips_a_byte_order_mark(
 
 
 class _ClosedPipeBuffer(io.BytesIO):
-    """A stdout whose reader quit before reading anything, as Windows reports it."""
+    """A stdout whose reader quit before reading, as Windows reports it."""
 
     @override
     def write(self, buffer: Buffer, /) -> int:
@@ -514,10 +501,12 @@ def _shell_commands(page: Path, /) -> list[str]:
 
 @pytest.mark.parametrize("page", [README, CLI_DOC], ids=lambda page: page.name)
 def test_documented_command_line_examples_run(
-    page: Path, tmp_path: Path
+    page: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     commands = _shell_commands(page)
     assert commands
+    # Output files land in tmp_path.
+    monkeypatch.chdir(tmp_path)
 
     for command in commands:
         arguments = [
@@ -526,6 +515,4 @@ def test_documented_command_line_examples_run(
             else argument
             for argument in shlex.split(command)[1:]
         ]
-        if "-o" in arguments:
-            arguments[arguments.index("-o") + 1] = str(tmp_path / "out.html")
         pyromark_cli(arguments)

@@ -112,7 +112,7 @@ impl Events {
         &mut self,
         py: Python<'py>,
     ) -> PyResult<Option<Bound<'py, PyAny>>> {
-        let Some(inner) = &mut self.0 else {
+        let Some(mut inner) = self.0.take() else {
             return Ok(None);
         };
         let next = match inner.cell.with_dependent_mut(|_, stream| {
@@ -122,13 +122,12 @@ impl Events {
                 .next(py)
         }) {
             Some(Ok(event)) if !inner.shared.failed() => {
+                self.0 = Some(inner);
                 return Ok(Some(event));
             }
             next => next.transpose(),
         };
-        let Some(Inner { cell, shared }) = self.0.take() else {
-            return next;
-        };
+        let Inner { cell, shared } = inner;
         drop(cell);
         crate::common::Shared::into_error(shared).map_or(next, Err)
     }

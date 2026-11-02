@@ -4,8 +4,8 @@ from __future__ import annotations
 import functools
 import operator
 import sys
-import threading
 from collections.abc import Mapping
+from concurrent.futures import ThreadPoolExecutor
 
 import pyromark
 import pytest
@@ -489,26 +489,12 @@ THREADS = 8
 RENDERS_PER_THREAD = 20
 
 
-def render_on_threads(
-    md: pyromark.Markdown, markdown: str, /
-) -> tuple[list[str], list[str]]:
-    results: list[str] = []
-    errors: list[str] = []
-    lock = threading.Lock()
+def render_on_threads(md: pyromark.Markdown, markdown: str, /) -> list[str]:
+    """Render `markdown` on several threads; raise what any of them raised."""
 
-    def work() -> None:
-        try:
-            for _ in range(RENDERS_PER_THREAD):
-                value = md.html(markdown)
-                with lock:
-                    results.append(value)
-        except Exception as exc:
-            with lock:
-                errors.append(repr(exc))
+    def work() -> list[str]:
+        return [md.html(markdown) for _ in range(RENDERS_PER_THREAD)]
 
-    threads = [threading.Thread(target=work) for _ in range(THREADS)]
-    for thread in threads:
-        thread.start()
-    for thread in threads:
-        thread.join()
-    return results, errors
+    with ThreadPoolExecutor(THREADS) as executor:
+        futures = [executor.submit(work) for _ in range(THREADS)]
+    return [html for future in futures for html in future.result()]

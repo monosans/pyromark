@@ -57,13 +57,11 @@ impl Highlighter {
                 let syntax = language
                     .and_then(find_syntax)
                     .unwrap_or_else(|| SYNTAXES.find_syntax_plain_text());
-                let mut html = syntect::html::highlighted_html_for_string(
+                // syntect ends the block with `</pre>\n`.
+                let html = syntect::html::highlighted_html_for_string(
                     code, &SYNTAXES, syntax, theme,
                 )
                 .ok()?;
-                if !html.ends_with('\n') {
-                    html.push('\n');
-                }
                 Some(html.into())
             }
             Self::Callback(callback) => Python::attach(move |py| {
