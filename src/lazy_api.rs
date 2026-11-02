@@ -26,17 +26,17 @@ impl Stream<'_> {
     ) -> Option<PyResult<Bound<'py, PyAny>>> {
         match self {
             Self::Events(iter) => {
-                iter.next().map(|event| crate::convert::event(py, &event))
+                iter.next().map(move |event| crate::convert::event(py, &event))
             }
             Self::MergedEvents(iter) => {
-                iter.next().map(|event| crate::convert::event(py, &event))
+                iter.next().map(move |event| crate::convert::event(py, &event))
             }
             Self::EventsWithRange(iter) => iter
                 .next()
-                .map(|event| crate::convert::event_with_range(py, &event)),
+                .map(move |event| crate::convert::event_with_range(py, &event)),
             Self::MergedEventsWithRange(iter) => iter
                 .next()
-                .map(|event| crate::convert::event_with_range(py, &event)),
+                .map(move |event| crate::convert::event_with_range(py, &event)),
         }
     }
 }
@@ -115,7 +115,7 @@ impl Events {
         let Some(inner) = &mut self.0 else {
             return Ok(None);
         };
-        let next = match inner.cell.with_dependent_mut(|_, stream| {
+        let next = match inner.cell.with_dependent_mut(move |_, stream| {
             stream
                 .get_mut()
                 .unwrap_or_else(std::sync::PoisonError::into_inner)

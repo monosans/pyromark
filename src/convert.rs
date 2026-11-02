@@ -191,7 +191,7 @@ fn tag<'py>(
             pyo3::intern!(py, "Table"),
             pyo3::types::PyTuple::new(
                 py,
-                alignments.iter().map(|&column| alignment(py, column)),
+                alignments.iter().map(move |&column| alignment(py, column)),
             )?,
         ),
         pulldown_cmark::Tag::TableHead => {

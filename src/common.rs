@@ -89,7 +89,7 @@ pub fn parser<'input>(
     let callback = shared
         .broken_link_callback
         .is_some()
-        .then(|| BrokenLinkCallback(std::sync::Arc::clone(shared)));
+        .then(move || BrokenLinkCallback(std::sync::Arc::clone(shared)));
     Parser::new_with_broken_link_callback(markdown, options, callback)
 }
 
@@ -345,7 +345,7 @@ pub fn write_html(
         options,
         broken_link_callback,
         highlighter,
-        |events, shared| {
+        move |events, shared| {
             // Small documents need no more than their HTML.
             let mut writer = std::io::BufWriter::with_capacity(
                 html_capacity(markdown).min(WRITE_BUFFER_CAPACITY),
