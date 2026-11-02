@@ -27,9 +27,7 @@ TABLE = """\
 BROKEN_LINKS = "[a][b] and [c][] and [d] and ![e]"
 
 
-ALL_OPTIONS = functools.reduce(
-    operator.or_, pyromark.Options.__members__.values()
-)
+ALL_OPTIONS = functools.reduce(operator.or_, pyromark.Options.__members__.values())
 
 
 EVENTS_TESTDATA: Mapping[str, tuple[str, tuple[Event, ...]]] = {
@@ -64,64 +62,19 @@ EVENTS_TESTDATA: Mapping[str, tuple[str, tuple[Event, ...]]] = {
             },
             {"Text": "h1"},
             {"End": {"Heading": "H1"}},
-            {
-                "Start": {
-                    "Heading": {
-                        "level": "H2",
-                        "id": None,
-                        "classes": (),
-                        "attrs": (),
-                    }
-                }
-            },
+            {"Start": {"Heading": {"level": "H2", "id": None, "classes": (), "attrs": ()}}},
             {"Text": "h2"},
             {"End": {"Heading": "H2"}},
-            {
-                "Start": {
-                    "Heading": {
-                        "level": "H3",
-                        "id": None,
-                        "classes": (),
-                        "attrs": (),
-                    }
-                }
-            },
+            {"Start": {"Heading": {"level": "H3", "id": None, "classes": (), "attrs": ()}}},
             {"Text": "h3"},
             {"End": {"Heading": "H3"}},
-            {
-                "Start": {
-                    "Heading": {
-                        "level": "H4",
-                        "id": None,
-                        "classes": (),
-                        "attrs": (),
-                    }
-                }
-            },
+            {"Start": {"Heading": {"level": "H4", "id": None, "classes": (), "attrs": ()}}},
             {"Text": "h4"},
             {"End": {"Heading": "H4"}},
-            {
-                "Start": {
-                    "Heading": {
-                        "level": "H5",
-                        "id": None,
-                        "classes": (),
-                        "attrs": (),
-                    }
-                }
-            },
+            {"Start": {"Heading": {"level": "H5", "id": None, "classes": (), "attrs": ()}}},
             {"Text": "h5"},
             {"End": {"Heading": "H5"}},
-            {
-                "Start": {
-                    "Heading": {
-                        "level": "H6",
-                        "id": None,
-                        "classes": (),
-                        "attrs": (),
-                    }
-                }
-            },
+            {"Start": {"Heading": {"level": "H6", "id": None, "classes": (), "attrs": ()}}},
             {"Text": "h6"},
             {"End": {"Heading": "H6"}},
         ),
@@ -335,16 +288,7 @@ EVENTS_TESTDATA: Mapping[str, tuple[str, tuple[Event, ...]]] = {
         "[inline](/u 't')\n\n[ref][lbl]\n\n[lbl][]\n\n[lbl]\n\n<http://foo.bar/baz>\n\n<john@example.org>\n\n![img](/i 'it')\n\n[lbl]: /url 'title'\n",
         (
             {"Start": "Paragraph"},
-            {
-                "Start": {
-                    "Link": {
-                        "link_type": "Inline",
-                        "dest_url": "/u",
-                        "title": "t",
-                        "id": "",
-                    }
-                }
-            },
+            {"Start": {"Link": {"link_type": "Inline", "dest_url": "/u", "title": "t", "id": ""}}},
             {"Text": "inline"},
             {"End": "Link"},
             {"End": "Paragraph"},
@@ -421,12 +365,7 @@ EVENTS_TESTDATA: Mapping[str, tuple[str, tuple[Event, ...]]] = {
             {"Start": "Paragraph"},
             {
                 "Start": {
-                    "Image": {
-                        "link_type": "Inline",
-                        "dest_url": "/i",
-                        "title": "it",
-                        "id": "",
-                    }
+                    "Image": {"link_type": "Inline", "dest_url": "/i", "title": "it", "id": ""}
                 }
             },
             {"Text": "img"},
@@ -489,9 +428,7 @@ THREADS = 8
 RENDERS_PER_THREAD = 20
 
 
-def render_on_threads(
-    md: pyromark.Markdown, markdown: str, /
-) -> tuple[list[str], list[str]]:
+def render_on_threads(md: pyromark.Markdown, markdown: str, /) -> tuple[list[str], list[str]]:
     results: list[str] = []
     errors: list[str] = []
     lock = threading.Lock()

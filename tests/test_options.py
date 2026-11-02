@@ -372,13 +372,7 @@ title 2</dd>
 
 
 @pytest.mark.parametrize(
-    (
-        "markdown",
-        "options",
-        "cli_options",
-        "result_without_options",
-        "result_with_options",
-    ),
+    ("markdown", "options", "cli_options", "result_without_options", "result_with_options"),
     TESTDATA,
 )
 def test_pyromark(
@@ -428,22 +422,14 @@ def test_options_wider_than_32_bits_are_rejected(value: int) -> None:
 UNKNOWN_BIT_ENTRY_POINTS: Mapping[str, Callable[[pyromark.Options], object]] = {
     "html": lambda options: pyromark.html(TABLE, options=options),
     "events": lambda options: pyromark.events(TABLE, options=options),
-    "events_with_range": lambda options: pyromark.events_with_range(
-        TABLE, options=options
-    ),
-    "write_html": lambda options: pyromark.write_html(
-        TABLE, io.BytesIO(), options=options
-    ),
-    "reference_definitions": lambda options: pyromark.reference_definitions(
-        TABLE, options=options
-    ),
+    "events_with_range": lambda options: pyromark.events_with_range(TABLE, options=options),
+    "write_html": lambda options: pyromark.write_html(TABLE, io.BytesIO(), options=options),
+    "reference_definitions": lambda options: pyromark.reference_definitions(TABLE, options=options),
     "Markdown": lambda options: pyromark.Markdown(options=options),
 }
 
 
-@pytest.mark.parametrize(
-    "call", UNKNOWN_BIT_ENTRY_POINTS.values(), ids=UNKNOWN_BIT_ENTRY_POINTS
-)
+@pytest.mark.parametrize("call", UNKNOWN_BIT_ENTRY_POINTS.values(), ids=UNKNOWN_BIT_ENTRY_POINTS)
 @pytest.mark.parametrize(
     "options",
     [pyromark.Options(BAD_BITS), pyromark.Options(BAD_BITS) | ALL_OPTIONS],
@@ -453,8 +439,7 @@ def test_options_unknown_bits_are_rejected(
     call: Callable[[pyromark.Options], object], options: pyromark.Options
 ) -> None:
     with pytest.raises(
-        ValueError,
-        match=r"^options has bits pulldown-cmark does not define: 0x10001$",
+        ValueError, match=r"^options has bits pulldown-cmark does not define: 0x10001$"
     ):
         call(options)
 

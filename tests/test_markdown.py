@@ -7,13 +7,7 @@ import pyromark
 import pytest
 from pyromark.event import BrokenLink
 
-from tests.shared import (
-    CODE_BLOCKS,
-    RENDERS_PER_THREAD,
-    TABLE,
-    THREADS,
-    render_on_threads,
-)
+from tests.shared import CODE_BLOCKS, RENDERS_PER_THREAD, TABLE, THREADS, render_on_threads
 
 
 def test_markdown_options_and_broken_link_callback() -> None:
@@ -22,12 +16,8 @@ def test_markdown_options_and_broken_link_callback() -> None:
 
     markdown = f"{TABLE}\n\n[a]"
     options = pyromark.Options.ENABLE_TABLES
-    html = pyromark.Markdown(
-        options=options, broken_link_callback=callback
-    ).html(markdown)
-    assert html == pyromark.html(
-        markdown, options=options, broken_link_callback=callback
-    )
+    html = pyromark.Markdown(options=options, broken_link_callback=callback).html(markdown)
+    assert html == pyromark.html(markdown, options=options, broken_link_callback=callback)
     assert "<table>" in html
     assert '<a href="/u" title="t">a</a>' in html
 
@@ -54,9 +44,7 @@ CONFIG_SETTINGS: Mapping[str, Callable[[], pyromark.Markdown]] = {
     "broken_link_callback": lambda: pyromark.Markdown(
         broken_link_callback=lambda _broken_link: ("/u", "t")
     ),
-    "highlight": lambda: pyromark.Markdown(
-        highlight=pyromark.Theme.INSPIRED_GITHUB
-    ),
+    "highlight": lambda: pyromark.Markdown(highlight=pyromark.Theme.INSPIRED_GITHUB),
 }
 
 
@@ -96,8 +84,7 @@ def test_markdown_setting_scope(setting: str, method: str) -> None:
 
 def test_markdown_settings_are_reusable() -> None:
     md = pyromark.Markdown(
-        options=pyromark.Options.ENABLE_TABLES,
-        highlight=pyromark.Theme.INSPIRED_GITHUB,
+        options=pyromark.Options.ENABLE_TABLES, highlight=pyromark.Theme.INSPIRED_GITHUB
     )
     once = md.html(CONFIG_DOC)
     events = tuple(md.events(CONFIG_DOC))
@@ -105,13 +92,9 @@ def test_markdown_settings_are_reusable() -> None:
     assert md.html(CONFIG_DOC) == once
     assert tuple(md.events(CONFIG_DOC)) == events
     assert once == pyromark.html(
-        CONFIG_DOC,
-        options=pyromark.Options.ENABLE_TABLES,
-        highlight=pyromark.Theme.INSPIRED_GITHUB,
+        CONFIG_DOC, options=pyromark.Options.ENABLE_TABLES, highlight=pyromark.Theme.INSPIRED_GITHUB
     )
-    assert events == tuple(
-        pyromark.events(CONFIG_DOC, options=pyromark.Options.ENABLE_TABLES)
-    )
+    assert events == tuple(pyromark.events(CONFIG_DOC, options=pyromark.Options.ENABLE_TABLES))
 
 
 def test_markdown_is_safe_to_share_between_threads() -> None:
@@ -122,9 +105,7 @@ def test_markdown_is_safe_to_share_between_threads() -> None:
         return f"<x>{code.strip()}</x>"
 
     md = pyromark.Markdown(
-        options=pyromark.Options.ENABLE_TABLES,
-        broken_link_callback=broken,
-        highlight=highlight,
+        options=pyromark.Options.ENABLE_TABLES, broken_link_callback=broken, highlight=highlight
     )
     markdown = f"{CODE_BLOCKS}\n\n{TABLE}\n\n[missing]\n" * 5
     expected = md.html(markdown)
