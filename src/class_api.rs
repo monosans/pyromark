@@ -22,7 +22,10 @@ fn broken_link_callback<'a, 'py>(
     markdown: &'a Markdown,
     py: Python<'py>,
 ) -> Option<&'a Bound<'py, PyAny>> {
-    markdown.broken_link_callback.as_ref().map(|callback| callback.bind(py))
+    markdown
+        .broken_link_callback
+        .as_ref()
+        .map(move |callback| callback.bind(py))
 }
 
 #[pymethods]
