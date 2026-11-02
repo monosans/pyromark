@@ -397,20 +397,9 @@ jobs:
         with:
           python-version: "3.14"
           enable-cache: false
-      # attest-action signs every file with one OIDC token that GitHub issues
-      # for 5 minutes, and signing all of them can take longer, so sign in parts.
       - uses: astral-sh/attest-action@39b6ce43875c196a579e31635b11aa2a2036384a # v0.0.7
         with:
-          paths: wheels-[a]*/*
-      - uses: astral-sh/attest-action@39b6ce43875c196a579e31635b11aa2a2036384a # v0.0.7
-        with:
-          paths: wheels-[b-p]*/*
-      - uses: astral-sh/attest-action@39b6ce43875c196a579e31635b11aa2a2036384a # v0.0.7
-        with:
-          paths: wheels-[q-s]*/*
-      - uses: astral-sh/attest-action@39b6ce43875c196a579e31635b11aa2a2036384a # v0.0.7
-        with:
-          paths: wheels-[t-z]*/*
+          paths: wheels-*/*
       - run: uv publish --trusted-publishing always --no-cache 'wheels-*/*'
   release-guard:
     runs-on: ubuntu-26.04
