@@ -108,9 +108,10 @@ fn call_broken_link_callback<'input>(
 ) -> PyResult<Option<(pulldown_cmark::CowStr<'input>, pulldown_cmark::CowStr<'input>)>> {
     let py = callback.py();
     let broken_link = pyo3::types::PyDict::new(py);
-    broken_link.set_item(pyo3::intern!(py, "span"), crate::convert::range(py, &link.span)?)?;
-    broken_link
-        .set_item(pyo3::intern!(py, "link_type"), crate::convert::link_type(py, link.link_type)?)?;
+    let span = crate::convert::range(py, &link.span)?;
+    broken_link.set_item(pyo3::intern!(py, "span"), span)?;
+    let link_type = crate::convert::link_type(py, link.link_type)?;
+    broken_link.set_item(pyo3::intern!(py, "link_type"), link_type)?;
     broken_link.set_item(pyo3::intern!(py, "reference"), &*link.reference)?;
     let resolved = callback
         .call1((broken_link,))?
