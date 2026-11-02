@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import gc
 import io
+import itertools
 import weakref
+from collections import UserList
 from collections.abc import Callable, Iterable, Iterator, Mapping
 from typing import TypeAlias
 
@@ -273,17 +275,11 @@ def test_broken_link_callback_error_reaches_a_caller_that_stops_early(
         raise ValueError(msg)
 
     events = func(BROKEN_LINKS, broken_link_callback=callback)
-    for _ in range(1000):
-        try:
-            next(events)
-        except StopIteration:
-            pytest.fail("the callback failed without anything being raised")
-        except ValueError:
-            break
-        assert not calls
-    else:
-        pytest.fail("the iterator never finished")
 
+    # takewhile ends quietly, so no error is raised, if an event is yielded
+    # once the callback has failed.
+    with pytest.raises(ValueError, match=r"^callback failed$"):
+        tuple(itertools.takewhile(lambda _event: not calls, events))
     assert calls
 
 
@@ -307,19 +303,28 @@ def test_abandoned_iterator_retains_nothing_after_a_callback_error(
     for _ in range(20):
         events = func(BROKEN_LINKS, broken_link_callback=callback)
         with pytest.raises(ValueError, match=r"^callback failed$"):
-            for _event in events:
-                pass
+            tuple(events)
         del events
 
     assert live() == before
 
 
+def _resolve_a(parser: Iterator[object] | pyromark.Markdown, /) -> object:
+    """Has the parser of "[a]" call its callback, without finishing an iterator."""
+    if isinstance(parser, pyromark.Markdown):
+        parser.html("[a]")
+    else:
+        next(parser)  # Start(Paragraph)
+        next(parser)  # Start(Link), resolved by the callback
+    return parser
+
+
 CYCLE_FACTORIES: Mapping[str, Callable[[BrokenLinkCallback], object]] = {
-    "events": lambda callback: pyromark.events("[a]", broken_link_callback=callback),
-    "events_with_range": lambda callback: pyromark.events_with_range(
-        "[a]", broken_link_callback=callback
+    "events": lambda callback: _resolve_a(pyromark.events("[a]", broken_link_callback=callback)),
+    "events_with_range": lambda callback: _resolve_a(
+        pyromark.events_with_range("[a]", broken_link_callback=callback)
     ),
-    "Markdown": lambda callback: pyromark.Markdown(broken_link_callback=callback),
+    "Markdown": lambda callback: _resolve_a(pyromark.Markdown(broken_link_callback=callback)),
 }
 
 
@@ -328,16 +333,59 @@ CYCLE_FACTORIES: Mapping[str, Callable[[BrokenLinkCallback], object]] = {
 def test_callback_cycle_is_collectable(factory: Callable[[BrokenLinkCallback], object]) -> None:
     class Holder:
         def __init__(self) -> None:
-            self.destination = "/u"
+            self.resolved: list[str] = []
             self.parser = factory(self.callback)
 
-        def callback(self, _broken_link: BrokenLink) -> tuple[str, str]:
-            return self.destination, "t"
+        def callback(self, broken_link: BrokenLink) -> tuple[str, str]:
+            self.resolved.append(broken_link["reference"])
+            return "/u", "t"
 
     holder = Holder()
+    assert holder.resolved == ["a"]
     assert gc.is_tracked(holder.parser)
     ref = weakref.ref(holder)
     del holder
+    gc.collect()
+    assert ref() is None
+
+
+@pytest.mark.parametrize("reenter", [iter, next], ids=["iter", "next"])
+@pytest.mark.parametrize(
+    "func", [pyromark.events, pyromark.events_with_range], ids=["events", "events_with_range"]
+)
+def test_callback_cannot_reenter_its_iterator(
+    func: Callable[..., Iterator[object]], reenter: Callable[[Iterator[object]], object]
+) -> None:
+    def callback(_broken_link: BrokenLink) -> None:
+        reenter(events)
+
+    events = func("[a]", broken_link_callback=callback)
+
+    with pytest.raises(RuntimeError, match=r"^Already (?:mutably )?borrowed$"):
+        tuple(events)
+    assert tuple(events) == ()
+
+
+@CPYTHON_ONLY
+@pytest.mark.parametrize(
+    "func", [pyromark.events, pyromark.events_with_range], ids=["events", "events_with_range"]
+)
+def test_gc_can_break_a_callback_cycle_at_the_iterator(
+    func: Callable[..., Iterator[object]],
+) -> None:
+    box: UserList[object] = UserList()
+    ref = weakref.ref(box)
+    # The collector clears a cycle oldest object first. Freezing sets the
+    # box aside until the iterator has aged, and unfreezing puts it back
+    # behind the iterator, so clearing the iterator has to break the cycle.
+    gc.freeze()
+    try:
+        events = func("[a]", broken_link_callback=box.append)
+        gc.collect()
+    finally:
+        gc.unfreeze()
+    box.append(events)
+    del box, events
     gc.collect()
     assert ref() is None
 

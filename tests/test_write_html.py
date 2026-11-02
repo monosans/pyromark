@@ -42,7 +42,10 @@ def test_write_html_passes_through_options() -> None:
     assert b'<a href="/u" title="t">missing</a>' in file.getvalue()
 
 
-def test_write_html_propagates_write_errors() -> None:
+# The first document fits the write buffer, so the error comes from the final
+# flush; the second does not, so it comes in the middle of rendering.
+@pytest.mark.parametrize("markdown", ["# Hello world" * 5000, "# Hello world\n\n" * 5000])
+def test_write_html_propagates_write_errors(markdown: str) -> None:
     calls: list[int] = []
 
     class Failing(io.BytesIO):
@@ -53,7 +56,7 @@ def test_write_html_propagates_write_errors() -> None:
             raise OSError(msg)
 
     with pytest.raises(OSError, match=r"^disk on fire #1$"):
-        pyromark.write_html("# Hello world" * 5000, Failing())
+        pyromark.write_html(markdown, Failing())
     assert len(calls) == 1
 
 
@@ -88,19 +91,15 @@ def test_write_html_keeps_the_file_objects_implicit_context() -> None:
     assert isinstance(exc.value.__context__, ValueError)
 
 
-class _Unwritable(io.BytesIO):
-    @override
-    def write(self, buffer: Buffer, /) -> int:
-        pytest.fail("wrote after a callback raised")
-
-
 def test_write_html_stops_at_a_broken_link_callback_error() -> None:
     def callback(_broken_link: BrokenLink) -> tuple[str, str]:
         msg = "callback failed"
         raise LookupError(msg)
 
+    file = io.BytesIO()
     with pytest.raises(LookupError, match=r"^callback failed$"):
-        pyromark.write_html(BROKEN_LINKS, _Unwritable(), broken_link_callback=callback)
+        pyromark.write_html(BROKEN_LINKS, file, broken_link_callback=callback)
+    assert not file.getvalue()
 
 
 def test_write_html_stops_at_a_highlight_error() -> None:
@@ -108,8 +107,10 @@ def test_write_html_stops_at_a_highlight_error() -> None:
         msg = "highlight failed"
         raise LookupError(msg)
 
+    file = io.BytesIO()
     with pytest.raises(LookupError, match=r"^highlight failed$"):
-        pyromark.write_html(CODE_BLOCKS, _Unwritable(), highlight=highlight)
+        pyromark.write_html(CODE_BLOCKS, file, highlight=highlight)
+    assert not file.getvalue()
 
 
 def test_write_html_rejects_text_file(tmp_path: Path) -> None:
@@ -137,17 +138,12 @@ def test_write_html_accepts_bare_write_only_object() -> None:
     assert bytes(sink.data) == b"<h1>Hello world</h1>\n"
 
 
-class _PartialWriter(io.RawIOBase):
+class _PartialWriter:
     """Accepts half of each chunk, which a file object is allowed to do."""
 
     def __init__(self) -> None:
         self.data = bytearray()
 
-    @override
-    def writable(self) -> bool:
-        return True
-
-    @override
     def write(self, buffer: Buffer, /) -> int:
         chunk = bytes(buffer)
         half = max(1, len(chunk) // 2)
@@ -155,32 +151,22 @@ class _PartialWriter(io.RawIOBase):
         return half
 
 
-class _SilentWriter(io.RawIOBase):
+class _SilentWriter:
     """Reports nothing, like plenty of file-like objects in the wild."""
 
     def __init__(self) -> None:
         self.data = bytearray()
 
-    @override
-    def writable(self) -> bool:
-        return True
-
-    @override
     def write(self, buffer: Buffer, /) -> None:
         self.data += bytes(buffer)
 
 
-class _OverReportingWriter(io.RawIOBase):
+class _OverReportingWriter:
     """Claims to have taken more than it was given."""
 
     def __init__(self) -> None:
         self.data = bytearray()
 
-    @override
-    def writable(self) -> bool:
-        return True
-
-    @override
     def write(self, buffer: Buffer, /) -> int:
         chunk = bytes(buffer)
         self.data += chunk
@@ -206,11 +192,7 @@ def test_write_html_honours_reported_length(writer_type: Callable[[], _Recording
 
 
 def test_write_html_rejects_non_integer_length() -> None:
-    class Nonsense(io.RawIOBase):
-        @override
-        def writable(self) -> bool:
-            return True
-
+    class Nonsense(io.BytesIO):
         @override
         def write(self, buffer: Buffer, /) -> int:
             return "not a length"  # type: ignore[return-value]
@@ -237,11 +219,7 @@ def test_markdown_write_html_matches_function() -> None:
 
 
 def test_write_html_rejects_a_write_that_takes_nothing() -> None:
-    class Stuck(io.RawIOBase):
-        @override
-        def writable(self) -> bool:
-            return True
-
+    class Stuck(io.BytesIO):
         @override
         def write(self, buffer: Buffer, /) -> int:
             return 0

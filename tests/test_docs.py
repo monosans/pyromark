@@ -181,7 +181,7 @@ def _stub_params(function: ast.FunctionDef) -> _Params:
     namespace: dict[str, object] = {"Options": pyromark.Options}
 
     def value(node: ast.expr) -> object:
-        return eval(compile(ast.Expression(node), str(STUB), "eval"), namespace)  # noqa: S307
+        return eval(compile(ast.Expression(node), f"<{STUB.name}>", "eval"), namespace)  # noqa: S307
 
     arguments = function.args
     positional = arguments.posonlyargs + arguments.args
