@@ -1,2 +1,4 @@
 [pytest]
+empty_parameter_set_mark = "fail_at_collect"
+filterwarnings = ["error"]
 strict = true

@@ -131,15 +131,11 @@ fn call_broken_link_callback<'input>(
     broken_link.set_item(pyo3::intern!(py, "reference"), &*link.reference)?;
     let resolved = callback
         .call1((broken_link,))?
-        .extract::<Option<(
-            pyo3::pybacked::PyBackedStr,
-            pyo3::pybacked::PyBackedStr,
-        )>>()
+        .extract::<Option<(pyo3::pybacked::PyBackedStr, pyo3::pybacked::PyBackedStr)>>()
         .map_err(move |err| {
             callback_error(
                 py,
-                "broken link callback must return a (destination_url, title) \
-                 tuple of str, or None",
+                "broken link callback must return a (destination_url, title) tuple of str, or None",
                 err,
             )
         })?;
@@ -199,12 +195,10 @@ impl<'input> Iterator for Render<'_, 'input> {
             return Some(event);
         };
         self.code.clear();
-        for inner in self.parser.by_ref() {
-            if let pulldown_cmark::Event::Text(text) = inner {
-                self.code.push_str(&text);
-            } else if matches!(inner, pulldown_cmark::Event::End(_)) {
-                break;
-            }
+        // A code block holds nothing but text, up to its end, which this
+        // consumes.
+        while let Some(pulldown_cmark::Event::Text(text)) = self.parser.next() {
+            self.code.push_str(&text);
         }
         let language = match kind {
             pulldown_cmark::CodeBlockKind::Indented => None,
@@ -285,7 +279,9 @@ pub fn html(
         options,
         broken_link_callback,
         highlighter,
-        |events, _| pulldown_cmark::html::push_html(&mut output, events),
+        |events, _| {
+            pulldown_cmark::html::push_html(&mut output, events);
+        },
     )?;
     Ok(output)
 }

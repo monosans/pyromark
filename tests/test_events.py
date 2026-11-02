@@ -7,6 +7,7 @@ import types
 import typing
 import weakref
 from collections.abc import Callable, Iterator, Mapping
+from concurrent.futures import ThreadPoolExecutor
 from typing import Literal, Union
 
 import pyromark
@@ -329,32 +330,21 @@ def test_racing_one_iterator_loses_nothing() -> None:
     shared = pyromark.events(markdown)
     workers = 8
     consumed = [0] * workers
-    raised: list[str] = []
     barrier = threading.Barrier(workers)
-    lock = threading.Lock()
 
     def drain(slot: int) -> None:
-        seen = 0
         barrier.wait()
-        try:
-            for _ in shared:
-                seen += 1
-        except Exception as exc:
-            with lock:
-                raised.append(type(exc).__name__)
-        finally:
-            consumed[slot] = seen
+        for _ in shared:
+            consumed[slot] += 1
 
-    threads = [
-        threading.Thread(target=drain, args=(index,))
-        for index in range(workers)
-    ]
-    for thread in threads:
-        thread.start()
-    for thread in threads:
-        thread.join()
+    with ThreadPoolExecutor(workers) as executor:
+        futures = [executor.submit(drain, slot) for slot in range(workers)]
 
-    assert set(raised) <= {"RuntimeError"}
+    # A thread that finds another one inside the iterator gets a RuntimeError.
+    assert {type(future.exception()) for future in futures} <= {
+        type(None),
+        RuntimeError,
+    }
     assert sum(consumed) + sum(1 for _ in shared) == total
 
 
@@ -404,11 +394,15 @@ def _matches(value: object, annotation: object) -> bool:
         return any(_matches(value, a) for a in typing.get_args(annotation))
     if origin is tuple:
         args = typing.get_args(annotation)
-        if not isinstance(value, tuple):
-            return False
         if args[-1] is Ellipsis:
-            return all(_matches(v, args[0]) for v in value)
-        return len(args) == len(value) and all(map(_matches, value, args))
+            return isinstance(value, tuple) and all(
+                _matches(v, args[0]) for v in value
+            )
+        return (
+            isinstance(value, tuple)
+            and len(args) == len(value)
+            and all(map(_matches, value, args))
+        )
     if is_typeddict(annotation):
         hints = typing.get_type_hints(annotation, globalns=vars(pyromark.event))
         return (
@@ -416,16 +410,10 @@ def _matches(value: object, annotation: object) -> bool:
             and set(value) == set(hints)
             and all(_matches(value[k], h) for k, h in hints.items())
         )
-    if annotation is type(None):
-        return value is None
-    if annotation is bool:
-        return isinstance(value, bool)
-    if annotation is int:
-        return isinstance(value, int) and not isinstance(value, bool)
-    if annotation is str:
-        return isinstance(value, str)
-    msg = f"unhandled annotation {annotation!r}"
-    raise AssertionError(msg)
+    assert annotation in {type(None), bool, int, str}, (
+        f"unhandled annotation {annotation!r}"
+    )
+    return type(value) is annotation
 
 
 def _observed_names(event: object) -> set[str]:
