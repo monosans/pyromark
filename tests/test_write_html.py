@@ -53,7 +53,12 @@ def test_write_html_passes_through_options() -> None:
     assert b'<a href="/u" title="t">missing</a>' in file.getvalue()
 
 
-def test_write_html_propagates_write_errors() -> None:
+# The first document fits the write buffer, so the error comes from the final
+# flush; the second does not, so it comes in the middle of rendering.
+@pytest.mark.parametrize(
+    "markdown", ["# Hello world" * 5000, "# Hello world\n\n" * 5000]
+)
+def test_write_html_propagates_write_errors(markdown: str) -> None:
     calls: list[int] = []
 
     class Failing(io.BytesIO):
@@ -64,7 +69,7 @@ def test_write_html_propagates_write_errors() -> None:
             raise OSError(msg)
 
     with pytest.raises(OSError, match=r"^disk on fire #1$"):
-        pyromark.write_html("# Hello world" * 5000, Failing())
+        pyromark.write_html(markdown, Failing())
     assert len(calls) == 1
 
 

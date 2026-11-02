@@ -425,6 +425,26 @@ def test_callback_cycle_is_collectable(
     assert ref() is None
 
 
+@pytest.mark.parametrize("reenter", [iter, next], ids=["iter", "next"])
+@pytest.mark.parametrize(
+    "func",
+    [pyromark.events, pyromark.events_with_range],
+    ids=["events", "events_with_range"],
+)
+def test_callback_cannot_reenter_its_iterator(
+    func: Callable[..., Iterator[object]],
+    reenter: Callable[[Iterator[object]], object],
+) -> None:
+    def callback(_broken_link: BrokenLink) -> None:
+        reenter(events)
+
+    events = func("[a]", broken_link_callback=callback)
+
+    with pytest.raises(RuntimeError, match=r"^Already (?:mutably )?borrowed$"):
+        tuple(events)
+    assert tuple(events) == ()
+
+
 def test_broken_link_spans_are_utf8_byte_offsets() -> None:
     seen: list[BrokenLink] = []
 

@@ -43,7 +43,9 @@ dependencies = ["typing-extensions>=4.4.0"]
 
 [dependency-groups]
 dev = [
+  "covdefaults==2.3.0",
   "mypy==2.4.1",
+  "pytest-cov==7.1.0",
   "ruff==0.17.3",
   { include-group = "test" },
 ]
