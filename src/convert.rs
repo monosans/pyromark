@@ -135,19 +135,26 @@ fn tag<'py>(
             Ok(name(pyo3::intern!(py, "Paragraph")))
         }
         pulldown_cmark::Tag::Heading { level, id, classes, attrs } => {
-            let class_names = classes.iter().map(|class| &**class);
-            let classes = pyo3::types::PyTuple::new(py, class_names)?;
-            let attrs =
-                attrs.iter().map(|(key, value)| (&**key, value.as_deref()));
-            let attrs = pyo3::types::PyTuple::new(py, attrs)?;
             let data = pyo3::types::PyDict::new(py);
             data.set_item(
                 pyo3::intern!(py, "level"),
                 heading_level(py, *level),
             )?;
             data.set_item(pyo3::intern!(py, "id"), id.as_deref())?;
-            data.set_item(pyo3::intern!(py, "classes"), classes)?;
-            data.set_item(pyo3::intern!(py, "attrs"), attrs)?;
+            data.set_item(
+                pyo3::intern!(py, "classes"),
+                pyo3::types::PyTuple::new(
+                    py,
+                    classes.iter().map(|class| &**class),
+                )?,
+            )?;
+            data.set_item(
+                pyo3::intern!(py, "attrs"),
+                pyo3::types::PyTuple::new(
+                    py,
+                    attrs.iter().map(|(key, value)| (&**key, value.as_deref())),
+                )?,
+            )?;
             tagged(py, pyo3::intern!(py, "Heading"), data)
         }
         pulldown_cmark::Tag::BlockQuote(kind) => tagged(
@@ -179,12 +186,14 @@ fn tag<'py>(
         pulldown_cmark::Tag::DefinitionListDefinition => {
             Ok(name(pyo3::intern!(py, "DefinitionListDefinition")))
         }
-        pulldown_cmark::Tag::Table(alignments) => {
-            let columns =
-                alignments.iter().map(move |&column| alignment(py, column));
-            let columns = pyo3::types::PyTuple::new(py, columns)?;
-            tagged(py, pyo3::intern!(py, "Table"), columns)
-        }
+        pulldown_cmark::Tag::Table(alignments) => tagged(
+            py,
+            pyo3::intern!(py, "Table"),
+            pyo3::types::PyTuple::new(
+                py,
+                alignments.iter().map(move |&column| alignment(py, column)),
+            )?,
+        ),
         pulldown_cmark::Tag::TableHead => {
             Ok(name(pyo3::intern!(py, "TableHead")))
         }
@@ -368,8 +377,10 @@ pub fn reference_definitions<'py>(
             pyo3::intern!(py, "title"),
             definition.title.as_deref(),
         )?;
-        let span = range(py, &definition.span)?;
-        value.set_item(pyo3::intern!(py, "span"), span)?;
+        value.set_item(
+            pyo3::intern!(py, "span"),
+            range(py, &definition.span)?,
+        )?;
         dict.set_item(label, value)?;
     }
     Ok(dict)

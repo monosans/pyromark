@@ -129,6 +129,7 @@ def test_markdown_is_safe_to_share_between_threads() -> None:
     markdown = f"{CODE_BLOCKS}\n\n{TABLE}\n\n[missing]\n" * 5
     expected = md.html(markdown)
 
-    assert render_on_threads(md, markdown) == [expected] * (
-        THREADS * RENDERS_PER_THREAD
-    )
+    results, errors = render_on_threads(md, markdown)
+
+    assert not errors
+    assert results == [expected] * (THREADS * RENDERS_PER_THREAD)
