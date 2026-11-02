@@ -133,6 +133,11 @@ impl Events {
         crate::common::Shared::into_error(shared).map_or(next, Err)
     }
 
+    #[expect(
+        clippy::same_name_method,
+        reason = "PyO3 takes the GC hook under this name, and #[pyclass] adds \
+                  a trait method of the same name"
+    )]
     fn __traverse__(
         &self,
         visit: pyo3::pyclass::PyVisit<'_>,
