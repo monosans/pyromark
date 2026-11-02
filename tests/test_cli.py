@@ -17,9 +17,7 @@ from typing_extensions import Buffer, override
 
 
 @pytest.mark.parametrize("flag", ["-o", "--output"])
-def test_cli_output(
-    flag: str, tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
+def test_cli_output(flag: str, tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     input_file = tmp_path / "input.md"
     input_file.write_text("# Hello world", encoding="utf-8")
     output_file = tmp_path / "output.html"
@@ -45,9 +43,7 @@ class _Stdin:
 
 
 def test_cli_stdin_is_utf8(
-    monkeypatch: pytest.MonkeyPatch,
-    capsysbinary: pytest.CaptureFixture[bytes],
-    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch, capsysbinary: pytest.CaptureFixture[bytes], tmp_path: Path
 ) -> None:
     markdown = "# 日本語 héllo"
     file = tmp_path / "stdin.md"
@@ -116,9 +112,7 @@ README = Path(__file__).parent.parent / "README.md"
 CLI_DOC = Path(__file__).parent.parent / "docs" / "cli.md"
 
 
-def test_cli_stdout_is_utf8(
-    capsysbinary: pytest.CaptureFixture[bytes], tmp_path: Path
-) -> None:
+def test_cli_stdout_is_utf8(capsysbinary: pytest.CaptureFixture[bytes], tmp_path: Path) -> None:
     markdown = "# 日本語 héllo"
     file = tmp_path / "unicode.md"
     file.write_text(markdown, encoding="utf-8")
@@ -167,9 +161,7 @@ def test_cli_stdout_bypasses_a_non_utf8_text_layer(
     assert stdout.buffer.getvalue() == pyromark.html(markdown).encode()
 
 
-def test_cli_stdout_flushes_what_it_wrote(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_cli_stdout_flushes_what_it_wrote(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     file = tmp_path / "in.md"
     file.write_text("# Hello world", encoding="utf-8")
     stdout = _Stdout()
@@ -201,17 +193,13 @@ def test_cli_version(capsys: pytest.CaptureFixture[str]) -> None:
 
 
 _CLI_THEME_FLAGS = {
-    name.lower().replace("_", "-"): theme
-    for name, theme in pyromark.Theme.__members__.items()
+    name.lower().replace("_", "-"): theme for name, theme in pyromark.Theme.__members__.items()
 }
 
 
 @pytest.mark.parametrize(("flag", "theme"), _CLI_THEME_FLAGS.items())
 def test_cli_highlight(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
-    flag: str,
-    theme: pyromark.Theme,
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, flag: str, theme: pyromark.Theme
 ) -> None:
     markdown = "~~~python\nx = 1\n~~~"
     file = tmp_path / "in.md"
@@ -221,10 +209,7 @@ def test_cli_highlight(
 
     pyromark_cli(("--highlight", flag, str(file)))
 
-    assert (
-        stdout.buffer.getvalue()
-        == pyromark.html(markdown, highlight=theme).encode()
-    )
+    assert stdout.buffer.getvalue() == pyromark.html(markdown, highlight=theme).encode()
 
 
 def test_cli_highlight_writes_to_the_output_file(tmp_path: Path) -> None:
@@ -233,19 +218,11 @@ def test_cli_highlight_writes_to_the_output_file(tmp_path: Path) -> None:
     input_file.write_text(markdown, encoding="utf-8")
     output_file = tmp_path / "out.html"
 
-    pyromark_cli((
-        "--highlight",
-        "solarized-dark",
-        "-o",
-        str(output_file),
-        str(input_file),
-    ))
+    pyromark_cli(("--highlight", "solarized-dark", "-o", str(output_file), str(input_file)))
 
     assert (
         output_file.read_bytes()
-        == pyromark.html(
-            markdown, highlight=pyromark.Theme.SOLARIZED_DARK
-        ).encode()
+        == pyromark.html(markdown, highlight=pyromark.Theme.SOLARIZED_DARK).encode()
     )
 
 
@@ -273,9 +250,7 @@ def test_cli_help_keeps_urls_and_theme_names_whole(
 
     assert exc.value.code == 0
     words = {word.rstrip(",") for word in capsys.readouterr().out.split()}
-    assert (
-        "https://monosans.github.io/pyromark/guide/#enable-extensions" in words
-    )
+    assert "https://monosans.github.io/pyromark/guide/#enable-extensions" in words
     assert words >= set(_CLI_THEME_FLAGS)
 
 
@@ -303,9 +278,7 @@ class _BrokenPipeStdout:
 
 
 def test_cli_exits_quietly_on_a_broken_pipe(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
-    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     file = tmp_path / "in.md"
     file.write_text("# Hello world", encoding="utf-8")
@@ -340,9 +313,7 @@ BOM = b"\xef\xbb\xbf"
 
 
 @pytest.mark.parametrize(
-    "markdown",
-    [b"# Hi\n\nText\n", b"", b"\n"],
-    ids=["heading", "empty", "newline"],
+    "markdown", [b"# Hi\n\nText\n", b"", b"\n"], ids=["heading", "empty", "newline"]
 )
 def test_cli_strips_a_byte_order_mark(
     markdown: bytes, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -386,8 +357,7 @@ class _ClosedPipeStdout:
 
 
 @pytest.mark.parametrize(
-    ("platform", "quiet"),
-    [("win32", True), ("linux", False), ("darwin", False)],
+    ("platform", "quiet"), [("win32", True), ("linux", False), ("darwin", False)]
 )
 def test_cli_treats_einval_on_stdout_as_a_closed_pipe_only_on_windows(
     platform: str,
@@ -413,9 +383,7 @@ def test_cli_treats_einval_on_stdout_as_a_closed_pipe_only_on_windows(
 
 
 def test_cli_still_reports_einval_from_the_output_file(
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-    capsys: pytest.CaptureFixture[str],
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     file = tmp_path / "in.md"
     file.write_text("# Hello world", encoding="utf-8")
@@ -439,9 +407,7 @@ def test_python_m_pyromark_runs_the_cli(tmp_path: Path) -> None:
     file.write_text("# Hello world", encoding="utf-8")
 
     result = subprocess.run(  # noqa: S603
-        [sys.executable, "-m", "pyromark", str(file)],
-        capture_output=True,
-        check=True,
+        [sys.executable, "-m", "pyromark", str(file)], capture_output=True, check=True
     )
 
     assert result.stdout == pyromark.html("# Hello world").encode()
@@ -510,9 +476,7 @@ def test_documented_command_line_examples_run(
 
     for command in commands:
         arguments = [
-            str(Path(__file__).parent.parent / argument)
-            if argument.endswith(".md")
-            else argument
+            str(Path(__file__).parent.parent / argument) if argument.endswith(".md") else argument
             for argument in shlex.split(command)[1:]
         ]
         pyromark_cli(arguments)

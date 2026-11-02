@@ -42,8 +42,7 @@ impl Markdown {
         crate::common::check_broken_link_callback(broken_link_callback)?;
         Ok(Self {
             options: crate::common::build_options(options)?,
-            broken_link_callback: broken_link_callback
-                .map(|callback| callback.clone().unbind()),
+            broken_link_callback: broken_link_callback.map(|callback| callback.clone().unbind()),
             highlighter: crate::highlight::build_highlighter(highlight)?,
         })
     }
@@ -53,11 +52,7 @@ impl Markdown {
         visit: pyo3::pyclass::PyVisit<'_>,
     ) -> Result<(), pyo3::pyclass::PyTraverseError> {
         visit.call(&self.broken_link_callback)?;
-        visit.call(
-            self.highlighter
-                .as_ref()
-                .and_then(crate::highlight::Highlighter::callback),
-        )
+        visit.call(self.highlighter.as_ref().and_then(crate::highlight::Highlighter::callback))
     }
 
     /// Same as [`pyromark.events`][], with these settings.
@@ -110,12 +105,7 @@ impl Markdown {
 
     /// Same as [`pyromark.write_html`][], with these settings.
     #[pyo3(signature = (markdown, file, /))]
-    fn write_html(
-        &self,
-        py: Python<'_>,
-        markdown: &str,
-        file: &Bound<'_, PyAny>,
-    ) -> PyResult<()> {
+    fn write_html(&self, py: Python<'_>, markdown: &str, file: &Bound<'_, PyAny>) -> PyResult<()> {
         crate::common::write_html(
             py,
             markdown,

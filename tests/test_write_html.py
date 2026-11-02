@@ -9,13 +9,7 @@ import pytest
 from pyromark.event import BrokenLink
 from typing_extensions import Buffer, Protocol, override
 
-from tests.shared import (
-    ALL_OPTIONS,
-    BROKEN_LINKS,
-    CODE_BLOCKS,
-    EVENTS_TESTDATA,
-    TABLE,
-)
+from tests.shared import ALL_OPTIONS, BROKEN_LINKS, CODE_BLOCKS, EVENTS_TESTDATA, TABLE
 
 
 @pytest.mark.parametrize(
@@ -23,9 +17,7 @@ from tests.shared import (
     [(markdown, ALL_OPTIONS) for markdown, _ in EVENTS_TESTDATA.values()]
     + [(CODE_BLOCKS, pyromark.Options(0)), (TABLE, pyromark.Options(0))],
 )
-def test_write_html_matches_html(
-    markdown: str, options: pyromark.Options
-) -> None:
+def test_write_html_matches_html(markdown: str, options: pyromark.Options) -> None:
     file = io.BytesIO()
     pyromark.write_html(markdown, file, options=options)
     assert file.getvalue().decode() == pyromark.html(markdown, options=options)
@@ -41,10 +33,7 @@ def test_write_html_passes_through_options() -> None:
     markdown = f"{CODE_BLOCKS}\n\n[missing]"
     file = io.BytesIO()
     pyromark.write_html(
-        markdown,
-        file,
-        broken_link_callback=broken_link_callback,
-        highlight=highlight,
+        markdown, file, broken_link_callback=broken_link_callback, highlight=highlight
     )
     assert file.getvalue().decode() == pyromark.html(
         markdown, broken_link_callback=broken_link_callback, highlight=highlight
@@ -55,9 +44,7 @@ def test_write_html_passes_through_options() -> None:
 
 # The first document fits the write buffer, so the error comes from the final
 # flush; the second does not, so it comes in the middle of rendering.
-@pytest.mark.parametrize(
-    "markdown", ["# Hello world" * 5000, "# Hello world\n\n" * 5000]
-)
+@pytest.mark.parametrize("markdown", ["# Hello world" * 5000, "# Hello world\n\n" * 5000])
 def test_write_html_propagates_write_errors(markdown: str) -> None:
     calls: list[int] = []
 
@@ -197,9 +184,7 @@ class _RecordingWriter(Protocol):
     [_PartialWriter, _SilentWriter, _OverReportingWriter],
     ids=["partial", "silent", "over-reporting"],
 )
-def test_write_html_honours_reported_length(
-    writer_type: Callable[[], _RecordingWriter],
-) -> None:
+def test_write_html_honours_reported_length(writer_type: Callable[[], _RecordingWriter]) -> None:
     markdown = "# Hello world\n\n" * 5000
     writer = writer_type()
     pyromark.write_html(markdown, writer)
@@ -228,9 +213,7 @@ def test_markdown_write_html_matches_function() -> None:
     md.write_html(markdown, file)
 
     assert file.getvalue().decode() == md.html(markdown)
-    assert file.getvalue().decode() == pyromark.html(
-        markdown, options=options, highlight=highlight
-    )
+    assert file.getvalue().decode() == pyromark.html(markdown, options=options, highlight=highlight)
     assert b"<x>x = 1</x>" in file.getvalue()
     assert b"<table>" in file.getvalue()
 

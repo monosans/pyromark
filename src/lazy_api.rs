@@ -1,17 +1,12 @@
 use pyo3::prelude::*;
 
-type OffsetIter<'input> =
-    pulldown_cmark::OffsetIter<'input, crate::common::BrokenLinkCallback>;
+type OffsetIter<'input> = pulldown_cmark::OffsetIter<'input, crate::common::BrokenLinkCallback>;
 
 enum Stream<'input> {
     Events(crate::common::Parser<'input>),
-    MergedEvents(
-        pulldown_cmark::TextMergeStream<'input, crate::common::Parser<'input>>,
-    ),
+    MergedEvents(pulldown_cmark::TextMergeStream<'input, crate::common::Parser<'input>>),
     EventsWithRange(OffsetIter<'input>),
-    MergedEventsWithRange(
-        pulldown_cmark::TextMergeWithOffset<'input, OffsetIter<'input>>,
-    ),
+    MergedEventsWithRange(pulldown_cmark::TextMergeWithOffset<'input, OffsetIter<'input>>),
 }
 
 /// The parser is `Send` but not `Sync`, which a pyclass must be. The mutex
@@ -20,32 +15,21 @@ enum Stream<'input> {
 type SyncStream<'input> = std::sync::Mutex<Stream<'input>>;
 
 impl Stream<'_> {
-    fn next<'py>(
-        &mut self,
-        py: Python<'py>,
-    ) -> Option<PyResult<Bound<'py, PyAny>>> {
+    fn next<'py>(&mut self, py: Python<'py>) -> Option<PyResult<Bound<'py, PyAny>>> {
         match self {
-            Self::Events(iter) => {
-                iter.next().map(|event| crate::convert::event(py, &event))
+            Self::Events(iter) => iter.next().map(|event| crate::convert::event(py, &event)),
+            Self::MergedEvents(iter) => iter.next().map(|event| crate::convert::event(py, &event)),
+            Self::EventsWithRange(iter) => {
+                iter.next().map(|event| crate::convert::event_with_range(py, &event))
             }
-            Self::MergedEvents(iter) => {
-                iter.next().map(|event| crate::convert::event(py, &event))
+            Self::MergedEventsWithRange(iter) => {
+                iter.next().map(|event| crate::convert::event_with_range(py, &event))
             }
-            Self::EventsWithRange(iter) => iter
-                .next()
-                .map(|event| crate::convert::event_with_range(py, &event)),
-            Self::MergedEventsWithRange(iter) => iter
-                .next()
-                .map(|event| crate::convert::event_with_range(py, &event)),
         }
     }
 }
 
-#[expect(
-    clippy::mem_forget,
-    clippy::impl_trait_in_params,
-    clippy::inline_modules
-)]
+#[expect(clippy::mem_forget, clippy::impl_trait_in_params, clippy::inline_modules)]
 mod cell {
     use super::SyncStream;
 
@@ -85,16 +69,10 @@ pub fn new(
             let parser = crate::common::parser(markdown, options, &shared);
             SyncStream::new(match (with_range, merge_text) {
                 (false, false) => Stream::Events(parser),
-                (false, true) => Stream::MergedEvents(
-                    pulldown_cmark::TextMergeStream::new(parser),
-                ),
-                (true, false) => {
-                    Stream::EventsWithRange(parser.into_offset_iter())
-                }
+                (false, true) => Stream::MergedEvents(pulldown_cmark::TextMergeStream::new(parser)),
+                (true, false) => Stream::EventsWithRange(parser.into_offset_iter()),
                 (true, true) => Stream::MergedEventsWithRange(
-                    pulldown_cmark::TextMergeWithOffset::new(
-                        parser.into_offset_iter(),
-                    ),
+                    pulldown_cmark::TextMergeWithOffset::new(parser.into_offset_iter()),
                 ),
             })
         })
@@ -108,18 +86,12 @@ impl Events {
         slf
     }
 
-    fn __next__<'py>(
-        &mut self,
-        py: Python<'py>,
-    ) -> PyResult<Option<Bound<'py, PyAny>>> {
+    fn __next__<'py>(&mut self, py: Python<'py>) -> PyResult<Option<Bound<'py, PyAny>>> {
         let Some(mut inner) = self.0.take() else {
             return Ok(None);
         };
         let next = match inner.cell.with_dependent_mut(|_, stream| {
-            stream
-                .get_mut()
-                .unwrap_or_else(std::sync::PoisonError::into_inner)
-                .next(py)
+            stream.get_mut().unwrap_or_else(std::sync::PoisonError::into_inner).next(py)
         }) {
             Some(Ok(event)) if !inner.shared.failed() => {
                 self.0 = Some(inner);
