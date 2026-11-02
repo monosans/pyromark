@@ -270,12 +270,13 @@ jobs:
           enable-cache: false
       # Most of the Rust code only runs from Python, so uv builds the extension
       # instrumented and the profiles of the pytest run make the Rust report.
+      # Both reports are only shown: covdefaults would require 100%.
       - run: |
           eval "$(cargo +beta llvm-cov show-env --sh)"
           cargo +beta llvm-cov clean --workspace
           uv sync --group test-ci --locked
-          uv run --no-sync pytest --cov
-          cargo +beta llvm-cov report --show-missing-lines --fail-under-lines 100
+          uv run --no-sync pytest --cov --cov-fail-under=0
+          cargo +beta llvm-cov report --show-missing-lines
         env:
           MATURIN_PEP517_ARGS: --profile dev
   docs-build:

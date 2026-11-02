@@ -223,7 +223,10 @@ def test_a_theme_is_safe_to_share_between_threads() -> None:
     markdown = f"{CODE_BLOCKS}\n" * 5
     expected = md.html(markdown)
 
-    assert render_on_threads(md, markdown) == [expected] * (THREADS * RENDERS_PER_THREAD)
+    results, errors = render_on_threads(md, markdown)
+
+    assert not errors
+    assert results == [expected] * (THREADS * RENDERS_PER_THREAD)
 
 
 INDENTED_BLOCK = "    a = 1\n    b = 2\n    c = 3\n"

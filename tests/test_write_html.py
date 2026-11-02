@@ -91,15 +91,19 @@ def test_write_html_keeps_the_file_objects_implicit_context() -> None:
     assert isinstance(exc.value.__context__, ValueError)
 
 
+class _Unwritable(io.BytesIO):
+    @override
+    def write(self, buffer: Buffer, /) -> int:
+        pytest.fail("wrote after a callback raised")
+
+
 def test_write_html_stops_at_a_broken_link_callback_error() -> None:
     def callback(_broken_link: BrokenLink) -> tuple[str, str]:
         msg = "callback failed"
         raise LookupError(msg)
 
-    file = io.BytesIO()
     with pytest.raises(LookupError, match=r"^callback failed$"):
-        pyromark.write_html(BROKEN_LINKS, file, broken_link_callback=callback)
-    assert not file.getvalue()
+        pyromark.write_html(BROKEN_LINKS, _Unwritable(), broken_link_callback=callback)
 
 
 def test_write_html_stops_at_a_highlight_error() -> None:
@@ -107,10 +111,8 @@ def test_write_html_stops_at_a_highlight_error() -> None:
         msg = "highlight failed"
         raise LookupError(msg)
 
-    file = io.BytesIO()
     with pytest.raises(LookupError, match=r"^highlight failed$"):
-        pyromark.write_html(CODE_BLOCKS, file, highlight=highlight)
-    assert not file.getvalue()
+        pyromark.write_html(CODE_BLOCKS, _Unwritable(), highlight=highlight)
 
 
 def test_write_html_rejects_text_file(tmp_path: Path) -> None:
@@ -138,12 +140,17 @@ def test_write_html_accepts_bare_write_only_object() -> None:
     assert bytes(sink.data) == b"<h1>Hello world</h1>\n"
 
 
-class _PartialWriter:
+class _PartialWriter(io.RawIOBase):
     """Accepts half of each chunk, which a file object is allowed to do."""
 
     def __init__(self) -> None:
         self.data = bytearray()
 
+    @override
+    def writable(self) -> bool:
+        return True
+
+    @override
     def write(self, buffer: Buffer, /) -> int:
         chunk = bytes(buffer)
         half = max(1, len(chunk) // 2)
@@ -151,22 +158,32 @@ class _PartialWriter:
         return half
 
 
-class _SilentWriter:
+class _SilentWriter(io.RawIOBase):
     """Reports nothing, like plenty of file-like objects in the wild."""
 
     def __init__(self) -> None:
         self.data = bytearray()
 
+    @override
+    def writable(self) -> bool:
+        return True
+
+    @override
     def write(self, buffer: Buffer, /) -> None:
         self.data += bytes(buffer)
 
 
-class _OverReportingWriter:
+class _OverReportingWriter(io.RawIOBase):
     """Claims to have taken more than it was given."""
 
     def __init__(self) -> None:
         self.data = bytearray()
 
+    @override
+    def writable(self) -> bool:
+        return True
+
+    @override
     def write(self, buffer: Buffer, /) -> int:
         chunk = bytes(buffer)
         self.data += chunk
@@ -192,7 +209,11 @@ def test_write_html_honours_reported_length(writer_type: Callable[[], _Recording
 
 
 def test_write_html_rejects_non_integer_length() -> None:
-    class Nonsense(io.BytesIO):
+    class Nonsense(io.RawIOBase):
+        @override
+        def writable(self) -> bool:
+            return True
+
         @override
         def write(self, buffer: Buffer, /) -> int:
             return "not a length"  # type: ignore[return-value]
@@ -219,7 +240,11 @@ def test_markdown_write_html_matches_function() -> None:
 
 
 def test_write_html_rejects_a_write_that_takes_nothing() -> None:
-    class Stuck(io.BytesIO):
+    class Stuck(io.RawIOBase):
+        @override
+        def writable(self) -> bool:
+            return True
+
         @override
         def write(self, buffer: Buffer, /) -> int:
             return 0

@@ -108,10 +108,9 @@ fn call_broken_link_callback<'input>(
 ) -> PyResult<Option<(pulldown_cmark::CowStr<'input>, pulldown_cmark::CowStr<'input>)>> {
     let py = callback.py();
     let broken_link = pyo3::types::PyDict::new(py);
-    let span = crate::convert::range(py, &link.span)?;
-    broken_link.set_item(pyo3::intern!(py, "span"), span)?;
-    let link_type = crate::convert::link_type(py, link.link_type)?;
-    broken_link.set_item(pyo3::intern!(py, "link_type"), link_type)?;
+    broken_link.set_item(pyo3::intern!(py, "span"), crate::convert::range(py, &link.span)?)?;
+    broken_link
+        .set_item(pyo3::intern!(py, "link_type"), crate::convert::link_type(py, link.link_type)?)?;
     broken_link.set_item(pyo3::intern!(py, "reference"), &*link.reference)?;
     let resolved = callback
         .call1((broken_link,))?
@@ -173,10 +172,12 @@ impl<'input> Iterator for Render<'_, 'input> {
             return Some(event);
         };
         self.code.clear();
-        // A code block holds nothing but text, up to its end, which this
-        // consumes.
-        while let Some(pulldown_cmark::Event::Text(text)) = self.parser.next() {
-            self.code.push_str(&text);
+        for inner in self.parser.by_ref() {
+            if let pulldown_cmark::Event::Text(text) = inner {
+                self.code.push_str(&text);
+            } else if matches!(inner, pulldown_cmark::Event::End(_)) {
+                break;
+            }
         }
         let language = match kind {
             pulldown_cmark::CodeBlockKind::Indented => None,
@@ -237,7 +238,7 @@ pub fn html(
 ) -> PyResult<String> {
     let mut output = String::with_capacity(html_capacity(markdown));
     render(py, markdown, options, broken_link_callback, highlighter, |events, _| {
-        pulldown_cmark::html::push_html(&mut output, events);
+        pulldown_cmark::html::push_html(&mut output, events)
     })?;
     Ok(output)
 }
