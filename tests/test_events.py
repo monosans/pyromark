@@ -74,19 +74,19 @@ def test_events(markdown: str, expected: tuple[Event, ...]) -> None:
     [markdown for markdown, _events in EVENTS_TESTDATA.values()],
     ids=EVENTS_TESTDATA.keys(),
 )
-def test_events_with_range(markdown: str) -> None:
+@pytest.mark.parametrize("merge_text", [False, True], ids=["unmerged", "merged"])
+def test_events_with_range(markdown: str, *, merge_text: bool) -> None:
     md = pyromark.Markdown(options=ALL_OPTIONS)
-    for merge_text in (False, True):
-        events_with_range = tuple(
-            pyromark.events_with_range(markdown, options=ALL_OPTIONS, merge_text=merge_text)
-        )
-        assert events_with_range == tuple(md.events_with_range(markdown, merge_text=merge_text))
-        assert tuple(event for event, _range in events_with_range) == tuple(
-            pyromark.events(markdown, options=ALL_OPTIONS, merge_text=merge_text)
-        )
-        source_length = len(markdown.encode())
-        for _event, range_ in events_with_range:
-            assert 0 <= range_["start"] <= range_["end"] <= source_length
+    events_with_range = tuple(
+        pyromark.events_with_range(markdown, options=ALL_OPTIONS, merge_text=merge_text)
+    )
+    assert events_with_range == tuple(md.events_with_range(markdown, merge_text=merge_text))
+    assert tuple(event for event, _range in events_with_range) == tuple(
+        pyromark.events(markdown, options=ALL_OPTIONS, merge_text=merge_text)
+    )
+    source_length = len(markdown.encode())
+    for _event, range_ in events_with_range:
+        assert 0 <= range_["start"] <= range_["end"] <= source_length
 
 
 def test_events_unknown_link_types() -> None:
