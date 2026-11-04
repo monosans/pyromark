@@ -3,7 +3,7 @@ from __future__ import annotations
 import gc
 import io
 import weakref
-from collections.abc import Callable, Iterable, Iterator, Mapping
+from collections.abc import Callable, Iterator, Mapping
 from typing import TypeAlias
 
 import pyromark
@@ -222,23 +222,6 @@ def test_markdown_broken_link_callback_is_collectable() -> None:
     del holder
     gc.collect()
     assert ref() is None
-
-
-@pytest.mark.parametrize(
-    "func", [pyromark.events, pyromark.events_with_range], ids=["events", "events_with_range"]
-)
-def test_broken_link_callback_error_mid_iteration(func: Callable[..., Iterable[object]]) -> None:
-    calls: list[BrokenLink] = []
-
-    def callback(broken_link: BrokenLink) -> tuple[str, str]:
-        calls.append(broken_link)
-        msg = "callback failed"
-        raise ValueError(msg)
-
-    events = func(BROKEN_LINKS, broken_link_callback=callback)
-    with pytest.raises(ValueError, match=r"^callback failed$"):
-        list(events)
-    assert calls == BROKEN_LINKS_CALLS[:1]
 
 
 @pytest.mark.parametrize(

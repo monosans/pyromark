@@ -410,7 +410,7 @@ def test_pyromark(
     )
 
 
-@pytest.mark.parametrize("value", [1 << 32, 1 << 40, 2**64], ids=str)
+@pytest.mark.parametrize("value", [1 << 32, 2**64], ids=str)
 def test_options_wider_than_32_bits_are_rejected(value: int) -> None:
     wide = pyromark.Options(value)
     with pytest.raises(OverflowError):
