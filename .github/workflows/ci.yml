@@ -298,7 +298,7 @@ jobs:
           # The licenses go into the wheels, so a tag must not restore a cache.
           cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           cache-save-if: ${{ github.ref == 'refs/heads/main' }}
-      - uses: taiki-e/install-action@b80e2bb2635f28eb98b9fce1e2f0887e1535c6b2 # v2.90.0
+      - uses: taiki-e/install-action@c509219cf42fba86913069efd0ade2458c59337b # v2.90.1
         with:
           tool: cargo-about
           fallback: none
@@ -478,7 +478,7 @@ jobs:
         with:
           toolchain: nightly
           cache: false
-      - uses: taiki-e/install-action@b80e2bb2635f28eb98b9fce1e2f0887e1535c6b2 # v2.90.0
+      - uses: taiki-e/install-action@c509219cf42fba86913069efd0ade2458c59337b # v2.90.1
         with:
           tool: cargo-udeps
           fallback: none
