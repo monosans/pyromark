@@ -72,6 +72,11 @@
     { "matchPackageNames": ["mypy", "pre-commit/mirrors-mypy"], "groupName": "mypy" },
     { "matchPackageNames": ["ruff", "charliermarsh/ruff-pre-commit"], "groupName": "ruff" },
     {
+      "description": "The hook's npm package and the mirror's tag are one oxfmt version, so they go in one pull request",
+      "matchPackageNames": ["oxfmt", "oxc-project/mirrors-oxfmt"],
+      "groupName": "oxfmt"
+    },
+    {
       "description": "Bump the maturin-action pin together with the build-system.requires cap, so a new major does not reach CI alone through automerge",
       "matchPackageNames": ["maturin"],
       "groupName": "maturin"
