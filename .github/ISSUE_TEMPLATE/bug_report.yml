@@ -1,0 +1,105 @@
+name: 🐛 Bug report
+description: >-
+  Report wrong output, a crash or an install problem in pyromark.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        pyromark parses with
+        [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark).
+        If its [demo](https://pulldown-cmark.github.io/pulldown-cmark/)
+        gives the same wrong result, report it
+        [there](https://github.com/pulldown-cmark/pulldown-cmark/issues).
+        `pyromark.html()` does not sanitize its output, so unsafe HTML
+        passing through is expected.
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before you start
+      options:
+        - label: >-
+            I searched the [existing
+            issues](https://github.com/monosans/pyromark/issues?q=is%3Aissue)
+            and found nothing about this.
+          required: true
+        - label: >-
+            I can reproduce this on the [latest
+            release](https://pypi.org/project/pyromark/).
+          required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: "What happened?"
+      description: What you did, what you expected and what you got instead.
+    validations:
+      required: true
+  - type: dropdown
+    id: interface
+    attributes:
+      label: "Which part of pyromark?"
+      options:
+        - html / write_html
+        - events / events_with_range
+        - reference_definitions
+        - Markdown class
+        - Options
+        - Theme (syntax highlighting)
+        - Command line
+        - Installation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproducible example
+      description: >-
+        The shortest complete code or command, with the Markdown and options
+        included.
+      placeholder: |-
+        import pyromark
+
+        print(pyromark.html("# Hello world", options=pyromark.Options.ENABLE_TABLES))
+      render: python
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual output
+      description: The output, or the full traceback for a crash.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected output
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: pyromark version
+      description: "`pyromark --version`"
+    validations:
+      required: true
+  - type: input
+    id: python_version
+    attributes:
+      label: Python version and implementation
+      description: "`python --version`"
+      placeholder: 3.14.0 (CPython)
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Other
+    validations:
+      required: true

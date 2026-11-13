@@ -52,9 +52,7 @@ def test_reference_definitions_options() -> None:
 def test_markdown_reference_definitions_matches_function() -> None:
     options = pyromark.Options.ENABLE_YAML_STYLE_METADATA_BLOCKS
     md = pyromark.Markdown(options=options)
-    assert md.reference_definitions(
-        REFERENCE_DEFINITIONS_DOC
-    ) == pyromark.reference_definitions(
+    assert md.reference_definitions(REFERENCE_DEFINITIONS_DOC) == pyromark.reference_definitions(
         REFERENCE_DEFINITIONS_DOC, options=options
     )
     metadata = "---\n[foo]: /a\n---\n"

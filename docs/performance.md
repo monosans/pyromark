@@ -56,9 +56,7 @@ for _ in range(30):
         times[name].append(timeit(renderers[name], number=1000))
 
 for name, seconds in times.items():
-    ratio = statistics.median(
-        t / p for t, p in zip(seconds, times["pyromark"], strict=True)
-    )
+    ratio = statistics.median(t / p for t, p in zip(seconds, times["pyromark"], strict=True))
     print(
         f"| {name} | {version(name)} | {written_in.get(name, 'Python')} "
         f"| {statistics.median(seconds):.3f} | {ratio:.1f} |"

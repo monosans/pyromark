@@ -2,18 +2,14 @@ from __future__ import annotations
 
 import ast
 import gc
+import io
 import re
 import weakref
 
 import pyromark
 import pytest
 
-from tests.shared import (
-    CODE_BLOCKS,
-    RENDERS_PER_THREAD,
-    THREADS,
-    render_on_threads,
-)
+from tests.shared import CODE_BLOCKS, CPYTHON_ONLY, RENDERS_PER_THREAD, THREADS, render_on_threads
 
 CODE_BLOCKS_COUNT = 3
 
@@ -37,8 +33,7 @@ def test_highlight_disabled() -> None:
 
 
 @pytest.mark.parametrize(
-    "highlight",
-    [pyromark.Theme.INSPIRED_GITHUB, pyromark.Theme.BASE16_OCEAN_DARK],
+    "highlight", [pyromark.Theme.INSPIRED_GITHUB, pyromark.Theme.BASE16_OCEAN_DARK]
 )
 def test_highlight_syntect(highlight: pyromark.Theme) -> None:
     html = pyromark.html(CODE_BLOCKS, highlight=highlight)
@@ -54,9 +49,7 @@ def test_highlight_syntect(highlight: pyromark.Theme) -> None:
 
 def test_highlight_theme_changes_output() -> None:
     light = pyromark.html(CODE_BLOCKS, highlight=pyromark.Theme.INSPIRED_GITHUB)
-    dark = pyromark.html(
-        CODE_BLOCKS, highlight=pyromark.Theme.BASE16_OCEAN_DARK
-    )
+    dark = pyromark.html(CODE_BLOCKS, highlight=pyromark.Theme.BASE16_OCEAN_DARK)
     assert light != dark
     assert "background-color:#ffffff" in light
     assert "background-color:#2b303b" in dark
@@ -73,6 +66,13 @@ def test_highlight_unknown_theme() -> None:
 def test_highlight_invalid_type(highlight: object) -> None:
     with pytest.raises(TypeError, match=r"^highlight must be"):
         pyromark.html(CODE_BLOCKS, highlight=highlight)  # type: ignore[arg-type]
+    with pytest.raises(TypeError, match=r"^highlight must be"):
+        pyromark.write_html(CODE_BLOCKS, io.BytesIO(), highlight=highlight)  # type: ignore[arg-type]
+
+
+def test_highlight_rejects_a_theme_name_with_a_lone_surrogate() -> None:
+    with pytest.raises(UnicodeEncodeError):
+        pyromark.html(CODE_BLOCKS, highlight="\ud800")  # type: ignore[arg-type]
 
 
 def test_highlight_callback() -> None:
@@ -93,13 +93,7 @@ def test_highlight_callback() -> None:
         == expected
     )
     assert (
-        calls
-        == [
-            ("python", "x = 1\n"),
-            (None, "indented\n"),
-            ("unknown-language", "y = 2\n"),
-        ]
-        * 2
+        calls == [("python", "x = 1\n"), (None, "indented\n"), ("unknown-language", "y = 2\n")] * 2
     )
 
 
@@ -107,27 +101,17 @@ def test_highlight_language_is_the_first_word_of_the_fence() -> None:
     markdown = '```python title="a.py"\nx = 1\n```'
     languages: list[str | None] = []
 
-    pyromark.html(
-        markdown, highlight=lambda language, _code: languages.append(language)
-    )
+    pyromark.html(markdown, highlight=lambda language, _code: languages.append(language))
 
     assert languages == ["python"]
-    assert "color:#a71d5d" in pyromark.html(
-        markdown, highlight=pyromark.Theme.INSPIRED_GITHUB
-    )
+    assert "color:#a71d5d" in pyromark.html(markdown, highlight=pyromark.Theme.INSPIRED_GITHUB)
 
 
-@pytest.mark.parametrize(
-    "markdown", ["```\nx = 1\n```", "```   \nx = 1\n```", "    x = 1"]
-)
-def test_highlight_language_is_none_when_the_block_names_none(
-    markdown: str,
-) -> None:
+@pytest.mark.parametrize("markdown", ["```\nx = 1\n```", "```   \nx = 1\n```", "    x = 1"])
+def test_highlight_language_is_none_when_the_block_names_none(markdown: str) -> None:
     languages: list[str | None] = []
 
-    pyromark.html(
-        markdown, highlight=lambda language, _code: languages.append(language)
-    )
+    pyromark.html(markdown, highlight=lambda language, _code: languages.append(language))
 
     assert languages == [None]
 
@@ -168,14 +152,13 @@ def test_highlight_callback_bad_return_type() -> None:
     def callback(_language: str | None, _code: str) -> str:
         return 42  # type: ignore[return-value]
 
-    with pytest.raises(
-        TypeError, match=r"^highlight callback must return the block's HTML"
-    ) as exc:
+    with pytest.raises(TypeError, match=r"^highlight callback must return the block's HTML") as exc:
         pyromark.html(CODE_BLOCKS, highlight=callback)
 
     assert type(exc.value.__cause__) is TypeError
 
 
+@CPYTHON_ONLY
 def test_markdown_highlight_callback_is_collectable() -> None:
     class Holder:
         def __init__(self) -> None:
@@ -191,6 +174,19 @@ def test_markdown_highlight_callback_is_collectable() -> None:
     del holder
     gc.collect()
     assert ref() is None
+
+
+@CPYTHON_ONLY
+def test_markdown_shows_the_gc_a_highlight_callback_but_not_a_theme() -> None:
+    def highlight(_language: str | None, code: str) -> str:
+        return f"<x>{code.strip()}</x>"
+
+    with_callback = pyromark.Markdown(highlight=highlight)
+    with_theme = pyromark.Markdown(highlight=pyromark.Theme.INSPIRED_GITHUB)
+
+    assert with_callback.html("```\na\n```") == "<x>a</x>\n"
+    assert gc.get_referents(with_callback) == [pyromark.Markdown, highlight]
+    assert gc.get_referents(with_theme) == [pyromark.Markdown]
 
 
 def test_theme_members_all_work() -> None:
@@ -261,28 +257,20 @@ def test_an_unhighlighted_split_block_keeps_every_line() -> None:
     def highlight(_language: str | None, _code: str) -> None:
         return None
 
-    assert pyromark.html(INDENTED_BLOCK, highlight=highlight) == pyromark.html(
-        INDENTED_BLOCK
-    )
+    assert pyromark.html(INDENTED_BLOCK, highlight=highlight) == pyromark.html(INDENTED_BLOCK)
 
 
 def test_a_theme_carries_state_across_lines() -> None:
-    html = pyromark.html(
-        CROSS_LINE_STATE, highlight=pyromark.Theme.INSPIRED_GITHUB
-    )
+    html = pyromark.html(CROSS_LINE_STATE, highlight=pyromark.Theme.INSPIRED_GITHUB)
 
     assert "still a string" in html
     string_colour = re.findall(r'color:(#[0-9a-f]{6});">still a string', html)
     assert string_colour
-    assert re.search(
-        r"color:" + string_colour[0] + r';">&quot;&quot;&quot;', html
-    )
+    assert re.search(r"color:" + string_colour[0] + r';">&quot;&quot;&quot;', html)
 
 
 def test_highlight_callback_output_ends_its_line() -> None:
-    html = pyromark.html(
-        "~~~\nx\n~~~\n\nafter", highlight=lambda _language, _code: "<pre/>"
-    )
+    html = pyromark.html("~~~\nx\n~~~\n\nafter", highlight=lambda _language, _code: "<pre/>")
     assert html == "<pre/>\n<p>after</p>\n"
 
 
@@ -298,13 +286,9 @@ def test_highlight_callback_output_ends_its_line() -> None:
         ("zig", "const x = 1;"),
     ],
 )
-def test_highlight_knows_more_than_the_syntect_defaults(
-    language: str, code: str
-) -> None:
+def test_highlight_knows_more_than_the_syntect_defaults(language: str, code: str) -> None:
     def render(fence: str) -> str:
-        return pyromark.html(
-            f"~~~{fence}\n{code}\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB
-        )
+        return pyromark.html(f"~~~{fence}\n{code}\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB)
 
     assert render(language) != render("no-such-language")
 
@@ -323,12 +307,8 @@ def test_highlight_knows_more_than_the_syntect_defaults(
         ("Shell", "bash", "echo $HOME"),
     ],
 )
-def test_highlight_understands_common_aliases(
-    alias: str, language: str, code: str
-) -> None:
+def test_highlight_understands_common_aliases(alias: str, language: str, code: str) -> None:
     def render(fence: str) -> str:
-        return pyromark.html(
-            f"~~~{fence}\n{code}\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB
-        )
+        return pyromark.html(f"~~~{fence}\n{code}\n~~~", highlight=pyromark.Theme.INSPIRED_GITHUB)
 
     assert render(alias) == render(language) != render("no-such-language")

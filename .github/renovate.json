@@ -2,6 +2,63 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "branchTopic": "{{{depNameSanitized}}}-{{{newMajor}}}{{#if separateMinorPatch}}{{#if isPatch}}.{{{newMinor}}}{{/if}}{{/if}}{{#if separateMultipleMinor}}{{#if isMinor}}.{{{newMinor}}}{{/if}}{{/if}}.x",
   "configMigration": true,
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "The option docs link to the pulldown-cmark version pinned in Cargo.toml, and the same branch topic puts both in one PR",
+      "managerFilePatterns": ["/^python/pyromark/_options\\.py$/"],
+      "matchStrings": ["docs\\.rs/(?<depName>pulldown-cmark)/(?<currentValue>[^/]+)/"],
+      "datasourceTemplate": "crate",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep CI on the newest Python: the version the tools run on and the last one the tests run on. The first test version is the oldest supported one, so it stays",
+      "managerFilePatterns": ["/^\\.github/workflows/.+\\.yml$/"],
+      "matchStrings": [
+        "python-version: \"(?<currentValue>\\d+\\.\\d+)\"",
+        "python-version:\\n +- \"\\d+\\.\\d+\"\\n +- \"(?<currentValue>\\d+\\.\\d+)\"",
+        "- \"(?<currentValue>\\d+\\.\\d+)t\""
+      ],
+      "depNameTemplate": "docker.io/python",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Build wheels for each new Python version on the runners that get their interpreters from uv, free-threaded included",
+      "managerFilePatterns": ["/^\\.github/workflows/ci\\.yml$/"],
+      "matchStrings": [
+        "python-versions: \\|\\n(?: +[\\w.]+\\n)* +\\d+\\.\\d+t\\n",
+        "(?<indentation> +)(?<currentValue>\\d+\\.\\d+)t\\n$"
+      ],
+      "matchStringsStrategy": "recursive",
+      "depNameTemplate": "docker.io/python",
+      "datasourceTemplate": "docker",
+      "autoReplaceStringTemplate": "{{{indentation}}}{{{currentValue}}}t\n{{{indentation}}}{{{newValue}}}\n{{{indentation}}}{{{newValue}}}t\n"
+    },
+    {
+      "customType": "regex",
+      "description": "Same as above, for the interpreters passed to maturin",
+      "managerFilePatterns": ["/^\\.github/workflows/ci\\.yml$/"],
+      "matchStrings": ["(?<currentValue>\\d+\\.\\d+)t\\{0\\}'"],
+      "depNameTemplate": "docker.io/python",
+      "datasourceTemplate": "docker",
+      "autoReplaceStringTemplate": "{{{currentValue}}}t {{{newValue}}} {{{newValue}}}t{0}'"
+    },
+    {
+      "customType": "regex",
+      "description": "Add a classifier after the last one for each new Python version. The first match stops at the last classifier, the second takes the version out of it",
+      "managerFilePatterns": ["/^pyproject\\.toml$/"],
+      "matchStrings": [
+        "classifiers = \\[[^\\]]*\"Programming Language :: Python :: \\d+\\.\\d+\",",
+        "\"Programming Language :: Python :: (?<currentValue>\\d+\\.\\d+)\",$"
+      ],
+      "matchStringsStrategy": "recursive",
+      "depNameTemplate": "docker.io/python",
+      "datasourceTemplate": "docker",
+      "autoReplaceStringTemplate": "\"Programming Language :: Python :: {{{currentValue}}}\",\n  \"Programming Language :: Python :: {{{newValue}}}\","
+    }
+  ],
   "dependencyDashboard": false,
   "extends": [
     "config:recommended",
@@ -12,38 +69,34 @@
   "lockFileMaintenance": { "enabled": true, "schedule": ["at any time"] },
   "minimumReleaseAge": "3 days",
   "packageRules": [
+    { "matchPackageNames": ["mypy", "pre-commit/mirrors-mypy"], "groupName": "mypy" },
+    { "matchPackageNames": ["ruff", "charliermarsh/ruff-pre-commit"], "groupName": "ruff" },
     {
-      "matchPackageNames": ["mypy", "pre-commit/mirrors-mypy"],
-      "groupName": "mypy"
-    },
-    {
-      "matchPackageNames": ["ruff", "charliermarsh/ruff-pre-commit"],
-      "groupName": "ruff"
+      "description": "The hook's npm package and the mirror's tag are one oxfmt version, so they go in one pull request",
+      "matchPackageNames": ["oxfmt", "oxc-project/mirrors-oxfmt"],
+      "groupName": "oxfmt"
     },
     {
       "description": "Bump the maturin-action pin together with the build-system.requires cap, so a new major does not reach CI alone through automerge",
       "matchPackageNames": ["maturin"],
       "groupName": "maturin"
     },
-    {
-      "matchCurrentVersion": "!/^0/",
-      "matchUpdateTypes": ["minor"],
-      "automerge": true
-    },
-    {
-      "matchUpdateTypes": ["lockFileMaintenance", "patch", "replacement"],
-      "automerge": true
-    },
-    {
-      "matchDepTypes": ["dependency-groups"],
-      "matchManagers": ["pep621"],
-      "automerge": true
-    },
+    { "matchCurrentVersion": "!/^0/", "matchUpdateTypes": ["minor"], "automerge": true },
+    { "matchUpdateTypes": ["lockFileMaintenance", "patch", "replacement"], "automerge": true },
+    { "matchDepTypes": ["dependency-groups"], "matchManagers": ["pep621"], "automerge": true },
     { "matchManagers": ["github-actions", "pre-commit"], "automerge": true },
     {
-      "description": "Cargo has no cooldown for the transitive dependencies it resolves, so one on the direct dependencies would only delay updates",
-      "matchManagers": ["cargo"],
+      "description": "Cargo has no cooldown for the transitive dependencies it resolves, so one on the direct dependencies would only delay updates. The docs link must not wait for one either, or it would drop out of the PR that bumps Cargo.toml",
+      "matchManagers": ["cargo", "custom.regex"],
       "minimumReleaseAge": null
+    },
+    {
+      "description": "A new Python is reviewed by hand. A cooldown would count from the last rebuild of an image tag, which keeps part of the update out of the PR. A classifier can name a Python that is not out yet, which is not a reason to roll it back",
+      "matchPackageNames": ["python", "docker.io/python"],
+      "groupName": "python",
+      "automerge": false,
+      "minimumReleaseAge": null,
+      "rollbackPrs": false
     }
   ],
   "pre-commit": { "enabled": true },

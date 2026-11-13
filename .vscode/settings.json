@@ -1,0 +1,11 @@
+{
+  "[python]": { "editor.defaultFormatter": "charliermarsh.ruff" },
+  "[rust]": { "editor.defaultFormatter": "rust-lang.rust-analyzer" },
+  "[toml]": { "editor.defaultFormatter": "tombi-toml.tombi" },
+  "mypy-type-checker.importStrategy": "fromEnvironment",
+  "python.testing.pytestEnabled": true,
+  "ruff.importStrategy": "fromEnvironment",
+  "rust-analyzer.cargo.extraEnv": { "RUSTUP_TOOLCHAIN": "beta" },
+  "rust-analyzer.check.command": "clippy",
+  "rust-analyzer.rustfmt.extraArgs": ["+nightly"]
+}
