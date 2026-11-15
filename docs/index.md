@@ -1,10 +1,10 @@
 ---
-title: Blazingly fast Markdown parser for Python
+title: Blazingly fast Markdown pull parser for Python
 ---
 
 # pyromark
 
-A CommonMark-compliant Markdown parser for Python, built on the [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) Rust crate.
+A CommonMark-compliant Markdown pull parser for Python, built on the [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) Rust crate.
 
 - 2.6 times faster than cmarkgfm and comrak, and 86 to 367 times faster than pure Python parsers ([benchmark](performance.md)).
 - Supports tables, footnotes, task lists, math, GitHub alerts and [other extensions](guide.md#enable-extensions).

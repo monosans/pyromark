@@ -1,7 +1,7 @@
 [project]
 name = "pyromark"
 version = "0.10.4"
-description = "Blazingly fast CommonMark-compliant Markdown parser for Python, written in Rust"
+description = "Blazingly fast CommonMark-compliant Markdown pull parser for Python, written in Rust"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"

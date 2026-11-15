@@ -1,6 +1,6 @@
 site_name: pyromark
 site_url: https://monosans.github.io/pyromark
-site_description: Blazingly fast CommonMark-compliant Markdown parser for Python, written in Rust
+site_description: Blazingly fast CommonMark-compliant Markdown pull parser for Python, written in Rust
 strict: true
 repo_url: https://github.com/monosans/pyromark
 repo_name: monosans/pyromark
