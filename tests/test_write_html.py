@@ -3,11 +3,12 @@ from __future__ import annotations
 import io
 from collections.abc import Callable
 from pathlib import Path
+from typing import Protocol
 
 import pyromark
 import pytest
 from pyromark.event import BrokenLink
-from typing_extensions import Buffer, Protocol, override
+from typing_extensions import Buffer, override
 
 from tests.shared import ALL_OPTIONS, BROKEN_LINKS, CODE_BLOCKS, EVENTS_TESTDATA, TABLE
 
