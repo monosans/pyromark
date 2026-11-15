@@ -2,6 +2,10 @@
 
 [Semantic Versioning](https://semver.org/)
 
+## [0.10.6] - 2026-11-15
+
+- On Python 3.12 and newer the `pyromark` command takes `override` from `typing` instead of typing-extensions, which only needs it on 3.11.
+
 ## [0.10.5] - 2026-11-15
 
 - Declare the MIT license in the package metadata. The wheels and the sdist had no license field, so PyPI showed none and license checkers reported pyromark as unknown.
