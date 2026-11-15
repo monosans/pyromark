@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import gc
 import io
+import sys
 import threading
 import types
 import typing
@@ -15,6 +16,11 @@ from pyromark.event import BrokenLink, Event, Range
 from typing_extensions import is_typeddict
 
 from tests.shared import ALL_OPTIONS, CPYTHON_ONLY, EVENTS_TESTDATA, NON_ASCII_DOC
+
+if sys.version_info >= (3, 13):  # pragma: >=3.13 cover
+    from typing import get_type_hints
+else:  # pragma: <3.13 cover
+    from typing_extensions import get_type_hints
 
 UNKNOWN_LINK_TYPES = """\
 [ref][lbl]
@@ -325,7 +331,7 @@ def _declared_names(annotation: object) -> set[str]:
     if typing.get_origin(annotation) is Literal:
         return {str(arg) for arg in typing.get_args(annotation)}
     if is_typeddict(annotation):
-        hints = typing.get_type_hints(annotation, globalns=vars(pyromark.event))
+        hints = get_type_hints(annotation, globalns=vars(pyromark.event))
         return set(hints) | {name for hint in hints.values() for name in _declared_names(hint)}
     return {name for arg in typing.get_args(annotation) for name in _declared_names(arg)}
 
@@ -345,7 +351,7 @@ def _matches(value: object, annotation: object) -> bool:
             return all(_matches(v, args[0]) for v in value)
         return len(args) == len(value) and all(map(_matches, value, args))
     if is_typeddict(annotation):
-        hints = typing.get_type_hints(annotation, globalns=vars(pyromark.event))
+        hints = get_type_hints(annotation, globalns=vars(pyromark.event))
         return (
             isinstance(value, dict)
             and set(value) == set(hints)
