@@ -2,7 +2,7 @@
 
 [![Downloads](https://static.pepy.tech/badge/pyromark)](https://pepy.tech/project/pyromark)
 
-pyromark (stands for Python Rust Optimized Markdown) is a blazingly fast CommonMark-compliant Markdown parser for Python, built on the [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) Rust crate.
+pyromark (stands for Python Rust Optimized Markdown) is a blazingly fast CommonMark-compliant Markdown pull parser for Python, built on the [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) Rust crate.
 
 ## Installation
 
