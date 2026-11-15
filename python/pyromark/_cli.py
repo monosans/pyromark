@@ -8,9 +8,12 @@ import textwrap
 from collections.abc import Sequence
 from pathlib import Path
 
-from typing_extensions import override
-
 import pyromark
+
+if sys.version_info >= (3, 12):  # pragma: >=3.12 cover
+    from typing import override
+else:  # pragma: <3.12 cover
+    from typing_extensions import override
 
 _THEMES = {
     name.lower().replace("_", "-"): theme for name, theme in pyromark.Theme.__members__.items()

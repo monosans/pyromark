@@ -3,6 +3,7 @@ from __future__ import annotations
 import ast
 import inspect
 import re
+import sys
 import textwrap
 import typing
 from collections.abc import Callable, Iterator
@@ -15,6 +16,11 @@ import pyromark.event
 import pytest
 
 from tests.shared import CPYTHON_ONLY
+
+if sys.version_info >= (3, 13):  # pragma: >=3.13 cover
+    from typing import get_type_hints
+else:  # pragma: <3.13 cover
+    from typing_extensions import get_type_hints
 
 ROOT = Path(__file__).parent.parent
 
@@ -67,7 +73,7 @@ def _variant_names(alias: object, /) -> set[str]:
         if typing.get_origin(variant) is Literal:
             names.update(typing.get_args(variant))
         else:
-            names.update(typing.get_type_hints(variant))
+            names.update(get_type_hints(variant))
     return names
 
 
