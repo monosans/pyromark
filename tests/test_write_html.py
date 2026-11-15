@@ -1,15 +1,26 @@
 from __future__ import annotations
 
 import io
+import sys
 from collections.abc import Callable
 from pathlib import Path
 
 import pyromark
 import pytest
 from pyromark.event import BrokenLink
-from typing_extensions import Buffer, Protocol, override
+from typing_extensions import Buffer
 
 from tests.shared import ALL_OPTIONS, BROKEN_LINKS, CODE_BLOCKS, EVENTS_TESTDATA, TABLE
+
+if sys.version_info >= (3, 14):  # pragma: >=3.14 cover
+    from typing import Protocol
+else:  # pragma: <3.14 cover
+    from typing_extensions import Protocol
+
+if sys.version_info >= (3, 12):  # pragma: >=3.12 cover
+    from typing import override
+else:  # pragma: <3.12 cover
+    from typing_extensions import override
 
 
 @pytest.mark.parametrize(

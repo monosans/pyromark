@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import gc
 import io
+import sys
 import threading
 import types
 import typing
@@ -12,9 +13,14 @@ from typing import Literal, Union
 import pyromark
 import pytest
 from pyromark.event import BrokenLink, Event, Range
-from typing_extensions import get_type_hints, is_typeddict
+from typing_extensions import is_typeddict
 
 from tests.shared import ALL_OPTIONS, CPYTHON_ONLY, EVENTS_TESTDATA, NON_ASCII_DOC
+
+if sys.version_info >= (3, 13):  # pragma: >=3.13 cover
+    from typing import get_type_hints
+else:  # pragma: <3.13 cover
+    from typing_extensions import get_type_hints
 
 UNKNOWN_LINK_TYPES = """\
 [ref][lbl]
