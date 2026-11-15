@@ -1,3 +1,7 @@
+---
+title: Blazingly fast Markdown parser for Python
+---
+
 # pyromark
 
 A CommonMark-compliant Markdown parser for Python, built on the [pulldown-cmark](https://github.com/pulldown-cmark/pulldown-cmark) Rust crate.
