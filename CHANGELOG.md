@@ -4,7 +4,7 @@
 
 ## [0.10.6] - 2026-11-15
 
-- On Python 3.12 and newer the `pyromark` command takes `override` from `typing` instead of typing-extensions, which only needs it on 3.11.
+- The `pyromark` command imports `override` from typing-extensions only on Python 3.11. From 3.12 on it uses the one in `typing`.
 
 ## [0.10.5] - 2026-11-15
 
