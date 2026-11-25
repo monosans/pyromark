@@ -35,6 +35,12 @@ syntect = { version = "=5.3.0", default-features = false, features = [
 ] }
 two-face = "=0.5.2"
 
+[lints.cargo]
+correctness = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+style = { level = "deny", priority = -1 }
+suspicious = { level = "deny", priority = -1 }
+
 [lints.clippy]
 absolute_paths = "allow"
 all = { level = "deny", priority = -1 }
