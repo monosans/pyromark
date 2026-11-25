@@ -12,7 +12,7 @@ use pyo3::prelude::*;
 #[pymodule]
 mod _pyromark {
     #[pymodule_export]
-    #[expect(nonstandard_style)]
+    #[expect(nonstandard_style, reason = "Python looks the version up as __version__")]
     const __version__: &str = env!("CARGO_PKG_VERSION");
 
     #[pymodule_export]

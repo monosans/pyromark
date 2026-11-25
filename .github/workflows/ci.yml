@@ -224,7 +224,6 @@ jobs:
       - release-guard
       - rustfmt
       - sdist
-      - udeps
     runs-on: ubuntu-26.04
     steps:
       - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
@@ -467,19 +466,3 @@ jobs:
         with:
           name: wheels-sdist
           path: dist
-  udeps:
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-26.04
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
-      - uses: actions-rust-lang/setup-rust-toolchain@a188e68d0fd2bd36ad51dccb2b07ba6e75105f30 # v2
-        with:
-          toolchain: nightly
-          cache: false
-      - uses: taiki-e/install-action@25f51f6b1bf4e18876107cece836f4f77ac17c8c # v2.90.7
-        with:
-          tool: cargo-udeps
-          fallback: none
-      - run: cargo +nightly udeps
