@@ -55,14 +55,14 @@ dev = [
   "covdefaults==2.3.0",
   "mypy==2.4.1",
   "pytest-cov==7.1.0",
-  "ruff==0.17.5",
+  "ruff==0.17.6",
   { include-group = "test" },
 ]
 docs = [
   "mkdocstrings==1.0.8",
   "mkdocstrings-python==2.0.11",
-  "ruff==0.17.5",
-  "zensical==0.1.1",
+  "ruff==0.17.6",
+  "zensical==0.1.3",
 ]
 test = ["pytest==9.2.0"]
 test-ci = [

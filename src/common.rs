@@ -153,7 +153,7 @@ struct Render<'a, 'input> {
     code: String,
 }
 
-#[expect(clippy::missing_trait_methods)]
+#[expect(clippy::missing_trait_methods, reason = "the provided methods all go through next")]
 impl<'input> Iterator for Render<'_, 'input> {
     type Item = pulldown_cmark::Event<'input>;
 
@@ -248,7 +248,10 @@ struct PyWriter<'a> {
     shared: &'a Shared,
 }
 
-#[expect(clippy::missing_trait_methods)]
+#[expect(
+    clippy::missing_trait_methods,
+    reason = "the provided methods all go through write and flush"
+)]
 impl std::io::Write for PyWriter<'_> {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
         if self.shared.failed() {
