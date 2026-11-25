@@ -53,7 +53,7 @@ repos:
         additional_dependencies:
           - pytest==9.2.0
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: 06a39750ec31860bb44f2acf67182c40016cd1e7 # frozen: v1.32.0
+    rev: 0eb9e4a60caf04df64b499ed1e8bef55f4440eae # frozen: v1.33.0
     hooks:
       - id: zizmor
         args:
