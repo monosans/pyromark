@@ -21,31 +21,41 @@ repos:
           - --fix=lf
       - id: trailing-whitespace
   - repo: https://github.com/tombi-toml/tombi-pre-commit
-    rev: b3f6e09de51290a21d6c7b05b4f5cbe6cfe65b4f # frozen: v1.9.6
+    rev: 1066584123cce44a99b4818c2b2c4a7e732ff8e9 # frozen: v1.11.3
     hooks:
       - id: tombi-format
         exclude: ^(?:Cargo.lock|uv.lock)$
-  - repo: https://github.com/rbubley/mirrors-prettier
-    rev: 331f33fa4dfbcbca7c3da3620c137fde0faab273 # frozen: v3.9.10
+  - repo: https://github.com/oxc-project/mirrors-oxfmt
+    rev: b082b2f0f22aabef0f5cea2bd183dd85c08ba9ca # frozen: v0.79.0
     hooks:
-      - id: prettier
+      - id: oxfmt
+        language: node
+        types_or:
+          - text
+        args:
+          - --no-error-on-unmatched-pattern
+        additional_dependencies:
+          - oxfmt@0.79.0
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: f368fb366ff7f2f808dd324b83a6d32267799e19 # frozen: v0.17.2
+    rev: 9026c9127e153371d7a78dfcb0c45ae2046a3d10 # frozen: v0.17.6
     hooks:
       - id: ruff-check
         args:
           - --fix
       - id: ruff-format
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 2834ec6639549dd6796205c8f011dedcd587288b # frozen: v2.4.0
+    rev: ad26ebfa797fcb9b8f83275937c1c1d6e126719c # frozen: v2.4.1
     hooks:
       - id: mypy
         language: python
         args:
           - --scripts-are-modules
         additional_dependencies:
-          - pytest==9.1.1
+          - pytest==9.2.0
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: c92afdf2c6ca336aaa8f39e2bd8d48f62dbd8e1f # frozen: v1.31.1
+    rev: 0eb9e4a60caf04df64b499ed1e8bef55f4440eae # frozen: v1.33.0
     hooks:
       - id: zizmor
+        args:
+          - --no-progress
+          - --persona=pedantic

@@ -1,1 +1,8 @@
+allow-comparison-to-zero = false
+allow-mixed-uninlined-format-args = false
+allow-unwrap-in-tests = true
+avoid-breaking-exported-api = false
 doc-valid-idents = ["CommonMark", ".."]
+enforce-iter-loop-reborrow = true
+lint-commented-code = true
+upper-case-acronyms-aggressive = true
