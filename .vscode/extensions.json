@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "charliermarsh.ruff",
+    "ms-python.mypy-type-checker",
+    "ms-python.python",
+    "rust-lang.rust-analyzer",
+    "tombi-toml.tombi"
+  ]
+}
