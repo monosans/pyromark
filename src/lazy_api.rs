@@ -31,7 +31,12 @@ impl Stream<'_> {
     }
 }
 
-#[expect(clippy::mem_forget, clippy::impl_trait_in_params, clippy::inline_modules)]
+#[expect(
+    clippy::mem_forget,
+    clippy::impl_trait_in_params,
+    clippy::inline_modules,
+    reason = "self_cell generates the module and its code"
+)]
 mod cell {
     use super::SyncStream;
 
